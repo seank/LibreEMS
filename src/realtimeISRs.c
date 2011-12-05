@@ -91,12 +91,7 @@ void RTIISR(){
 			Clocks.realTimeClockTenths++;
 
 #ifdef XGATE
-			//set off software trigger 0 that is handled by xgate
-			unsigned char savedRPage = RPAGE;
-			RPAGE = RPAGE_TUNE_TWO;
-			(*(unsigned short*)(((unsigned short)parameterGuard) - ((unsigned short)RPAGE_TUNE_TWO_WINDOW_DIFFERENCE)))++; /* increment our parameterGuard variable in shared RAM*/
-			RPAGE = savedRPage;
-			XGSWT = 0x0101;
+//#include "xgateTests.c"
 #endif
 
 			/* Increment the tenths roll over variable */
