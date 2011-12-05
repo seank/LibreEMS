@@ -24,7 +24,7 @@
  */
 
 
-/**	@file xgateVectors.c
+/**	@file
  * @ingroup interruptHandlers
  *
  * @brief XGATE Interrupt Vector Table
@@ -105,10 +105,10 @@ const xgateIntVector xgateIntVectorTable[] PPAGE_E0X = {
 		{XGATE_ERROR_HANDLER, 0x37},  // Channel 37 - XGATE Software Trigger 2
 		{XGATE_ERROR_HANDLER, 0x38},  // Channel 38 - XGATE Software Trigger 1
 		{(unsigned short)xgateSchedule, (unsigned short)&PORTP}, // Channel 39 - XGATE Software Trigger 0 address in first field is from xgate linear 64k point of view. The VMA MUST BE CHANGED IN THE COPYOPTS PORTION OF THE MAKEFILE to reflect how xgate see's this section
-		{XGATE_ERROR_HANDLER, 0x3A},  // Channel 3A - Periodic Interrupt Timer 3
-		{(unsigned short)xgateDelayCounter, 0x3B},  // Channel 3B - Periodic Interrupt Timer 2
-		{(unsigned short)xgatePITTurnOff, 0x3C},  // Channel 3C - Periodic Interrupt Timer 1
-		{(unsigned short)xgatePITTurnOn, 0x3D},  // Channel 3D - Periodic Interrupt Timer 0
+		{(unsigned short)XGATE_ERROR_HANDLER, 0x3A},  // Channel 3A - Periodic Interrupt Timer 3
+		{(unsigned short)XGATE_ERROR_HANDLER, 0x3B},  // Channel 3B - Periodic Interrupt Timer 2
+		{(unsigned short)xgateMetronome, 0x3C},  // Channel 3C - Periodic Interrupt Timer 1
+		{(unsigned short)xgatePITBangLoop, 0x3D},  // Channel 3D - Periodic Interrupt Timer 0
 		{XGATE_ERROR_HANDLER, 0x3E},  // Reserved
 		{XGATE_ERROR_HANDLER, 0x3F},  // Channel 3F - Autonomous Periodical interrupt API
 		{XGATE_ERROR_HANDLER, 0x40},  // Channel 40 - Low Voltage interrupt LVI
