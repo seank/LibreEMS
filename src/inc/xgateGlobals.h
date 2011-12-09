@@ -38,3 +38,30 @@
  * Because we need to call the assembly flash burning function from C code an
  * extern function declaration is required to allow successful compilation.
  */
+
+
+#define XGSCHEDULE()	XGSWT = 0x0101;
+#define DELAYTESTPW		2500 /* two miliseconds in .8us ticks */
+
+// Use this block to schedule an xgate event
+typedef struct {
+	unsigned short channelID;
+	unsigned long delay;
+	unsigned short runtimeHigh;
+	unsigned short runtime;
+	unsigned short inputTS;
+} XGOutputEvent;
+
+EXTERN XGOutputEvent *XGOutputEvents;
+EXTERN unsigned short *xgsInStamp;
+EXTERN unsigned short *xgsEventsToSch;
+
+EXTERN void incrementalTests();
+EXTERN void firstLastDiffTest();
+EXTERN void singleTest();
+EXTERN void scheduleLatencyTest();
+EXTERN void delayShiftDiffTest();
+EXTERN void competingInterruptsTest();
+
+//for debug
+EXTERN void eventFlags1();
