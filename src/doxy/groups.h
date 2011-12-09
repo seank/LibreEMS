@@ -23,7 +23,7 @@
  * Thank you for choosing FreeEMS to run your engine!
  */
 
-/** @file groups.h
+/** @file
  *
  * @ingroup doxygenDocFiles
  * @brief Doxygen module groups definition
@@ -126,4 +126,9 @@
  *
  * These files exist purely to contain documentation for extraction
  * by Doxygen. Using this grouping keeps them off the file list.
+ */
+
+/** @defgroup xgateFiles XGATE Related Files
+ *
+ * Files related to XGATE co-processor functionality.
  */

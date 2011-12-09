@@ -24,7 +24,8 @@
  */
 
 
-/**	@file Listener.c
+/** @file
+ *
  * @ingroup interruptHandlers
  * @ingroup enginePositionRPMDecoders
  *
@@ -53,7 +54,6 @@
 void decoderInitPreliminary(){} // This decoder works with the defaults
 void perDecoderReset(){} // Nothing special to reset for this code
 
-const unsigned char decoderName[] = "Listener";
 const unsigned short eventAngles[] = {0};           // no events really...
 const unsigned char eventValidForCrankSync[] = {0}; // no events really...
 
@@ -62,8 +62,10 @@ const unsigned char eventValidForCrankSync[] = {0}; // no events really...
 void PrimaryRPMISR(){
 	/* Clear the interrupt flag for this input compare channel */
 	TFLG = 0x01;
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT0, PORTB);
 	/* Reset the clock for reading timeout */
 	Clocks.timeoutADCreadingClock = 0;
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT0, PORTB);
 }
 
 
@@ -71,6 +73,8 @@ void PrimaryRPMISR(){
 void SecondaryRPMISR(){
 	/* Clear the interrupt flag for this input compare channel */
 	TFLG = 0x02;
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT1, PORTB);
 	/* Reset the clock for reading timeout */
 	Clocks.timeoutADCreadingClock = 0;
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT1, PORTB);
 }

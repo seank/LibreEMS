@@ -1,37 +1,33 @@
 // See README.txt in custom dir and this dir
 
 void populateCustomDatalog(){
-//	CoreVars->DRPM = Counters.; currently in use as at wed nzst 3:10pm 16 march 2011
-	CoreVars->DDRPM = injectorMainPulseWidthsMath[1];
-	CoreVars->DTPS = postReferenceEventDelays[1];
-	CoreVars->DMAP = outputEventInputEventNumbers[1];
+//	CoreVars->DRPM = Counters.; currently in use logging *ticksPerDegree as at wed nzst 3:10pm 16 march 2011 see line ~98 of derivedVarsGenerator.c and line ~277 of coreVarsGenerator.c
 
-	// Use these any way you like:
-	DerivedVars->zsp1 = Clocks.realTimeClockMain;
-	DerivedVars->zsp2 = Clocks.realTimeClockMillis;
-	DerivedVars->zsp3++;
-	DerivedVars->zsp4 = (decoderFlags << 8) + coreStatusA;
-	DerivedVars->zsp5 = Counters.calculationsPerformed;
-	DerivedVars->zsp6 = injectorMainPulseWidthsMath[0];
-	DerivedVars->zsp7 = postReferenceEventDelays[0];
-	DerivedVars->zsp8 = outputEventInputEventNumbers[0];
-	DerivedVars->zsp9 = currentEvent;
-	DerivedVars->zsp10 = syncLostOnThisEvent;
-	DerivedVars->zsp11 = syncCaughtOnThisEvent;
-	DerivedVars->zsp12 = Counters.primaryTeethSeen;
-	DerivedVars->zsp13 = Counters.secondaryTeethSeen;
-	DerivedVars->zsp14 = *ticksPerDegree;
-	DerivedVars->zsp15 = Counters.decoderSyncLosses;
-//	DerivedVars->zsp16 = Counters.
-//	DerivedVars->zsp17 = Counters.
-	DerivedVars->zsp18 = Counters.decoderSyncCorrections;
-	DerivedVars->zsp19 = syncLostWithThisID;
-//	DerivedVars->zsp18 = Counters.DwellStretchedToSchedule;
-//	DerivedVars->zsp19 = Counters.TooFarToSchedule;
+//	// Currently spare:
+//	CoreVars->DDRPM = outputEventPulseWidthsMath[2];
+//	CoreVars->DTPS = outputEventDelayFinalPeriod[2];
+//	CoreVars->DMAP = outputEventInputEventNumbers[2];
 
-	/* UART/serial specific counters */
-//	DerivedVars->zsp? = Counters.serialEscapePairMismatches + Counters.serialStartsInsideAPacket + Counters.serialPacketsOverLength + Counters.serialNoiseErrors + Counters.serialOverrunErrors + Counters.serialFramingErrors + Counters.serialParityErrors;
-	/* Generic com counters */
-//	DerivedVars->zsp? = Counters.commsChecksumMismatches + Counters.commsPacketsUnderMinLength + Counters.commsDebugMessagesNotSent + Counters.commsErrorMessagesNotSent;
+	// Log scheduling data by default for the time being.
+	CoreVars->DTPS = Counters.normalSchedule;
+	CoreVars->DMAP = Counters.timerStretchedToSchedule;
 
+	KeyUserDebugs.zsp3 = Counters.pinScheduledToGoHigh;
+	KeyUserDebugs.zsp4 = Counters.pinScheduledAlready;
+	KeyUserDebugs.zsp5 = Counters.pinScheduledToSelfSchedule;
+	KeyUserDebugs.zsp6 = Counters.pinScheduledAgainToStayOn;
+	KeyUserDebugs.zsp7 = Counters.pinScheduledToToggleError;
+	KeyUserDebugs.zsp8 = Counters.pinScheduledToDoNothing;
+	KeyUserDebugs.zsp9 = Counters.pinScheduledFromCold;
+	KeyUserDebugs.zsp10 = Counters.pinScheduledWithTimerExtension;
+
+//	// First two schedules contents:
+//	KeyUserDebugs.zsp3 = outputEventPulseWidthsMath[0];
+//	KeyUserDebugs.zsp4 = outputEventDelayFinalPeriod[0];
+//	KeyUserDebugs.zsp5 = outputEventInputEventNumbers[0];
+//	KeyUserDebugs.zsp6 = outputEventPulseWidthsMath[1];
+//	KeyUserDebugs.zsp7 = outputEventDelayFinalPeriod[1];
+//	KeyUserDebugs.zsp8 = outputEventInputEventNumbers[1];
+//	KeyUserDebugs.zsp9 = 0;
+//	KeyUserDebugs.zsp10 = 0;
 }

@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010, 2011 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/**	@file FuelTables.c
+/** @file
+ *
  * @ingroup dataInitialisers
  *
  * @brief Fuel VE and Lambda tables
@@ -35,19 +36,24 @@
  * @note At least one Doxygen bug prevents the data structures below being show
  *       correctly in the documentation for this file. Please see the source
  *       code itself for more information.
- *
- * @author Fred Cooke
  */
 
 
 #include "../inc/freeEMS.h"
 
 
-const volatile mainTable VETableMainFlash FUELTABLESD = {
-	MAINTABLE_RPM_LENGTH,		/* VETableMain.RPMLength */
-	MAINTABLE_LOAD_LENGTH,		/* VETableMain.LoadLength */
-	/* VETableMain.RPM */
-	{
+#ifndef VETableMainFlashV
+#define VETableMainFlashV VETableMainFlash
+#define VETableSecondaryFlashV VETableSecondaryFlash
+#define VETableTertiaryFlashV VETableTertiaryFlash
+#define LambdaTableFlashV LambdaTableFlash
+#endif
+
+
+const volatile mainTable VETableMainFlashV FUELTABLESD = {
+	RPMLength:  MAINTABLE_RPM_LENGTH,
+	LoadLength: MAINTABLE_LOAD_LENGTH,
+	RPM: {
 #ifdef TRUCK
 #include "../data/tables/axis/FredsTruck-RPM.h"
 #elif HOTEL
@@ -64,8 +70,7 @@ const volatile mainTable VETableMainFlash FUELTABLESD = {
 #include "../data/tables/axis/FredsTruck-RPM.h"
 #endif
 	},
-	/* VETableMain.Load */
-	{
+	Load: {
 #ifdef TRUCK
 #include "../data/tables/axis/FredsTruck-Load.h"
 #elif HOTEL
@@ -82,8 +87,7 @@ const volatile mainTable VETableMainFlash FUELTABLESD = {
 #include "../data/tables/axis/FredsTruck-Load.h"
 #endif
 	},
-	/* VETableMain.Table */
-	{
+	Table: {
 #ifdef TRUCK
 #include "../data/tables/ve/FredsTruckVE.h"
 #elif HOTEL
@@ -97,53 +101,46 @@ const volatile mainTable VETableMainFlash FUELTABLESD = {
 #elif JOSHBROWN
 #include "../data/tables/ve/flat60Percent.h"
 #else
-#include "../data/tables/ve/flat80Percent.h"
+#include "../data/tables/ve/flat60Percent.h"
 #endif
 	}
 };
 
 
-const volatile mainTable VETableSecondaryFlash FUELTABLESD = {
-	MAINTABLE_RPM_LENGTH,		/* VETableSecondary.RPMLength */
-	MAINTABLE_LOAD_LENGTH,		/* VETableSecondary.LoadLength */
-	/* VETableSecondary.RPM */
-	{
+const volatile mainTable VETableSecondaryFlashV FUELTABLESD = {
+	RPMLength:  MAINTABLE_RPM_LENGTH,
+	LoadLength: MAINTABLE_LOAD_LENGTH,
+	RPM:{
 		#include "../data/tables/axis/mainTable-RPM.h"
 	},
-	/* VETableSecondary.Load */
-	{
+	Load:{
 		#include "../data/tables/axis/mainTable-Load.h"
 	},
-	/* VETableSecondary.Table */
-	{
+	Table:{
 		#include "../data/tables/ve/flat80Percent.h"
 	}
 };
 
 
-const volatile mainTable VETableTertiaryFlash FUELTABLESD = {
-	MAINTABLE_RPM_LENGTH,		/* VETableTertiary.RPMLength */
-	MAINTABLE_LOAD_LENGTH,		/* VETableTertiary.LoadLength */
-	/* VETableTertiary.RPM */
-	{
+const volatile mainTable VETableTertiaryFlashV FUELTABLESD = {
+	RPMLength:  MAINTABLE_RPM_LENGTH,
+	LoadLength: MAINTABLE_LOAD_LENGTH,
+	RPM:{
 		#include "../data/tables/axis/mainTable-RPM.h"
 	},
-	/* VETableTertiary.Load */
-	{
+	Load:{
 		#include "../data/tables/axis/mainTable-Load.h"
 	},
-	/* VETableTertiary.Table */
-	{
+	Table:{
 		#include "../data/tables/ve/flat80Percent.h"
 	}
 };
 
 
-const volatile mainTable LambdaTableFlash FUELTABLESD = {
-	MAINTABLE_RPM_LENGTH,		/* LambdaTable.RPMLength */
-	MAINTABLE_LOAD_LENGTH,		/* LambdaTable.LoadLength */
-	/* LambdaTable.RPM */
-	{
+const volatile mainTable LambdaTableFlashV FUELTABLESD = {
+	RPMLength:  MAINTABLE_RPM_LENGTH,
+	LoadLength: MAINTABLE_LOAD_LENGTH,
+	RPM: {
 #ifdef TRUCK
 #include "../data/tables/axis/FredsTruck-RPM.h"
 #elif HOTEL
@@ -160,8 +157,7 @@ const volatile mainTable LambdaTableFlash FUELTABLESD = {
 #include "../data/tables/axis/FredsTruck-RPM.h"
 #endif
 	},
-	/* LambdaTable.Load */
-	{
+	Load: {
 #ifdef TRUCK
 #include "../data/tables/axis/FredsTruck-Load.h"
 #elif HOTEL
@@ -178,8 +174,7 @@ const volatile mainTable LambdaTableFlash FUELTABLESD = {
 #include "../data/tables/axis/FredsTruck-Load.h"
 #endif
 	},
-	/* LambdaTable.Table */
-	{
+	Table: {
 #ifdef TRUCK
 #include "../data/tables/lambda/FredsTruckLambda.h"
 #elif HOTEL
@@ -193,7 +188,7 @@ const volatile mainTable LambdaTableFlash FUELTABLESD = {
 #elif JOSHBROWN
 #include "../data/tables/lambda/FredsTruckLambda.h" // flat stoich
 #else
-#include "../data/tables/lambda/FredsTruckLambda.h" // flat stoich
+#include "../data/tables/lambda/SeansLT1Lambda.h" // Reasonable starting point
 #endif
 	}
 };

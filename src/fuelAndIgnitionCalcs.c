@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010, 2011 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/**	@file fuelAndIgnitionCalcs.c
+/** @file
+ *
  * @ingroup measurementsAndCalculations
  *
  * @brief Fuel and ignition calculations.
@@ -127,8 +128,13 @@ void calculateFuelAndIgnition(){
 //		channelPW = safeScale(DerivedVars->EffectivePW, TablesB.SmallTablesB.perCylinderFuelTrims[channel]);
 //
 //		/* Add on the IDT to get the final value and put it into the array */
-//		//injectorMainPulseWidthsMath[channel] = safeAdd(channelPW, DerivedVars->IDT); do not re-enable this without fixing it properly...
+//		//outputEventPulseWidthsMath[channel] = safeAdd(channelPW, DerivedVars->IDT); do not re-enable this without fixing it properly...
 //	}
+
+	// Make sure we don't have a PW if PW is supposed to be zero, ie, zero the IDT as well.
+	if(!(DerivedVars->EffectivePW)){
+		DerivedVars->IDT = 0; // This also makes fuel and electrical duty work consistently in external apps.
+	}
 
 	/* Reference PW for comparisons etc */
 	DerivedVars->RefPW = safeAdd(DerivedVars->EffectivePW, DerivedVars->IDT);
@@ -190,9 +196,10 @@ void calculateFuelAndIgnition(){
 // make this number larger to advance the base timing, make it smaller to retard it.
 // IE, if you have 10btdc in your table, flat, and a timing light shows 5btdc on the engine, then increase this number by 5 degrees.
 #define Mitsi4and1OffsetOnTruck ( 90.00 * oneDegree) // FE-DOHC, CAS approximately centre
-#define HyundaiHackOffset       ( 30.00 * oneDegree) // Distributor fully retarded
+#define HyundaiHackOffset       ( 20.00 * oneDegree) // Distributor fully retarded
 #define SilverTop4ageOffset     (128.52 * oneDegree) /// Stock silver-top using G? for RPM2 and NE for RPM1, CAS approximately centre, @todo TODO find values for extremes of dizzy placement
 #define BrownVolvoOffset        (570.00 * oneDegree) // Stockish Volvo B230FT with DSM/Miata CAS + 24+1 disk.
+#define SnotRocketOffset        (482.00 * oneDegree) // Volvo B21A with DSM/Miata CAS + 24+1 disk and LS1 coils.
 
 // Fred's Ford Courier http://forum.diyefi.org/viewtopic.php?f=55&t=1069
 #ifdef TRUCK
@@ -329,6 +336,26 @@ outputEventInputEventNumbers[5] = 18;
 outputEventInputEventNumbers[6] = 0;
 outputEventInputEventNumbers[7] = 6;
 
+
+// sim's 2.1 Volvo, carbed with Mitsu CAS with 24and1 disk and LS1 coils.
+// http://forum.diyefi.org/viewtopic.php?f=3&t=1263
+#elif SNOTROCKET
+// Firing order: 1-3-4-2 set up in loom
+// Ignition, sequential, COP:
+anglesOfTDC[0] =   0 * oneDegree; // 1
+anglesOfTDC[1] = 180 * oneDegree; // 2
+anglesOfTDC[2] = 360 * oneDegree; // 3
+anglesOfTDC[3] = 540 * oneDegree; // 4
+outputEventPinNumbers[0] = 0;
+outputEventPinNumbers[1] = 1;
+outputEventPinNumbers[2] = 2;
+outputEventPinNumbers[3] = 3;
+#define cliConfigredNumberOfIgnitionEvents 4
+#define numberOfInjectionEvents 0
+#define cliConfiguredOffset SnotRocketOffset
+#define firstInjectionEvent 1
+#define numberOfInjectionsPerEngineCycle 1 // but requires to know how big a cycle is, 1/4 1, 1/2, etc
+
 // Sadly, FreeEMS car numero uno is gone, RIP Volvo! http://forum.diyefi.org/viewtopic.php?f=55&t=1068
 #else
 //anglesOfTDC[?] = ? * oneDegree;
@@ -343,16 +370,17 @@ outputEventInputEventNumbers[7] = 6;
 #endif
 
 
+
 /* "Calculate" the nominal total pulse width before per channel corrections */
 masterPulseWidth = safeAdd((DerivedVars->EffectivePW / numberOfInjectionsPerEngineCycle), DerivedVars->IDT); // div by number of injections per cycle, configured above
 // but requires to know how big a cycle is, 1/4 1, 1/2, etc
 
 
-	// Populate fuel channels with values if required.
+	// Populate configured fuel channels with values.
 	int injectionEvent;
 	for(injectionEvent = firstInjectionEvent;injectionEvent < (firstInjectionEvent + numberOfInjectionEvents);injectionEvent++){
-		postReferenceEventDelays[injectionEvent] = decoderMaxCodeTime;
-		injectorMainPulseWidthsMath[injectionEvent] = masterPulseWidth;
+		outputEventDelayFinalPeriod[injectionEvent] = decoderMaxCodeTime;
+		outputEventPulseWidthsMath[injectionEvent] = masterPulseWidth;
 	}
 
 	decoderEngineOffset = cliConfiguredOffset;
@@ -502,21 +530,21 @@ masterPulseWidth = safeAdd((DerivedVars->EffectivePW / numberOfInjectionsPerEngi
 					 * just mean a single cycle of scheduling is slightly too retarded for a single
 					 * event around change of tooth time which could easily be acceptable.
 					 */
-					if((mappedEvent == eventBeforeCurrent) && ((unsigned short)potentialDelay > postReferenceEventDelays[ignitionEvent])){
+					if((mappedEvent == eventBeforeCurrent) && (potentialDelay >  outputEventDelayTotalPeriod[ignitionEvent])){
 						skipEventFlags |= (1UL << ignitionEvent);
 					}
 
 					outputEventInputEventNumbers[ignitionEvent] = mappedEvent;
-
-					postReferenceEventDelays[ignitionEvent] = (unsigned short)potentialDelay;
-					injectorMainPulseWidthsMath[ignitionEvent] = DerivedVars->Dwell;
+					outputEventDelayFinalPeriod[ignitionEvent] = (unsigned short)potentialDelay;
+					outputEventPulseWidthsMath[ignitionEvent] = DerivedVars->Dwell;
 					outputEventExtendNumberOfRepeats[ignitionEvent] = 0;
 					ATOMIC_END(); /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
+					outputEventDelayTotalPeriod[ignitionEvent] = potentialDelay; // No async accesses occur
 				}else{
 					ATOMIC_START(); /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
 
 					// See comment in above block
-					if((mappedEvent == eventBeforeCurrent) && ((unsigned short)potentialDelay > postReferenceEventDelays[ignitionEvent])){
+					if((mappedEvent == eventBeforeCurrent) && (potentialDelay > outputEventDelayTotalPeriod[ignitionEvent])){
 						skipEventFlags |= (1UL << ignitionEvent);
 					}
 
@@ -524,15 +552,14 @@ masterPulseWidth = safeAdd((DerivedVars->EffectivePW / numberOfInjectionsPerEngi
 					unsigned char numberOfRepeats = potentialDelay / SHORTMAX;
 					unsigned short finalPeriod = potentialDelay % SHORTMAX;
 					if(finalPeriod > decoderMaxCodeTime){
-// refactor to use this for repeats as well... wasting memory right now:						postReferenceEventDelays[ignitionEvent] = (unsigned short)potentialDelay;
-						outputEventExtendFinalPeriod[ignitionEvent] = finalPeriod;
+						outputEventDelayFinalPeriod[ignitionEvent] = finalPeriod;
 						outputEventExtendRepeatPeriod[ignitionEvent] = SHORTMAX;
 						outputEventExtendNumberOfRepeats[ignitionEvent] = numberOfRepeats;
 					}else{
 						unsigned short shortagePerRepeat = (decoderMaxCodeTime - finalPeriod) / numberOfRepeats;
 						unsigned short repeatPeriod = (SHORTMAX - 1) - shortagePerRepeat;
 						finalPeriod += (shortagePerRepeat + 1) * numberOfRepeats;
-						outputEventExtendFinalPeriod[ignitionEvent] = finalPeriod;
+						outputEventDelayFinalPeriod[ignitionEvent] = finalPeriod;
 						outputEventExtendRepeatPeriod[ignitionEvent] = repeatPeriod;
 						outputEventExtendNumberOfRepeats[ignitionEvent] = numberOfRepeats;
 					}
@@ -541,29 +568,11 @@ masterPulseWidth = safeAdd((DerivedVars->EffectivePW / numberOfInjectionsPerEngi
 					// if so, set repeat to max and final to remainder and number of iterations to divs
 					// if not, decrease repeat size in some optimal way and provide new left over to work with that, and same number of divs/its
 					// Always use dwell as requested
-					injectorMainPulseWidthsMath[ignitionEvent] = DerivedVars->Dwell;
+					outputEventPulseWidthsMath[ignitionEvent] = DerivedVars->Dwell;
 					ATOMIC_END(); /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
+					outputEventDelayTotalPeriod[ignitionEvent] = potentialDelay; // No async accesses occur
 					Counters.timerStretchedToSchedule++;
 				}
-//				}else if // do change starting here, already long, just add config first, and setup sean's to use it, and everyone else's to not use it, and we're good.
-//				(((DerivedVars->Dwell + potentialDelay) - SHORTMAX) <= SHORTMAX){ // Max distance from nearest event to spark is two 16 bit timer periods
-//					/// @todo TODO For those that require exact dwell, a flag and mask can be inserted in this condition with an && to prevent scheduling and just not fire. Necessary for coils/ignitors that fire when excess dwell is reached. Thanks SeanK for mentioning this! :-)
-//					unsigned short finalDwell = (unsigned short)((DerivedVars->Dwell + potentialDelay) - SHORTMAX);
-//					ATOMIC_START(); /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
-//					outputEventInputEventNumbers[ignitionEvent] = mappedEvent;
-//					postReferenceEventDelays[ignitionEvent] = SHORTMAX;
-//					injectorMainPulseWidthsMath[ignitionEvent] = finalDwell;
-//					outputEventExtendNumberOfRepeats[ignitionEvent] = 0;
-//					ATOMIC_END(); /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
-//					Counters.DwellStretchedToSchedule++;
-//				}else{ // type of scheduling config tested here too.
-//					/* ELSE leave unscheduled rather than advance too much
-//					 * This indicates that the output event is too far from the input event
-//					 * This will only occur on input patterns with too few teeth, or bad alignment
-//					 */
-//					outputEventInputEventNumbers[ignitionEvent] = ONES; // unschedule this pin... lockout not required because the operation is naturally atomic
-//					Counters.TooFarToSchedule++;
-//				}
 				break;
 			}else{
 				if(lastGoodEvent > 0){

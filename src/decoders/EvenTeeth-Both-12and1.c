@@ -24,17 +24,18 @@
  */
 
 
-/**	@file EvenTeeth-Both-12and1.c
+/** @file
+ *
  * @ingroup interruptHandlers
  * @ingroup enginePositionRPMDecoders
  *
  * @brief For evenly spaced teeth on the camshaft with a single second input.
  *
- * Currently hard coded to read 24 evenly spaced teeth on the cam shaft which
+ * This is suitable for engines with 24 evenly spaced teeth on the cam shaft which
  * is equivalent to 12 on the crank shaft. Sync is provided by the second input
  * allowing a sequential and/or COP/CNP setup to be used.
  *
- * VR edition with only one edge used!
+ * @see EvenTeeth-Both-Nand1.c
  *
  * @author Fred Cooke
  */
@@ -50,162 +51,8 @@
 #include "../inc/interrupts.h"
 #include "../inc/decoderInterface.h"
 
-void decoderInitPreliminary(){} // This decoder works with the defaults
-void perDecoderReset(){} // Nothing special to reset for this code
-
-const unsigned char decoderName[] = "EvenTeethOnCam-Nand1";
 const unsigned short eventAngles[] = {(0 * oneDegree), (30 * oneDegree), (60 * oneDegree), (90 * oneDegree), (120 * oneDegree), (150 * oneDegree), (180 * oneDegree), (210 * oneDegree), (240 * oneDegree), (270 * oneDegree), (300 * oneDegree), (330 * oneDegree), (360 * oneDegree), (390 * oneDegree), (420 * oneDegree), (450 * oneDegree), (480 * oneDegree), (510 * oneDegree), (540 * oneDegree), (570 * oneDegree), (600 * oneDegree), (630 * oneDegree), (660 * oneDegree), (690 * oneDegree)};
 const unsigned char eventValidForCrankSync[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}; // Unused for now, but correct anyway.
 
-
-void PrimaryRPMISR(){
-	/* Clear the interrupt flag for this input compare channel */
-	TFLG = 0x01;
-
-	/* Save all relevant available data here */
-	unsigned short codeStartTimeStamp = TCNT;		/* Save the current timer count */
-	unsigned short edgeTimeStamp = TC0;				/* Save the edge time stamp */
-	unsigned char PTITCurrentState = PTIT;			/* Save the values on port T regardless of the state of DDRT */
-
-	// Prevent main from clearing values before sync is obtained!
-	Clocks.timeoutADCreadingClock = 0;
-	// TODO integrate this into all decoders, and integrate with the fuel pump stuff too, this can be a flag that says "we've received an RPM signal of SOME sort recently"
-
-	if(!(PTITCurrentState & 0x01)){
-		/* Calculate the latency in ticks */
-		ISRLatencyVars.primaryInputLatency = codeStartTimeStamp - edgeTimeStamp;
-
-		Counters.primaryTeethSeen++;
-
-		LongTime timeStamp;
-		/* Install the low word */
-		timeStamp.timeShorts[1] = edgeTimeStamp;
-		/* Find out what our timer value means and put it in the high word */
-		if(TFLGOF && !(edgeTimeStamp & 0x8000)){ /* see 10.3.5 paragraph 4 of 68hc11 ref manual for details */
-			timeStamp.timeShorts[0] = timerExtensionClock + 1;
-		}else{
-			timeStamp.timeShorts[0] = timerExtensionClock;
-		}
-		unsigned long thisEventTimeStamp = timeStamp.timeLong;
-
-		unsigned long thisInterEventPeriod = 0;
-		unsigned short thisTicksPerDegree = 0;
-		if(decoderFlags & LAST_TIMESTAMP_VALID){
-			thisInterEventPeriod = thisEventTimeStamp - lastPrimaryEventTimeStamp;
-			thisTicksPerDegree = (unsigned short)((ticks_per_degree_multiplier * thisInterEventPeriod) / (30 * oneDegree)); // with current scale range for 60/12000rpm is largest ticks per degree = 3472, smallest = 17 with largish error
-		}
-
-		if(decoderFlags & CAM_SYNC){
-			currentEvent++;
-			if(currentEvent == numberOfRealEvents){
-				resetToNonRunningState(1);
-				RuntimeVars.primaryInputLeadingRuntime = TCNT - codeStartTimeStamp;
-				return;
-			}// Can never be greater than without a code error or genuine noise issue, so give it a miss as we can not guarantee where we are now.
-
-			if(decoderFlags & LAST_PERIOD_VALID){
-				unsigned short ratioBetweenThisAndLast = (unsigned short)(((unsigned long)lastPrimaryTicksPerDegree * 1000) / thisTicksPerDegree);
-				if(ratioBetweenThisAndLast > 1500){
-					resetToNonRunningState(2);
-					return;
-				}else if(ratioBetweenThisAndLast < 667){ // TODO hard coded tolerance, needs tweaking to be reliable, BEFORE I drive mine in boost, needs making configurable/generic too...
-					resetToNonRunningState(3);
-					return;
-				}else{
-					if(PTITCurrentState & 0x01){
-						// TODO Calculate RPM from last primaryLeadingEdgeTimeStamp
-					}else{
-						// TODO Calculate RPM from last primaryTrailingEdgeTimeStamp
-					}
-				}
-			}/*else*/ if(decoderFlags & LAST_TIMESTAMP_VALID){ // TODO temp for testing just do rpm this way, fill above out later.
-				*ticksPerDegreeRecord = thisTicksPerDegree;
-				sampleEachADC(ADCArrays);
-				Counters.syncedADCreadings++;
-				*mathSampleTimeStampRecord = TCNT;
-
-				// Set flag to say calc required
-				coreStatusA |= CALC_FUEL_IGN;
-
-				// Reset the clock for reading timeout
-				Clocks.timeoutADCreadingClock = 0;
-			}
-
-			// for now, sample always and see what we get result wise...
-//			if((currentEvent % 6) == 0){
-//				sampleEachADC(ADCArrays);
-//				Counters.syncedADCreadings++;
-//				*mathSampleTimeStampRecord = TCNT;
-//
-//				// Set flag to say calc required
-//				coreStatusA |= CALC_FUEL_IGN;
-//
-//				// Reset the clock for reading timeout
-//				Clocks.timeoutADCreadingClock = 0;
-//			}
-
-			SCHEDULE_ECT_OUTPUTS();
-		}
-
-		// do these always at first, and use them with a single 30 degree angle for the first cut
-		if(decoderFlags & LAST_TIMESTAMP_VALID){
-			lastPrimaryTicksPerDegree = thisTicksPerDegree;
-			decoderFlags |= LAST_PERIOD_VALID;
-		}
-		// Always
-		lastPrimaryEventTimeStamp = thisEventTimeStamp;
-		decoderFlags |= LAST_TIMESTAMP_VALID;
-
-		RuntimeVars.primaryInputLeadingRuntime = TCNT - codeStartTimeStamp;
-	}
-}
-
-
-void SecondaryRPMISR(){
-	/* Clear the interrupt flag for this input compare channel */
-	TFLG = 0x02;
-
-	/* Save all relevant available data here */
-	unsigned short codeStartTimeStamp = TCNT;		/* Save the current timer count */
-	unsigned short edgeTimeStamp = TC1;				/* Save the timestamp */
-	unsigned char PTITCurrentState = PTIT;			/* Save the values on port T regardless of the state of DDRT */
-
-	if(!(PTITCurrentState & 0x02)){ // TODO Remove this once the configuration can be adjusted to only fire on one edge!
-		/* Calculate the latency in ticks */
-		ISRLatencyVars.secondaryInputLatency = codeStartTimeStamp - edgeTimeStamp;
-
-		// Only count one edge, the other is irrelevant, and this comment will be two once the above todo is completed.
-		Counters.secondaryTeethSeen++;
-
-		LongTime timeStamp;
-		/* Install the low word */
-		timeStamp.timeShorts[1] = edgeTimeStamp;
-		/* Find out what our timer value means and put it in the high word */
-		if(TFLGOF && !(edgeTimeStamp & 0x8000)){ /* see 10.3.5 paragraph 4 of 68hc11 ref manual for details */
-			timeStamp.timeShorts[0] = timerExtensionClock + 1;
-		}else{
-			timeStamp.timeShorts[0] = timerExtensionClock;
-		}
-		unsigned long thisEventTimeStamp = timeStamp.timeLong;
-
-		unsigned long thisInterEventPeriod = 0;
-		if(decoderFlags & LAST_TIMESTAMP_VALID){
-			thisInterEventPeriod = thisEventTimeStamp - lastSecondaryEventTimeStamp;
-		}
-
-		// This sets currentEvent to 255 such that when the primary ISR runs it is rolled over to zero!
-		if(decoderFlags & CAM_SYNC){
-			if(currentEvent != (numberOfRealEvents - 1)){
-				// Record that we had to reset position...
-				Counters.decoderSyncCorrections++;
-				syncLostOnThisEvent = currentEvent;				// Should never happen, or should be caught by timing checks below
-			} // ELSE do nothing, and be happy :-)
-		}else{	// If not synced, sync, as this is our reference point.
-			decoderFlags |= CAM_SYNC;
-			syncCaughtOnThisEvent = numberOfRealEvents; // Always caught here!
-		}
-		currentEvent = 0xFF; // TODO reset always, and catch noise induced errors below, this behaviour (now some lines above) may be bad/not fussy enough, or could be good, depending upon determinate nature of the inter event timing between primary and secondary, or not, perhaps move "lose sync or correct sync" as a configuration variable
-
-		RuntimeVars.secondaryInputLeadingRuntime = TCNT - codeStartTimeStamp;
-	}
-}
+// Bring in the actual code.
+#include "code/EvenTeeth-Both-Xand1.c"

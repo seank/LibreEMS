@@ -2,24 +2,22 @@ FreeEMS Release Procedure:
 
   1) Change Log - doxygen (git log and git diff lastTagName..HEAD)
   2) Release Notes - doxygen (ditto)
-  3) globalConstants.c/globalConstants.h: firmwareVersion
-  4) optional: globalConstants.c/globalConstants.h: interfaceVersionAndType (only if changed)
-  5) Makefile: VERSION and PREVIOUSVERSION
-  6) Doxyfile: PROJECT_NUMBER
-  7) git commit;git push;git push alternate
-  8) cd src;make release
-  9) generate .pdfs from .od*s (integrate into release target before 0.1.2)
- 10) verify everything manually from above list
- 11) update above naming and versions to snapshot variants for next dev cycle
- 12) git checkout release; git merge <tagname>; git checkout master; git push; git push <tagname>; repeat tag push for other remotes...
- 13) scp -r releaseDir raptor: then mv files to downloads and docs directories
- 14) update facebook, diary thread, releases thread, sprint thread, start new sprint thread
+  3) optional: globalConstants.c/globalConstants.h: interfaceVersionAndType (only if changed)
+  4) git commit .;bin/pushtested
+  5) cd src;make release;make package
+  6) generate and upload all documentation (integrate into release target before 0.2.0?)
+  7) verify everything manually from above list
+  8) commit reset of changelogs and release notes back to blank and tag as next.version-SNAPSHOT then push tags and commits
+  9) update public release branches with git push --force reponame releaseHash:release
+ 10) scp -r releaseDir raptor: then mv files to downloads and docs directories
+ 11) update facebook, diary thread, releases thread, sprint thread, start new sprint thread
+ 12) Obsolete the previous version and mark this version released in the tracker
 
 General Pre-Release Checklist:
 
-  1) all goals for this release have been achieved
+  1) All issues with target set to this release are both resolved, independently tested and closed.
   2) cd src;make clean all - builds cleanly, on lin/win/mac, if makefile/toolchain has changed
-  3) bench and/or on-vehicle testing of all decoder variants - no regressions, new stuff works
+  3) All procedures in release.pre.tests.txt can be run and pass their tests
   4) Doxygen generates cleanly with some version of Doxygen
   5) Serial documentation up to date?
   6) Interface data map up to date?
@@ -27,8 +25,3 @@ General Pre-Release Checklist:
   8) Review code changes and ensure matching docs are up to date
   9) All new functions and files are documented correctly
  10) Docs in scripts, README, Makefile, etc are up to date
-
-Old Stuff:
-
-update goals,firmware,hardware threads as appropriate linking sourceforge,video,pics
-

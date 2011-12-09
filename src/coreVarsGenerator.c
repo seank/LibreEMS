@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010, 2011 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/**	@file coreVarsGenerator.c
+/** @file
+ *
  * @ingroup measurementsAndCalculations
  *
  * @brief Generate and average the core variables.
@@ -63,7 +64,7 @@ void generateCoreVars(){
 	/* Pre calculate things used in multiple places */
 
 	/* Bound the TPS ADC reading and shift it to start at zero */
-	unsigned short unboundedTPSADC = ADCArrays->TPS;
+	unsigned short unboundedTPSADC = ADCBuffers->TPS;
 	if(unboundedTPSADC > fixedConfigs2.sensorRanges.TPSMaximumADC){
 		boundedTPSADC = TPSADCRange;
 	}else if(unboundedTPSADC > fixedConfigs2.sensorRanges.TPSMinimumADC){ // force secondary config to be used... TODO remove this
@@ -76,7 +77,12 @@ void generateCoreVars(){
 	/* Get BRV from ADC using transfer variables (all installations need this) */
 	unsigned short localBRV;
 	if(TRUE){ /* If BRV connected  */
-		localBRV = (((unsigned long)ADCArrays->BRV * fixedConfigs2.sensorRanges.BRVRange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.BRVMinimum;
+/// @todo TODO WARNING: HACK!!! Remove ASAP!!! IE, As Soon As Preston (get's a new cpu on the TA card!)
+#ifdef HOTEL
+		localBRV = (((unsigned long)ADCBuffers->MAT * fixedConfigs2.sensorRanges.BRVRange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.BRVMinimum;
+#else
+		localBRV = (((unsigned long)ADCBuffers->BRV * fixedConfigs2.sensorRanges.BRVRange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.BRVMinimum;
+#endif
 	}else if(FALSE){ /* Configured to be fixed value */
 		/* Get the preferred BRV figure from configuration settings */
 		localBRV = fixedConfigs2.sensorPresets.presetBRV;
@@ -91,10 +97,10 @@ void generateCoreVars(){
 	unsigned short localCHT;
 	/* Get CHT from ADC using the transfer table (all installations need this) */
 	if(TRUE){ /* If CHT connected  */
-		localCHT = CHTTransferTable[ADCArrays->CHT];
+		localCHT = CHTTransferTable[ADCBuffers->CHT];
 	}else if(FALSE){ /* Configured to be read From ADC as dashpot */
 		/* Transfer the ADC reading to an engine temperature in a reasonable way */
-		localCHT = (ADCArrays->CHT * 10) + freezingPoint; /* 0 ADC = 0C = 273.15K = 27315, 1023 ADC = 102.3C = 375.45K = 37545 */
+		localCHT = (ADCBuffers->CHT * 10) + freezingPoint; /* 0 ADC = 0C = 273.15K = 27315, 1023 ADC = 102.3C = 375.45K = 37545 */
 	}else if(FALSE){ /* Configured to be fixed value */
 		/* Get the preferred CHT figure from configuration settings */
 		localCHT = fixedConfigs2.sensorPresets.presetCHT;
@@ -109,10 +115,10 @@ void generateCoreVars(){
 	unsigned short localIAT;
 	/* Get IAT from ADC using the transfer table (all installations need this) */
 	if(TRUE){ /* If IAT connected  */ /* using false here causes iat to default to room temp, useful with heatsoaked OEM sensors like the Volvo's... */
-		localIAT = IATTransferTable[ADCArrays->IAT];
+		localIAT = IATTransferTable[ADCBuffers->IAT];
 	}else if(FALSE){ /* Configured to be read From ADC as dashpot */
 		/* Transfer the ADC reading to an air temperature in a reasonable way */
-		localIAT = (ADCArrays->IAT * 10) + 27315; /* 0 ADC = 0C = 273.15K = 27315, 1023 ADC = 102.3C = 375.45K = 37545 */
+		localIAT = (ADCBuffers->IAT * 10) + 27315; /* 0 ADC = 0C = 273.15K = 27315, 1023 ADC = 102.3C = 375.45K = 37545 */
 	}else if(FALSE){ /* Configured to be fixed value */
 		/* Get the preferred IAT figure from configuration settings */
 		localIAT = fixedConfigs2.sensorPresets.presetIAT;
@@ -128,7 +134,7 @@ void generateCoreVars(){
 	/* Determine the MAT reading for future calculations */
 	if(TRUE){ /* If MAT sensor is connected */
 		/* Get MAT from ADC using same transfer table as IAT (too much space to waste on having two) */
-		localMAT = IATTransferTable[ADCArrays->MAT];
+		localMAT = IATTransferTable[ADCBuffers->MAT];
 	}else if(FALSE){ /* Configured to be fixed value */
 		/* Get the preferred MAT figure from configuration settings */
 		localMAT = fixedConfigs2.sensorPresets.presetMAT;
@@ -145,20 +151,20 @@ void generateCoreVars(){
 	/* Determine the MAP pressure to use for future calculations */
 	if(TRUE){ /* If MAP sensor is connected */
 		/* get MAP from ADC using transfer variables */
-		localMAP = (((unsigned long)ADCArrays->MAP * fixedConfigs2.sensorRanges.MAPRange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.MAPMinimum;
+		localMAP = (((unsigned long)ADCBuffers->MAP * fixedConfigs2.sensorRanges.MAPRange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.MAPMinimum;
 		if(TRUE){ /* If Intercooler boost sensor connected */
 			/* Get IAP from ADC using the same transfer variables as they both need to read the same range */
-			localIAP = (((unsigned long)ADCArrays->IAP * fixedConfigs2.sensorRanges.MAPRange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.MAPMinimum;
+			localIAP = (((unsigned long)ADCBuffers->IAP * fixedConfigs2.sensorRanges.MAPRange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.MAPMinimum;
 		}
 	}else if(FALSE){ /* Configured for MAP to imitate TPS signal */
 		/* Get MAP from TPS via conversion */
 		localMAP = (((unsigned long)boundedTPSADC * TPSMAPRange) / TPSADCRange) + fixedConfigs2.sensorRanges.TPSClosedMAP;
 	}else if(FALSE){ /* Configured for dash potentiometer on ADC */
 		/* Get MAP from ADC via conversion to internal kPa figure where 1023ADC = 655kPa */
-		localMAP = ADCArrays->MAP << 6;
+		localMAP = ADCBuffers->MAP << 6;
 		if(TRUE){ /* If Intercooler boost sensor enabled */
 			/* Get IAP from ADC via conversion to internal kPa figure where 1023ADC = 655kPa */
-			localIAP = ADCArrays->IAP << 6;
+			localIAP = ADCBuffers->IAP << 6;
 		}
 	}else if(FALSE){ /* Configured for fixed MAP from config */
 		/* Get the preferred MAP figure from configuration settings */
@@ -174,20 +180,17 @@ void generateCoreVars(){
 	/* Determine MAF variable if required */
 	unsigned short localMAF = 0; // Default to zero as it is not required for anything except main PW calcs optionally
 	if(TRUE){
-		localMAF = MAFTransferTable[ADCArrays->MAF];
+		localMAF = MAFTransferTable[ADCBuffers->MAF];
 	}
 
 	unsigned short localAAP;
 	/* Determine the Atmospheric pressure to use for future calculations */
 	if(TRUE){ /* Configured for second sensor to read AAP */
 		/* get AAP from ADC using separate vars to allow 115kPa sensor etc to be used */
-		localAAP = (((unsigned long)ADCArrays->AAP * fixedConfigs2.sensorRanges.AAPRange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.AAPMinimum;
+		localAAP = (((unsigned long)ADCBuffers->AAP * fixedConfigs2.sensorRanges.AAPRange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.AAPMinimum;
 	}else if(FALSE){ /* Configured for dash potentiometer on ADC */
 		/* Get AAP from ADC via conversion to internal kPa figure where 1023ADC = 102.3kPa */
-		localAAP = ADCArrays->AAP * 10;
-	}else if(FALSE){ /* Configured for fixed AAP reading from pre start */
-		/* Get the AAP reading as saved during startup */
-		localAAP = bootTimeAAP; /* This is populated pre start up */
+		localAAP = ADCBuffers->AAP * 10;
 	}else if(FALSE){ /* Configured for fixed AAP from config */
 		/* Get the preferred AAP figure from configuration settings */
 		localAAP = fixedConfigs2.sensorPresets.presetAAP;
@@ -203,7 +206,7 @@ void generateCoreVars(){
 	/* Get main Lambda reading */
 	if(TRUE){ /* If WBO2-1 is connected */
 		/* Get EGO from ADCs using transfer variables */
-		localEGO = (((unsigned long)ADCArrays->EGO * fixedConfigs2.sensorRanges.EGORange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.EGOMinimum;
+		localEGO = (((unsigned long)ADCBuffers->EGO * fixedConfigs2.sensorRanges.EGORange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.EGOMinimum;
 	}else if(FALSE){ /* Configured for fixed EGO from config */
 		/* Get the preferred EGO figure from configuration settings */
 		localEGO = fixedConfigs2.sensorPresets.presetEGO;
@@ -219,7 +222,7 @@ void generateCoreVars(){
 	/* Get second Lambda reading */
 	if(TRUE){ /* If WBO2-2 is connected */
 		/* Get EGO2 from ADCs using same transfer variables as EGO */
-		localEGO2 = (((unsigned long)ADCArrays->EGO2 * fixedConfigs2.sensorRanges.EGORange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.EGOMinimum;
+		localEGO2 = (((unsigned long)ADCBuffers->EGO2 * fixedConfigs2.sensorRanges.EGORange) / ADC_DIVISIONS) + fixedConfigs2.sensorRanges.EGOMinimum;
 	}else if(FALSE){ /* Configured for fixed EGO2 from config */
 		/* Get the preferred EGO2 figure from configuration settings */
 		localEGO2 = fixedConfigs2.sensorPresets.presetEGO2;
@@ -250,7 +253,7 @@ void generateCoreVars(){
 		localTPS = ((unsigned long)localTPS * TPS_RANGE_MAX) / (fixedConfigs2.sensorRanges.TPSOpenMAP - fixedConfigs2.sensorRanges.TPSClosedMAP);
 	}else if(FALSE){ /* Configured for dash potentiometer on ADC */
 		/* Get TPS from ADC as shown : 1023 ADC = 100%, 0 ADC = 0% */
-		localTPS = ((unsigned long)ADCArrays->TPS * TPS_RANGE_MAX) / ADC_DIVISIONS;
+		localTPS = ((unsigned long)ADCBuffers->TPS * TPS_RANGE_MAX) / ADC_DIVISIONS;
 	}else if(FALSE){ /* Configured for fixed TPS from config */
 		/* Get the preferred TPS figure from configuration settings */
 		localTPS = fixedConfigs2.sensorPresets.presetTPS;

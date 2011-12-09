@@ -2,7 +2,7 @@
 #
 #	Makefile
 #
-#	Copyright 2008, 2009, 2010, 2011 Fred Cooke
+#	Copyright 2008-2011 Fred Cooke
 #
 #	This Makefile is part of the FreeEMS project.
 #
@@ -55,10 +55,11 @@
 
 
 # Constants
-VERSION = 0.1.2-SNAPSHOT
-PREVIOUSVERSION = 0.1.1
-OUTPREFIX = freeems
-LABEL = $(OUTPREFIX)-$(VERSION)
+FIRMWARE_VERSION = $(shell git describe --dirty=-DEV)
+OUTPREFIX = FreeEMS
+LABEL = $(OUTPREFIX)-$(FIRMWARE_VERSION)
+BUILD_DATE = "$(shell date)"
+OS = $(shell uname)
 
 # Windows differences
 ifdef ComSpec
@@ -68,18 +69,29 @@ PATHSEP = \\
 MKDIR = mkdir
 # Windows echo repeats " symbols (Q stands for quote...)
 Q =
+SHASUM = sha1sum
 else
 PATHSEP = /
 MKDIR = mkdir -p
 Q = "
+SHASUM = shasum
+endif
+
+# Mac differences
+ifeq ($(OS), Darwin)
+MD5SUM = md5
+else
+# If using this on windows, we're in cygwin, same as Linux
+MD5SUM = md5sum
 endif
 
 # Directories here
-RELEASEDIR = ../previous-release
-DISTRIBUTIONDIR = ../../$(LABEL)
+DISTRIBUTIONDIR = ../tmp/$(LABEL)
+FIRMWAREDISTRIBUTIONDIR = $(DISTRIBUTIONDIR)/$(LABEL)-firmware
 DOXYDOCDIR = ../docs/doxygen-html
 MAINDIR = freeems-vanilla
 INCDIR = inc
+DEPDIR = dependencies
 DECDIR = decoders
 DATADIR = initialisers
 BUGDIR = debug
@@ -119,54 +131,18 @@ XGAS = $(XGPREFIX)as
 ################################################################################
 
 
-# Indirect dependencies - any header change means a full recompile. This can be
-# improved upon and made more specific. GCC actually has a function to output a
-# dependency set for a C source file, maybe we should use that?
-MAINH = main.h
-INITH = init.h xgateVectors.h
-UTILH = utils.h BenchTest.h
+# Indirect dependencies that can affect everything and cause a full rebuild
 MFILE = Makefile
-ISRH = interrupts.h
-CINCS = injectorISR.c
-FLASHH = flashWrite.h flashGlobals.h flashBurn.h
 ASMH = 9S12XDP512asm.s
-LOOKUPH = tableLookup.h
-ISRSH = commsISRs.h
-COMMSH = commsCore.h blockDetailsLookup.h pagedLocationBuffers.h decodePacketAndRespond.h packetTypes.h locationIDs.h
 LINKER = memory.x regions.x hc9s12xdp512elfb.x
-GLOBALH1 = freeEMS.h 9S12XDP512.h memory.h globalConstants.h structs.h decoderInterface.h
-GLOBALH2 = globalDefines.h errorDefines.h TunableConfigs.h FixedConfigs.h
-FUELH = fuelAndIgnitionCalcs.h derivedVarsGenerator.h coreVarsGenerator.h
-RPMH = Simple.h LT1-360-8.h MissingTeeth.h MitsiCAS-4and1.h
-RPMC = Generic4Cylinder-HallOrOptical.c
-DATACONF = defaultUteConfig.h
-DATATABLESAXIS = FredsTruck-Load.h FredsTruck-RPM.h mainTable-Load.h mainTable-RPM.h
-DATATABLESIGN = FE-DOHC.h flat15degrees.h flat0degrees.h FredsTruckIgnitionTiming.h
-DATATABLESLAMBDA = flatStoichiometric.h FredsTruckLambda.h originalCurve.h
-DATATABLESVE = flat80Percent.h FredsTruckVE.h
-DATATHERMISTORS = Bosch.h Denso.h GM.h
+
 
 # Let's keep this to a bare minimum! If you write ASM code
 # please provide an matching alternate C implementation too.
 HANDASMS = flashBurn.s
 #RPMHANDASMS = 
 
-# .c files from inc/ should be included here as deps for the parts they are relied on by!!
-ALLHEADERS1 = $(GLOBALH1) $(COMMSH) $(ISRSH) $(UTILH) $(RPMH) $(FLASHH)
-ALLHEADERS2 = $(GLOBALH2) $(FUELH) $(MAINH) $(INITH) $(ISRH) $(LOOKUPH)
-DATAH1 = $(patsubst %.h,data/configuration/%.h,$(DATACONF))
-DATAH2 = $(patsubst %.h,data/tables/axis/%.h,$(DATATABLESAXIS))
-DATAH3 = $(patsubst %.h,data/tables/ign/%.h,$(DATATABLESIGN))
-DATAH4 = $(patsubst %.h,data/tables/lambda/%.h,$(DATATABLESLAMBDA))
-DATAH5 = $(patsubst %.h,data/tables/ve/%.h,$(DATATABLESVE))
-DATAH6 = $(patsubst %.h,data/thermistors/%.h,$(DATATHERMISTORS))
-ALLH1 = $(patsubst %.h,$(INCDIR)/%.h,$(ALLHEADERS1))
-ALLH2 = $(patsubst %.h,$(INCDIR)/%.h,$(ALLHEADERS2))
-ALLH3 = $(patsubst %.c,$(INCDIR)/%.c,$(CINCS))
-ALLH4 = $(LINKER) $(MFILE) $(INCDIR)/$(ASMH)
-ALLH5 = $(DATAH1) $(DATAH2) $(DATAH3) $(DATAH4) $(DATAH5) $(DATAH6) 
-RPMINC = $(patsubst %.c,decoders/%.c,$(RPMC))
-ALLH = $(ALLH1) $(ALLH2) $(ALLH3) $(ALLH4) $(ALLH5) $(RPMINC)
+ALLH = $(LINKER) $(MFILE) $(INCDIR)/$(ASMH)
 
 # Warning : do not include .c files from inc/ as they are
 # included into the other C files and automatically compiled.
@@ -186,7 +162,7 @@ DATA = $(patsubst %.c,$(DATADIR)/%.c,$(DATARAW))
 UTILCLASSES = tableLookup.c init.c utils.c globalConstants.c StaticBenchTest.c
 MATHCLASSES = coreVarsGenerator.c derivedVarsGenerator.c fuelAndIgnitionCalcs.c decoderInterface.c
 COMCLASSES = flashWrite.c commsCore.c blockDetailsLookup.c
-ISRCLASSES = interrupts.c injectionISRs.c ignitionISRs.c commsISRs.c realtimeISRs.c miscISRs.c xgateVectors.c
+ISRCLASSES = interrupts.c injectionISRs.c commsISRs.c realtimeISRs.c miscISRs.c xgateVectors.c
 # Combined source code files
 SOURCE = freeEMS.c staticInit.c main.c $(UTILCLASSES) $(MATHCLASSES) $(COMCLASSES) $(ISRCLASSES)
 
@@ -194,16 +170,26 @@ SOURCE = freeEMS.c staticInit.c main.c $(UTILCLASSES) $(MATHCLASSES) $(COMCLASSE
 CLASSES = $(SOURCE) $(DATA)
 
 # Engine position/RPM here
-RPMCLASSESRAW = BenchTest.c MitsiCAS-4and1.c Simple.c GM-LT1-CAS-360and8.c MissingTeeth-36-1-Crank-Only.c Listener.c HyundaiStellar4g63-Distributor-4of54.c MitsiAndMazda-Distributor-4of69.c EvenTeeth-Both-12and1.c
-# Future decoders: MiataNB.c Subaru-36-2-2-2.c 
+# Special decoders are not for use running an engine
+RPMSPECIAL = Listener.c BenchTest.c
+# TODO: Automate file naming for the following 4 lines
+RPMEVENTEETH = EvenTeeth-Both-12and1.c EvenTeeth-Both-8and1.c
+RPMMISSINGTEETH = MissingTeeth-TestFile.c MissingTeeth-Crank-12minus1.c MissingTeeth-Crank-36minus1.c MissingTeeth-Crank-60minus2.c
+RPMHALLOROPTICAL = HallOrOptical-Distributor-4of64.c HallOrOptical-Distributor-4of69.c
+RPMVRDISTRIBUTOR = 
+# Specific purpose per engine stuff here
+RPMSPECIFICENGINE1 = MitsiAndMazda-CAS-4and1.c GM-LT1-CAS-360and8.c
+# Insert your file above and get coding!
+RPMCLASSESRAW = $(RPMSPECIAL) $(RPMEVENTEETH) $(RPMMISSINGTEETH) $(RPMHALLOROPTICAL) $(RPMVRDISTRIBUTOR) $(RPMSPECIFICENGINE1)
 RPMCLASSES = $(patsubst %.c,$(DECDIR)/%.c,$(RPMCLASSESRAW))
-# future rpm = NissanRB2X.c NissanSR20.c MiataNA.c etc... Insert your file above and get coding!
 
 # XGATE stuff here!
 XGASMSRCS = xgate.s
 
 
 # Convert extensions
+DEPENDENCIES = $(patsubst %.c,$(DEPDIR)/%.d,$(CLASSES))
+DDEPENDENCIES = $(patsubst %.c,$(DEPDIR)/%.dd,$(CLASSES))
 PREPROCESSED = $(patsubst %.c,$(PPCDIR)/%.pp.c,$(CLASSES))
 ASSEMBLIES = $(patsubst %.c,$(ASMDIR)/%.s,$(CLASSES))
 OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(CLASSES)) $(patsubst %.s,$(OBJDIR)/%.o,$(HANDASMS))
@@ -211,10 +197,15 @@ DUMPS = $(patsubst %.c,$(BUGDIR)/%.dmp,$(CLASSES)) $(patsubst %.s,$(BUGDIR)/%.dm
 XGOBJECTS = $(patsubst %.s,$(XGOBJDIR)/%.o,$(XGASMSRCS))
 
 # Convert RPM extensions
+DEPENDENCIESRPM = $(patsubst %.c,$(DEPDIR)/%.d,$(RPMCLASSES))
+DDEPENDENCIESRPM = $(patsubst %.c,$(DEPDIR)/%.dd,$(RPMCLASSES))
 PREPROCESSEDRPM = $(patsubst %.c,$(PPCDIR)/%.pp.c,$(RPMCLASSES))
 ASSEMBLIESRPM = $(patsubst %.c,$(ASMDIR)/%.s,$(RPMCLASSES))
 OBJECTSRPM = $(patsubst %.c,$(OBJDIR)/%.o,$(RPMCLASSES)) #$(patsubst $(DECDIR???)%.s,$(OBJDIR)/%.o,$(RPMHANDASMS))
 DUMPSRPM = $(patsubst %.c,$(BUGDIR)/%.dmp,$(RPMCLASSES)) #$(patsubst $(DECDIR???)%.s,$(BUGDIR)/%.dmp,$(RPMHANDASMS))
+
+# Bring in all of the generated deps. Note, if these fail on the first pass of parsing, Make will generate them and reparse.
+-include $(DEPENDENCIES) $(DEPENDENCIESRPM) $(DDEPENDENCIES) $(DDEPENDENCIESRPM)
 
 # Convert to output files for source
 ALLELFSC = $(patsubst $(DECDIR)/%.c,$(OUTDIR)/$(LABEL)-%.elf,$(RPMCLASSES))
@@ -236,10 +227,10 @@ ALLREAD = $(ALLREADC) $(ALLREADASM)
 ALLS19S = $(ALLS19SC) $(ALLS19SASM)
 ALLSIZES = $(patsubst $(S19DIR)/%,$(OUTDIR)/%.txt,$(ALLS19S))
 ALLDUMMY = $(patsubst $(S19DIR)/%,$(OUTDIR)/%.txt.dummy,$(ALLS19S))
-ALLMD5S = $(patsubst $(S19DIR)/%,$(DISTRIBUTIONDIR)/%.md5,$(ALLS19S))
-ALLSHA1S = $(patsubst $(S19DIR)/%,$(DISTRIBUTIONDIR)/%.sha1,$(ALLS19S))
-ALLS19RELS = $(patsubst $(S19DIR)/%,$(RELEASEDIR)/%,$(ALLS19S))
-ALLS19ZIPS = $(patsubst $(S19DIR)/%,$(DISTRIBUTIONDIR)/%.zip,$(ALLS19S))
+ALLMD5S = $(patsubst $(S19DIR)/%,$(FIRMWAREDISTRIBUTIONDIR)/%.md5,$(ALLS19S))
+ALLSHA1S = $(patsubst $(S19DIR)/%,$(FIRMWAREDISTRIBUTIONDIR)/%.sha1,$(ALLS19S))
+ALLS19ZIPS = $(patsubst $(S19DIR)/%,$(FIRMWAREDISTRIBUTIONDIR)/%.zip,$(ALLS19S))
+
 
 # Convert to output files for GC variants
 GCDELFSC = $(patsubst $(DECDIR)/%.c,$(OUTDIR)/$(LABEL)-%.gc.elf,$(RPMCLASSES))
@@ -250,10 +241,6 @@ GCDELFS = $(GCDELFSC) $(GCDELFSASM)
 GCDS19S = $(GCDS19SC) $(GCDELFSASM)
 GCDSIZES = $(patsubst $(S19DIR)/%,$(OUTDIR)/%.txt,$(GCDS19S))
 GCDDUMMY = $(patsubst $(S19DIR)/%,$(OUTDIR)/%.txt.dummy,$(GCDS19S))
-GCDMD5S = $(patsubst $(S19DIR)/%,$(DISTRIBUTIONDIR)/%.md5,$(GCDS19S))
-GCDSHA1S = $(patsubst $(S19DIR)/%,$(DISTRIBUTIONDIR)/%.sha1,$(GCDS19S))
-GCDS19RELS = $(patsubst $(S19DIR)/%,$(RELEASEDIR)/%,$(GCDS19S))
-GCDS19ZIPS = $(patsubst $(S19DIR)/%,$(DISTRIBUTIONDIR)/%.zip,$(GCDS19S))
 
 
 
@@ -269,7 +256,7 @@ GCDS19ZIPS = $(patsubst $(S19DIR)/%,$(DISTRIBUTIONDIR)/%.zip,$(GCDS19S))
 # include debug info, optimise , 16 bit ints, hcs12 platform
 GCCOPTS1 = -g -Wall -Werror -Winline -O -m68hcs12 -mshort -ffunction-sections -idirafter custom -idirafter default
 GCCOPTS2 = -fomit-frame-pointer -msoft-reg-count=8 -mauto-incdec -fsigned-char
-GCCOPTS = $(GCCOPTS1) $(GCCOPTS2) $(CLIFLAGS)
+GCCOPTS = $(GCCOPTS1) $(GCCOPTS2) $(CLIFLAGS) -D FIRMWARE_VERSION=\"$(FIRMWARE_VERSION)\" -D FIRMWARE_BUILD_DATE=\"$(BUILD_DATE)\" -D OPERATING_SYSTEM=\"$(OS)\"
 # -ffunction-sections option splits out the functions such that the garbage collection can get
 # them on a per section basis. I'm not sure, but this could be harmful to paged code so may
 # have to review this at a later date perhaps splitting paged functions from nonpaged ones.
@@ -282,7 +269,7 @@ LINKOPTSGC = -no-warn-mismatch,--gc-sections,--print-gc-sections,-defsym,vectors
 
 # If using the below option for paged flash, the ADDRESS_TYPE
 # field in the freeEMSloader script should be updated to match.
-COPYOPTS =  --output-target=srec \
+COPYOPTS = --output-target=srec \
 		--change-section-lma .fixedconf1+0xFD4000 \
 		--change-section-lma .fixedconf2+0xFD4000 \
 		     --change-section-lma .text1+0xFD4000 \
@@ -402,7 +389,6 @@ help:
 	@echo $(Q)#       1) help - This comment block                                           #$(Q)
 	@echo $(Q)#       2) all - Executes alldebug, slow, slowgc and size                      #$(Q)
 	@echo $(Q)#       3) dirs - Creates all of the directories required to build             #$(Q)
-	@echo $(Q)#       4) fast - Compiles direct to object code and links once with no debug  #$(Q)
 	@echo $(Q)#       5) slow - Three stage compilation with assembly retained               #$(Q)
 	@echo $(Q)#       6) slowgc - As above, but with garbage collection during linking       #$(Q)
 	@echo $(Q)#       7) alldebug - Generates all debug output files                         #$(Q)
@@ -458,10 +444,8 @@ help:
 	@echo $(Q)#                                                                              #$(Q)
 	@echo $(Q)#    1) Checks that the repository is consistent                               #$(Q)
 	@echo $(Q)#    2) Performs a full clean                                                  #$(Q)
-	@echo $(Q)#    3) Removes the previous release files                                     #$(Q)
 	@echo $(Q)#    4) Removes the doxygen files                                              #$(Q)
 	@echo $(Q)#    5) Builds binaries for each decoder type                                  #$(Q)
-	@echo $(Q)#    6) Copies the binaries into the release directory                         #$(Q)
 	@echo $(Q)#    7) Generates a new doxygen site                                           #$(Q)
 	@echo $(Q)#    8) Performs a full clean                                                  #$(Q)
 	@echo $(Q)#    9) Commits the release files                                              #$(Q)
@@ -501,25 +485,24 @@ help:
 
 # Build everything the long way
 all: alldebug gcsizes sizes size
-# Single stage compilation
-fast: single sizes size
 # Multi stage compilation
 slow: sizes size
 # Multi stage compilation with garbage collection
 slowgc: gcsizes size
 # Clean all except release
-clean: cleanasm cleanobj cleanout cleanppc cleans19 cleandebug
+clean: cleandep cleanasm cleanobj cleanout cleanppc cleans19 cleandebug
 # Generate all debug
 alldebug: maps rees elfdmps objdmps
 # Load the s19 of your choice
-#install: clean fast loader
+#install: clean slow loader
 # Perform a release
-release: relprep relbuild relperf relpack1 relpack2
-relprep: testgit clean cleanrelease cleandoxy
-relbuild: gendoxy s19rel s19relgc
-relperf: relcommit tagrelease
-relpack1: md5sums md5sumsgc sha1sums sha1sumsgc s19zips s19zipsgc
-relpack2: zipsite zipdocs zipmain zipsrc
+release: testgit relbuild tagrelease
+package: relbuildfull relpack1 relpack2 zipsite
+packagenodoxy: relbuildfirmware relpack1 relpack2
+relbuildfull: clean cleandoxy gendoxy s19
+relbuildfirmware: clean s19
+relpack1: md5sums  sha1sums  s19zips 
+relpack2: zipdocs zipmain zipsrc
 
 
 
@@ -571,17 +554,6 @@ objdmps: assemble $(BUGDIR) objdmpmsg $(DUMPS) $(DUMPSRPM)
 
 $(DUMPS) $(DUMPSRPM): $(BUGDIR)/%.dmp: $(OBJDIR)/%.o
 	$(DUMP) -spSd $< > $@
-
-
-
-
-################################################################################
-#                 Fast Single Stage Compile Target Definition                  #
-################################################################################
-
-
-single:
-	# TODO fast compile and figure out overlapping dependencies...
 
 
 
@@ -721,6 +693,21 @@ size: assemble # TODO this should be run for each s19 target with only the one r
 ################################################################################
 
 
+dependenciesmsg:
+	@echo $(Q)################################################################################$(Q)
+	@echo $(Q)#                        Generating the dependencies...                        #$(Q)
+	@echo $(Q)################################################################################$(Q)
+
+dependencies: dependenciesmsg $(DEPENDENCIES) $(DEPENDENCIESRPM) $(DDEPENDENCIES) $(DDEPENDENCIESRPM)
+
+# Generate dependency files for recompilation on change semantics
+$(DEPENDENCIES) $(DEPENDENCIESRPM): $(DEPDIR)/%.d: %.c $(ALLH)
+	$(GCC) $(CLIFLAGS) -MM -MF $@ -MT $(PPCDIR)/$*.pp.c $<
+# Generate dependency files for the dependency files...
+$(DDEPENDENCIES) $(DDEPENDENCIESRPM): $(DEPDIR)/%.dd: %.c $(ALLH)
+	$(GCC) $(CLIFLAGS) -MM -MF $@ -MT $(DEPDIR)/$*.d $<
+
+
 preprocessmsg:
 	@echo $(Q)################################################################################$(Q)
 	@echo $(Q)#                        Running the C Pre Processor...                        #$(Q)
@@ -729,8 +716,10 @@ preprocessmsg:
 preprocess: $(PPCDIR) preprocessmsg $(PREPROCESSED) $(PREPROCESSEDRPM)
 
 # Generate preprocessed source files to examine
-$(PREPROCESSED) $(PREPROCESSEDRPM): $(PPCDIR)/%.pp.c: %.c $(ALLH)
-	$(GCC) $(GCCOPTS) -E $< > $@
+$(PREPROCESSED): $(PPCDIR)/%.pp.c: %.c $(ALLH) 
+	$(GCC) $(GCCOPTS) -D BASE_FILE_NAME=\"$*\" -E $< > $@
+$(PREPROCESSEDRPM): $(PPCDIR)/decoders/%.pp.c: decoders/%.c $(ALLH) 
+	$(GCC) $(GCCOPTS) -D BASE_FILE_NAME=\"$*\" -E $< > $@
 
 
 compilemsg:
@@ -771,16 +760,16 @@ testgit:
 	@echo "################################################################################"
 	@echo "#                            Checking git status...                            #"
 	@echo "################################################################################"
-	@echo "Fetching from origin..."
-	git fetch
+	@echo "Are we on master?"
+	test `git symbolic-ref HEAD` = refs/heads/master
 	@echo "Is everything checked in?"
 	test `git status -s | wc -l` -eq 0
+	@echo "Fetching from origin..."
+	git fetch
 	@echo "Are we behind?"
 	test `git rev-list \`git show-ref --hash refs/heads/master\`..\`git show-ref --hash refs/remotes/origin/master\` | wc -l` -eq 0
 	@echo "Are we ahead?"
 	test `git rev-list \`git show-ref --hash refs/remotes/origin/master\`..\`git show-ref --hash refs/heads/master\` | wc -l` -eq 0
-
-
 
 
 md5sumsmsg:
@@ -790,8 +779,8 @@ md5sumsmsg:
 
 md5sums: s19 distributiondir md5sumsmsg $(ALLMD5S)
 
-$(ALLMD5S): $(DISTRIBUTIONDIR)/%.s19.md5: $(S19DIR)/%.s19
-	md5sum $< > $@
+$(ALLMD5S): $(FIRMWAREDISTRIBUTIONDIR)/%.s19.md5: $(S19DIR)/%.s19
+	$(MD5SUM) $< > $@
 
 
 sha1sumsmsg:
@@ -801,32 +790,10 @@ sha1sumsmsg:
 
 sha1sums: s19 distributiondir sha1sumsmsg $(ALLSHA1S)
 
-$(ALLSHA1S): $(DISTRIBUTIONDIR)/%.s19.sha1: $(S19DIR)/%.s19
-	sha1sum $< > $@
+$(ALLSHA1S): $(FIRMWAREDISTRIBUTIONDIR)/%.s19.sha1: $(S19DIR)/%.s19
+	$(SHASUM) $< > $@
 
 
-
-
-md5sumsmsggc:
-	@echo $(Q)################################################################################$(Q)
-	@echo $(Q)#                            Generating MD5 Sums...                            #$(Q)
-	@echo $(Q)################################################################################$(Q)
-
-md5sumsgc: gcs19 distributiondir md5sumsmsggc $(GCDMD5S)
-
-$(GCDMD5S): $(DISTRIBUTIONDIR)/%.s19.md5: $(S19DIR)/%.s19
-	md5sum $< > $@
-
-
-sha1sumsmsggc:
-	@echo $(Q)################################################################################$(Q)
-	@echo $(Q)#                           Generating SHA1 Sums...                            #$(Q)
-	@echo $(Q)################################################################################$(Q)
-
-sha1sumsgc: gcs19 distributiondir sha1sumsmsggc $(GCDSHA1S)
-
-$(GCDSHA1S): $(DISTRIBUTIONDIR)/%.s19.sha1: $(S19DIR)/%.s19
-	sha1sum $< > $@
 
 
 s19zipsmsg:
@@ -836,46 +803,8 @@ s19zipsmsg:
 
 s19zips: s19 distributiondir s19zipsmsg $(ALLS19ZIPS)
 
-$(ALLS19ZIPS): $(DISTRIBUTIONDIR)/%.s19.zip: $(S19DIR)/%.s19
-	zip $@ $<
-
-
-s19relmsg:
-	@echo $(Q)################################################################################$(Q)
-	@echo $(Q)#                                Copying S19s...                               #$(Q)
-	@echo $(Q)################################################################################$(Q)
-
-s19rel: sizes s19relmsg $(ALLS19RELS)
-
-$(ALLS19RELS): $(RELEASEDIR)/%.s19: $(S19DIR)/%.s19
-	$(CP) $< $@
-
-
-s19zipsgcmsg:
-	@echo $(Q)################################################################################$(Q)
-	@echo $(Q)#                              Zipping GC S19s...                              #$(Q)
-	@echo $(Q)################################################################################$(Q)
-
-s19zipsgc: gcs19 distributiondir s19zipsmsg $(GCDS19ZIPS)
-
-$(GCDS19ZIPS): $(DISTRIBUTIONDIR)/%.s19.zip: $(S19DIR)/%.s19
-	zip $@ $<
-
-
-s19relgcmsg:
-	@echo $(Q)################################################################################$(Q)
-	@echo $(Q)#                              Copying GC S19s...                              #$(Q)
-	@echo $(Q)################################################################################$(Q)
-
-s19relgc: gcsizes s19relgcmsg $(GCDS19RELS)
-
-$(GCDS19RELS): $(RELEASEDIR)/%.s19: $(S19DIR)/%.s19
-	$(CP) $< $@
-
-
-relcommit:
-	git add $(RELEASEDIR)
-	git commit -m "Automatically committing release files for FreeEMS version $(VERSION)!" ..
+$(ALLS19ZIPS): $(FIRMWAREDISTRIBUTIONDIR)/%.s19.zip: $(S19DIR)/%.s19
+	zip -j $@ $<
 
 
 tagmessage:
@@ -884,24 +813,25 @@ tagmessage:
 tagname:
 	vim $(TAGNAME)
 
+
 tagrelease: tagname tagmessage
 	git tag -F $(RELTAG) `cat $(TAGNAME)` HEAD
 
 
 zipmain: distributiondir
-	cd ../;git archive --format=zip --prefix=$(LABEL)/ HEAD > ../$(LABEL)/$(LABEL).zip;cd -
+	cd ../ ; git archive --format=zip --prefix=$(LABEL)/ HEAD > ./tmp/$(DISTRIBUTIONDIR)/$(LABEL)-full.zip;cd -
 
 zipdocs: distributiondir
-	cd ../;git archive --format=zip --prefix=$(LABEL)- HEAD docs/ > ../$(LABEL)/$(LABEL)-docs.zip;cd -
+	cd ../ ; git archive --format=zip --prefix=$(LABEL)- HEAD docs/ > ./tmp/$(DISTRIBUTIONDIR)/$(LABEL)-docs.zip;cd -
 
 gendoxy: clean
-	cd ..;doxygen docs/Doxyfile | grep Warning > src/doxygen.output;cd -
+	cd ../ ; ( cat docs/Doxyfile ; echo "PROJECT_NUMBER=$(FIRMWARE_VERSION)" ) | doxygen - | grep Warning > src/doxygen.output;cd -
 
 zipsite: distributiondir gendoxy
-	cd ../docs/;zip -r $(DISTRIBUTIONDIR)/doxygen-html.zip doxygen-html/;cd -
+	cd ../docs/ ; zip -r  $(DISTRIBUTIONDIR)/$(LABEL)-doxygen-html.zip doxygen-html/;cd -
 
 zipsrc: distributiondir
-	cd ../;git archive --format=zip --prefix=$(LABEL)- HEAD src/ > ../$(LABEL)/$(LABEL)-src.zip;cd -
+	cd ../ ; git archive --format=zip --prefix=$(LABEL)- HEAD src/ > ./tmp/$(DISTRIBUTIONDIR)/$(LABEL)-src.zip;cd -
 
 
 
@@ -966,8 +896,8 @@ distributiondir:
 	@echo $(Q)################################################################################$(Q)
 	@echo $(Q)#                    Creating the distribution directory...                    #$(Q)
 	@echo $(Q)################################################################################$(Q)
-	$(MKDIR) $(DISTRIBUTIONDIR)$(PATHSEP)hack
-	rmdir $(DISTRIBUTIONDIR)$(PATHSEP)hack
+	$(MKDIR) $(FIRMWAREDISTRIBUTIONDIR)$(PATHSEP)hack
+	rmdir $(FIRMWAREDISTRIBUTIONDIR)$(PATHSEP)hack
 
 
 
@@ -981,6 +911,14 @@ cleanasm:
 	@echo $(Q)#                     Removing generated assembly files....                    #$(Q)
 	@echo $(Q)################################################################################$(Q)
 	$(RM) $(ASSEMBLIES) $(ASSEMBLIESRPM)
+
+cleandep:
+	@echo $(Q)################################################################################$(Q)
+	@echo $(Q)#                  Removing pre-processed C output directory...                #$(Q)
+	@echo $(Q)################################################################################$(Q)
+	$(RM) $(DEPDIR)$(PATHSEP)*.d $(DEPDIR)$(PATHSEP)*.dd
+	$(RM) $(DEPDIR)$(PATHSEP)$(DECDIR)$(PATHSEP)*.d $(DEPDIR)$(PATHSEP)$(DECDIR)$(PATHSEP)*.dd
+	$(RM) $(DEPDIR)$(PATHSEP)$(DATADIR)$(PATHSEP)*.d $(DEPDIR)$(PATHSEP)$(DATADIR)$(PATHSEP)*.dd
 
 cleanppc:
 	@echo $(Q)################################################################################$(Q)
@@ -1012,12 +950,6 @@ cleandebug:
 	@echo $(Q)################################################################################$(Q)
 	$(RM) $(BUGDIR)
 
-cleanrelease:
-	@echo $(Q)################################################################################$(Q)
-	@echo $(Q)#                         Removing all release files...                        #$(Q)
-	@echo $(Q)################################################################################$(Q)
-	$(RM) $(RELEASEDIR)/*-$(PREVIOUSVERSION)*
-
 cleandoxy:
 	@echo $(Q)################################################################################$(Q)
 	@echo $(Q)#                            Removing Doxygen HTML...                          #$(Q)
@@ -1031,18 +963,18 @@ cleandoxy:
 
 
 # Aggregators top level
-.PHONY: all fast slow slowgc single help dirs
+.PHONY: all slow slowgc single help dirs
 
 # Aggregators middle level
-.PHONY: preprocess compile assemble link gclink s19 gcs19 sizes gcsizes 
+.PHONY: dependencies preprocess compile assemble link gclink s19 gcs19 sizes gcsizes
 
 # Aggregators debug level
 .PHONY: alldebug maps rees objdmps elfdmps size
 
 # Release targets
-.PHONY: release relprep relperf relbuild relpack
+.PHONY: release relbuild relpack
 .PHONY: md5sums sha1sums s19zips sha1sumsgc s19zips s19zipsgc
-.PHONY: testgit relcommit tagname tagmessage tagrelease
+.PHONY: testgit tagname tagmessage tagrelease
 .PHONY: zipmain zipdocs zipsite zipsource
 
 # Messages
@@ -1051,7 +983,7 @@ cleandoxy:
 .PHONY: md5sumsmsg sha1sumsmsg s19zipsmsg
 
 # Clean targets
-.PHONY: clean cleanasm cleanppc cleanobj cleanout cleans19 cleandebug cleanrelease cleandoxy
+.PHONY: clean cleandep cleanasm cleanppc cleanobj cleanout cleans19 cleandebug cleandoxy
 
 # Lonely documentation target :-(
 .PHONY: gendoxy

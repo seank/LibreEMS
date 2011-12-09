@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010, 2011 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -51,7 +51,6 @@
 #include "inc/init.h"
 #include "inc/decoderInterface.h"
 #include "inc/xgateVectors.h"
-#include "inc/xgateGlobals.h"
 #include <string.h>
 
 
@@ -80,6 +79,11 @@ void init(){
 	initInterrupts();       /* still last, reset timers, enable interrupts here TODO move this to inside config in an organised way. Set up the rest of the individual interrupts */
 	ATOMIC_END();           /* Re-enable any configured interrupts */
 }
+
+
+#ifdef XGATE
+#include "xgateInit.c"
+#endif
 
 
 /* used to chop out all the init stuff at compile time for hardware testing. */
@@ -351,6 +355,8 @@ void initTunableAddresses(){
 	dwellMaxVersusRPMTable2Location           = (void*)&SmallTablesAFlash2.dwellMaxVersusRPMTable;
 
 	/* TablesB */
+	loggingSettingsLocation       = (void*)&SmallTablesBFlash.loggingSettings;
+	loggingSettings2Location      = (void*)&SmallTablesBFlash2.loggingSettings;
 	perCylinderFuelTrimsLocation  = (void*)&SmallTablesBFlash.perCylinderFuelTrims;
 	perCylinderFuelTrims2Location = (void*)&SmallTablesBFlash2.perCylinderFuelTrims;
 
@@ -453,13 +459,9 @@ void initVariables(){
 	/* And the opposite for the other halves */
 	CoreVars = &CoreVars0;
 	DerivedVars = &DerivedVars0;
-	ADCArrays = &ADCArrays0;
-	ADCArraysRecord = &ADCArrays1;
-	asyncADCArrays = &asyncADCArrays0;
-	asyncADCArraysRecord = &asyncADCArrays1;
+	ADCBuffers = &ADCBuffers0;
+	ADCBuffersRecord = &ADCBuffers1;
 
-	mathSampleTimeStamp = &ISRLatencyVars.mathSampleTimeStamp0; // TODO temp, remove
-	mathSampleTimeStampRecord = &ISRLatencyVars.mathSampleTimeStamp1; // TODO temp, remove
 	ticksPerDegree = &ticksPerDegree0; // TODO temp, remove, maybe
 	ticksPerDegreeRecord = &ticksPerDegree1; // TODO temp, remove, maybe
 
@@ -476,8 +478,6 @@ void initVariables(){
 	injectorMainControlRegisters[3] = TCTL1_ADDR;
 	injectorMainControlRegisters[4] = TCTL1_ADDR;
 	injectorMainControlRegisters[5] = TCTL1_ADDR;
-
-	configuredBasicDatalogLength = maxBasicDatalogLength;
 
 	coreStatusA |= FUEL_PUMP_PRIME;
 
@@ -543,70 +543,6 @@ void initFlash(){
 	FSTAT = FSTAT | (PVIOL | ACCERR);	/* Clear any errors             	*/
 }
 
-/** @brief Xgate module setup
- *
- * Configure XGATE setup registers and prepare XGATE code to be run by copying
- * it from flash hcs12mem can write to to flash XGATE can read from.
- *
- * @author Sean Keys and Fred Cooke
- *
- * @note A thanks goes out to Edward Karpicz for helping me get xgate configured
- * properly.
- *
- * @warning If executing from RAM you must copy the code from Flash to RAM before
- * starting Xgate
- *
- */
-void initXgate(){
-	/* route interrupt to xgate, vector address = channel_id * 2 */
-	ROUTE_INTERRUPT(0x39, XGATE_INTERRUPT, PRIORITY_LEVEL_ONE) /*enable xgate int on software0 interrupt */
-	//ROUTE_INTERRUPT(0x3A, XGATE_INTERRUPT, PRIORITY_LEVEL_ONE ) /*enable xgate int on PIT3 */
-	//ROUTE_INTERRUPT(0x3B, XGATE_INTERRUPT, PRIORITY_LEVEL_ONE ) /*enable xgate int on PIT2 */
-	ROUTE_INTERRUPT(0x3C, XGATE_INTERRUPT, PRIORITY_LEVEL_ONE) /*enable xgate int on PIT1 */
-	ROUTE_INTERRUPT(0x3D, XGATE_INTERRUPT, PRIORITY_LEVEL_TWO) /*enable xgate int on PIT0 */
-	/* XGATE sees flash starting at paged address 0xE0+0x8800 to + 30Kb*/
-	unsigned char savedRPAGE = RPAGE;
-	unsigned char savedPPAGE = PPAGE;
-	// XGATE threads execute from RAM
-	RPAGE = RPAGE_TUNE_TWO;
-	PPAGE = 0xE1;
-	// we can't use the symbols for the memcpy part because the symbols need to contain xgate relevant values
-	memcpy(START_OF_RAM_WINDOW, START_OF_FLASH_WINDOW,
-			XGATE_RAM_ALLOCATION_SIZE);
-	//TODO set RAM protection
-	RPAGE = savedRPAGE;
-	PPAGE = savedPPAGE;
-	// Set the XGVBR register to its start address in flash (page 0xE0 after 2K register space)
-	XGVBR = (unsigned short) 0x0800; // EO region is divided to ensure vectors end up here visible to xgate
-	// Enable XGate and XGate interrupts
-	XGMCTL = (unsigned short) 0x8181;
-	/* Enable PIT TODO move back to proper section once unit tested */
-	//	PITMTLD0 = 0x1F; /* 32 prescaler gives 0.8uS resolution and max period of 52.4288ms measured */
-	/* Measurements from logic analizer PITMTLD0
-	 * 0x01 = 3.28ms@16-bits
-	 */
-	/* A prescalar of 4 yeilds .1ms resolution and max times of 6.5535ms@16-bit, 429,483.622ms@32-bit */PITMTLD0 =
-	0x1F; /* 32 prescaler (1 / ((40 MHz) / PRESCALAR)) */
-	PITMTLD1 = 0x1F; /* 32 prescaler  (1 / ((40 MHz) / PRESCALAR)) */
-	//PITMTLD0 = 0x03; /* 4 prescaler (1 / ((40 MHz) / PRESCALAR)) */
-	//PITMTLD1 = 0x03; /* 4 prescaler  (1 / ((40 MHz) / PRESCALAR)) */
-	PITMUX = 0xC0; /* set chan 0-1 to use PITMTLD0 base and chan 2-3 to use PITMTLD1 */
-	PITLD0 = 0x0000; // set timers running //TEST ONLY
-	PITLD1 = 0xFFFF; // set timers running //TEST ONLY
-	//PITLD2 = 0xFFFF; /* This is our metronome so this number is static */
-	//PITLD3 = 0x01; // set timers running //TEST ONLY
-	PITCFLMT = 0x80; // enable module
-	PITCE = 0x02; // countdown enable on our metronome
-	PITINTE = 0x03; // enable interrupt on 0, 1
-	PITFLT = ONES; // clear flags
-	/* Initialize our global xgate pointers */
-	XGOutputEvents = (XGOutputEvent*) (parametersBase
-			- RPAGE_TUNE_TWO_WINDOW_DIFFERENCE);
-	xgsInStamp = (unsigned short*) (xGSInputEdgeStamp
-			- RPAGE_TUNE_TWO_WINDOW_DIFFERENCE);
-	xgsEventsToSch = (unsigned short*) (xgsNumOfEventsToSchedule
-			- RPAGE_TUNE_TWO_WINDOW_DIFFERENCE);
-}
 
 /* Set up the timer module and its various interrupts */
 void initECTTimer(){
@@ -656,11 +592,10 @@ void initECTTimer(){
 	// TODO setup delay counters on 0 and 1 to filter noise (nice feature!)
 	//DLYCT = ??; built in noise filter
 
-	/* Configurable tachometer output */
-	PTMCPSR = fixedConfigs1.tachoSettings.tachoTickFactor - 1; // Precision prescaler - fastest is 1 represented by 0, slowest/longest possible is 256 represented by 255 or 0xFF
-	MCCNT = ONES16; // init to slowest possible, first
-	MCCTL = 0xC4; // turn on and setup the mod down counter
-	MCFLG = 0x80; // clear the flag up front
+//	/* Configurable tachometer output */	PTMCPSR = 0xFF // Precision prescaler - fastest is 1 represented by 0, slowest/longest possible is 256 represented by 255 or 0xFF
+//	MCCNT = ONES16; // init to slowest possible, first
+//	MCCTL = 0xC4; // turn on and setup the mod down counter
+//	MCFLG = 0x80; // clear the flag up front
 
 	decoderInitPreliminary();
 #endif

@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010, 2011 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/**	@file FixedConfig2.c
+/** @file
+ *
  * @ingroup dataInitialisers
  *
  * @brief Second fixed config block
@@ -66,9 +67,13 @@ const volatile fixedConfig2 fixedConfigs2 FIXEDCONF2 = {
 	sensorRanges:{
 		TPSClosedMAP:  offIdleMAP,
 		TPSOpenMAP:    nearlyWOTMAP,
+// MAP Sensor Configuration
 #ifdef HOTEL
-		MAPMinimum:    Toyota3BarMin,
-		MAPRange:      Toyota3BarRange,
+		MAPMinimum:    ToyotaNA227kPaMin,
+		MAPRange:      ToyotaNA227kPaRange,
+#elif SNOTROCKET
+		MAPMinimum:    HondaDenso183kPaMin,
+		MAPRange:      HondaDenso183kPaRange,
 #elif SEANKLT1
 		MAPMinimum:    GM2BarMin,
 		MAPRange:      GM2BarRange,
@@ -79,8 +84,14 @@ const volatile fixedConfig2 fixedConfigs2 FIXEDCONF2 = {
 		MAPMinimum:    MPX4250AMin,
 		MAPRange:      MPX4250ARange,
 #endif
+// AAP Sensor Configuration
+#ifdef SNOTROCKET
+		AAPMinimum:    HondaDenso183kPaMin,
+		AAPRange:      HondaDenso183kPaRange,
+#else
 		AAPMinimum:    MPX4100AMin,
 		AAPRange:      MPX4100ARange,
+#endif
 #ifdef SEANKLT1
 		EGOMinimum:    AFR1020LambdaMin,
 		EGORange:      AFR1020LambdaRange,
@@ -88,13 +99,34 @@ const volatile fixedConfig2 fixedConfigs2 FIXEDCONF2 = {
 		EGOMinimum:    LC1LambdaMin,
 		EGORange:      LC1LambdaRange,
 #endif
+#ifdef HOTEL
+		BRVMinimum:    batteryVoltageMin,
+		BRVRange:      (25.082 * 1000),
+#elif SNOTROCKET
+		BRVMinimum:    batteryVoltageMin,
+		BRVRange:      (24.777 * 1000),
+#else
 		BRVMinimum:    batteryVoltageMin,
 		BRVRange:      batteryVoltageRange,
+#endif
 		TPSMinimumADC: TPSDefaultMin,
 		TPSMaximumADC: TPSDefaultMax
 	},
 	sensorSettings:{ // Warning, until the following mods are made to ADC use, setting this lower than your cranking rpm will result in a pulsing fuel pump.
-		readingTimeout: 250, /** Default to 0.25 of a second 120rpm for a 4 cylinder @todo TODO new method of ADC sampling, Always sample ADC async, If no sync, use async ADC readings, otherwise use synced. Do this with pointer to array set at beginning of math */
+		readingTimeout: 500, /** Default to 0.25 of a second 120rpm for a 4 cylinder @todo TODO new method of ADC sampling, Always sample ADC async, If no sync, use async ADC readings, otherwise use synced. Do this with pointer to array set at beginning of math */
 	},
-	userTextField2:        "Place your personal notes about whatever you like in here! Don't hesitate to tell us a story about something interesting. Do keep in mind though that when you upload your settings file to the forum this message WILL be visible to all and sundry, so don't be putting too many personal details, bank account numbers, passwords, PIN numbers, license plates, national insurance numbers, IRD numbers, social security numbers, phone numbers, email addresses, love stories and other private information in this field. In fact it is probably best if you keep the information stored here purely related to the vehicle that this system is installed on and relevant to the state of tune and configuration of settings. Lastly, please remember that this field WILL be shrinking in length from it's currently large size to something more reasonable in future. I would like to attempt to keep it at least thirty two characters long though, so writing that much is a non issue, but not more"
+	decoderSettings:{
+// Should macro these, 45.00,50.00 and 100.00 are percentages
+#ifdef HOTEL
+		accelerationInputEventTimeTolerance: ((100/(100 + 100.00)) * 1000), // once started this needs a lot less...
+		decelerationInputEventTimeTolerance: (((100 + 100.00)/100) * 1000)
+#elif SNOTROCKET
+		accelerationInputEventTimeTolerance: ((100/(100 + 100.00)) * 1000),
+		decelerationInputEventTimeTolerance: (((100 + 100.00)/100) * 1000)
+#else
+		accelerationInputEventTimeTolerance: ((100/(100 + 50.00)) * 1000),
+		decelerationInputEventTimeTolerance: (((100 + 50.00)/100) * 1000)
+#endif
+	},
+	userTextField2:        "Place your personal notes about whatever you like in here! Don't hesitate to tell us a story about something interesting. Do keep in mind though that when you upload your settings file to the forum this message WILL be visible to all and sundry, so don't be putting too many personal details, bank account numbers, passwords, PIN numbers, license plates, national insurance numbers, IRD numbers, social security numbers, phone numbers, email addresses, love stories and other private information in this field. In fact it is probably best if you keep the information stored here purely related to the vehicle that this system is installed on and relevant to the state of tune and configuration of settings. Lastly, please remember that this field WILL be shrinking in length from it's currently large size to something more reasonable in future. I would like to attempt to keep it at least thirty two characters long though, so writing that much is a non issue, but not "
 };

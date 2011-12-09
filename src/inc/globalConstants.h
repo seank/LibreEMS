@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/**	@file globalConstants.h
+/** @file
+ *
  * @ingroup allHeaders
  * @ingroup globalHeaders
  *
@@ -55,18 +56,14 @@
 #endif
 
 
-/* Types summary
- *
- * BEWARE : Be explicit!!
- *
- * char			8 bit (defaults to unsigned, but always specify signed/unsigned anyway)
- * short		16 bit (defaults to signed, but always specify signed/unsigned anyway)
- * int			16 bit DO NOT USE! (current compile flags make this 16 bits, but a change of flags could will change your program if you use this because they will all be 32 bit all of a sudden)
- * long			32 bit (defaults to signed, but always specify signed/unsigned anyway)
- * long long	64 bit (inefficient, avoid these, if using : defaults to signed, but always specify signed/unsigned anyway)
- * float		32 bit IEEE floating point numbers (inefficient, avoid these, used fixed point math)
- * double		64 bit IEEE floating point numbers (inefficient, avoid these, used fixed point math)
- */
+#define INTERFACE_VERSION  "IFreeEMS Vanilla 0.0.0" // Migrate to come from the makefile where it can be extracted from any file with any tool.
+
+// Sizes for array must be outside ifndef block
+#define INTERFACE_VERSION_LENGTH   sizeof(INTERFACE_VERSION)
+#define FIRMWARE_VERSION_LENGTH    sizeof(FIRMWARE_VERSION)
+#define FIRMWARE_BUILD_DATE_LENGTH sizeof(FIRMWARE_BUILD_DATE)
+#define COMPILER_VERSION_LENGTH    sizeof(__VERSION__)
+#define OPERATING_SYSTEM_LENGTH    sizeof(OPERATING_SYSTEM)
 
 
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Arrays here &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
@@ -79,15 +76,15 @@ EXTERN const volatile unsigned short CHTTransferTable[1024]; /* 2k */
 EXTERN const volatile unsigned short MAFTransferTable[1024]; /* 2k */
 EXTERN const volatile unsigned char TestTransferTable[2048]; /* 2k */
 
-/* Version strings */
-EXTERN const unsigned char interfaceVersionAndType[20];
-EXTERN const unsigned char firmwareVersion[31];
 
-/* Ignition */
-EXTERN const unsigned short dwellStartMasks[IGNITION_CHANNELS];
-EXTERN const unsigned short ignitionMasks[IGNITION_CHANNELS];
+EXTERN const unsigned char interfaceVersion[INTERFACE_VERSION_LENGTH];
+EXTERN const unsigned char firmwareVersion[FIRMWARE_VERSION_LENGTH];
+EXTERN const unsigned char buildTimeAndDate[FIRMWARE_BUILD_DATE_LENGTH];
+EXTERN const unsigned char compilerVersion[COMPILER_VERSION_LENGTH];
+EXTERN const unsigned char operatingSystem[OPERATING_SYSTEM_LENGTH];
 
-/* Injection */
+
+/* Injection (currently used for both inj and ign) */
 EXTERN const unsigned char injectorMainOnMasks[INJECTION_CHANNELS];
 EXTERN const unsigned char injectorMainOffMasks[INJECTION_CHANNELS];
 EXTERN const unsigned char injectorMainActiveMasks[INJECTION_CHANNELS];
@@ -95,7 +92,6 @@ EXTERN const unsigned char injectorMainEnableMasks[INJECTION_CHANNELS];
 EXTERN const unsigned char injectorMainDisableMasks[INJECTION_CHANNELS];
 EXTERN const unsigned char injectorMainGoHighMasks[INJECTION_CHANNELS];
 EXTERN const unsigned char injectorMainGoLowMasks[INJECTION_CHANNELS];
-
 
 #endif
 
@@ -154,10 +150,6 @@ EXTERN const volatile twoDTableUS dwellMaxVersusRPMTableFlash; // maximum dwell 
 /* Fueling constants */
 EXTERN const unsigned long masterFuelConstant;
 EXTERN const unsigned long MAFFuelConstant;
-
-
-/* Serial data log stuff, temporary */
-EXTERN const unsigned short maxBasicDatalogLength;
 
 
 /// @todo TODO Move these to decoder interface AND rename to be more generic/meaningful/accurate, and make set by each decoder where appropriate

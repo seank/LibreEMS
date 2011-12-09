@@ -24,7 +24,8 @@
  */
 
 
-/**	@file decoderInterface.h
+/** @file
+ *
  * @ingroup allHeaders
  * @ingroup enginePositionRPMDecoders
  *
@@ -41,6 +42,9 @@
 /* and http://gcc.gnu.org/onlinedocs/gcc-3.1.1/cpp/ C pre processor manual		*/
 #ifndef FILE_DECODER_INTERFACE_H_SEEN
 #define FILE_DECODER_INTERFACE_H_SEEN
+
+
+#include "syncLossIDs.h"
 
 
 #ifdef EXTERN
@@ -76,6 +80,10 @@
 
 
 // ADC
+
+
+/* Self set flags for starting from ECT out ISR code. */
+EXTERN unsigned char selfSetTimer;			/* Set the start time of injection at the end of the last one in the channels ISR instead of the input ISR */
 
 
 // RPM - need some sort of state to say not to use these first time through...
@@ -124,17 +132,12 @@ from the above we can check one gap+angle with the next gap+angle and ensure smo
 // unsigned long thisEventTimeStamp; recommended variable naming, may be enforced for/with macro use
 // unsigned long thisInterEventPeriod; ditto
 /// @todo TODO sync loss/gain semantics - how paranoid? under what circumstances? should we make it configurable whether a decoder that is in a situation where it would find sync if not synced, resets sync, or loses sync. Likewise, at initial sync gain time, should it go "prelim sync found" and only verify sync on the second lap around, or start firing events straight off the bat. Starting will suck if paranoid, but if there is noise at high load/rpm and events get mis-scheduled before sync is lost, that is serious. This is philosophical, and the reality is that you must assume that your signal is clean to some level and verified clean under lower risk conditions.
-EXTERN unsigned char syncLostWithThisID;
-EXTERN unsigned char syncLostOnThisEvent;
-EXTERN unsigned char syncCaughtOnThisEvent;
 EXTERN unsigned long lastEventTimeStamp;
 EXTERN unsigned long lastPrimaryEventTimeStamp;
 EXTERN unsigned long lastSecondaryEventTimeStamp;
 EXTERN unsigned short lastTicksPerDegree;
 EXTERN unsigned short lastPrimaryTicksPerDegree;
 EXTERN unsigned short lastSecondaryTicksPerDegree;
-EXTERN unsigned char currentEvent;
-EXTERN unsigned char decoderFlags;
 EXTERN unsigned long skipEventFlags;
 EXTERN unsigned long engineCyclePeriod;
 EXTERN unsigned char numberScheduled; /// @todo TODO remove DEBUG
@@ -146,16 +149,15 @@ EXTERN unsigned char numberScheduled; /// @todo TODO remove DEBUG
 /// @todo and generalise scheduling to all pins
 /// @todo and provide a way of choosing a source of pulsewidth dwell or fuel duration
 /// @todo and a way of allowing overly advanced scheduling instead of none, when its fuel
-#define COMBUSTION_SYNC      BIT0 // Dizzy/Batch Injection
-#define CRANK_SYNC           BIT1 // Wasted Spark/Semi-Sequential
-#define CAM_SYNC             BIT2 // COP/CNP/Sequential
-#define LAST_TIMESTAMP_VALID BIT3
-#define LAST_PERIOD_VALID    BIT4
-#define CLEAR_COMBUSTION_SYNC      NBIT0
-#define CLEAR_CRANK_SYNC           NBIT1
-#define CLEAR_CAM_SYNC             NBIT2
-#define CLEAR_LAST_TIMESTAMP_VALID NBIT3
-#define CLEAR_LAST_PERIOD_VALID    NBIT4
+#define COMBUSTION_SYNC      BIT0 ///< Sync sufficient for Dizzy/Batch Injection
+#define CRANK_SYNC           BIT1 ///< Sync sufficient for Wasted Spark/Semi-Sequential
+#define CAM_SYNC             BIT2 ///< Sync sufficient for COP/CNP/Sequential
+#define LAST_TIMESTAMP_VALID BIT3 ///< Set when first decoder ISR runs post a reset
+#define LAST_PERIOD_VALID    BIT4 ///< Set when second decoder ISR runs post a reset
+#define LAST_MATCH_VALID     BIT5 ///< Missing teeth style decoders set this when a valid match is found
+#define LAST_TPD_VALID       BIT6 ///< Set once sync is found and we've stored a Ticks Per Degree value
+#define DF_SPARE_7           BIT7
+// WARNING: Entire flag var is cleared with loss of sync!
 
 
 #define ARBITRARY_DECODER_NAME_MAX_LENGTH 64
@@ -166,7 +168,7 @@ EXTERN unsigned char numberScheduled; /// @todo TODO remove DEBUG
 
 
 // These are defined per decoder and used elsewhere!
-EXTERN const unsigned char decoderName[ARBITRARY_DECODER_NAME_MAX_LENGTH];
+EXTERN const unsigned char decoderName[sizeof(BASE_FILE_NAME)];
 EXTERN const unsigned char numberOfRealEvents; // How many unique events the decoder sees.
 EXTERN const unsigned char numberOfVirtualEvents; // How many of the members of the eventAngles array are valid. (multiples of real events (1 - 12))
 EXTERN const unsigned short eventAngles[SIZE_OF_EVENT_ARRAYS]; /// @todo TODO From 0 - totalEventAngleRange degrees, scale: x50
@@ -174,13 +176,19 @@ EXTERN const unsigned char eventValidForCrankSync[SIZE_OF_EVENT_ARRAYS]; // For 
 EXTERN const unsigned short totalEventAngleRange;  // 720 for a four stroke, 360 for a two stroke, ? for a rotary. move this to code with a single setting for engine type and generate transformations based on that? All decoders will be 720 for now and only support 4 strokes without hackage.
 EXTERN const unsigned short decoderMaxCodeTime; // The max of how long the primary and secondary ISRs take to run with worst case scheduling loop time!
 
+
+#define SET_SYNC_LEVEL_TO(SYNC_LEVEL)                             \
+KeyUserDebugs.decoderFlags |= SYNC_LEVEL;                         \
+KeyUserDebugs.syncCaughtOnThisEvent = KeyUserDebugs.currentEvent; // End of macro.
+
+
 #define SCHEDULE_ONE_ECT_OUTPUT() \
 if(outputEventExtendNumberOfRepeats[outputEventNumber] > 0){                                                      \
 	*injectorMainControlRegisters[pin] &= injectorMainDisableMasks[pin];                                          \
 	outputEventExtendNumberOfRepeatsRealtime[pin] = outputEventExtendNumberOfRepeats[outputEventNumber];          \
 	outputEventExtendNumberOfRepeatsRealtime[pin]--;                                                              \
 	outputEventExtendRepeatPeriodRealtime[pin] = outputEventExtendRepeatPeriod[outputEventNumber];                \
-	outputEventExtendFinalPeriodRealtime[pin] = outputEventExtendFinalPeriod[outputEventNumber];                  \
+	outputEventDelayFinalPeriodRealtime[pin] = outputEventDelayFinalPeriod[outputEventNumber];                  \
 	*injectorMainTimeRegisters[pin] = timeStamp.timeShorts[1] + outputEventExtendRepeatPeriod[outputEventNumber]; \
 	Counters.pinScheduledWithTimerExtension++;                                                                    \
 }else{                                                                                                            \
@@ -190,7 +198,7 @@ if(outputEventExtendNumberOfRepeats[outputEventNumber] > 0){                    
 }                                                                                                                 \
 TIE |= injectorMainOnMasks[pin];                                                                                  \
 TFLG = injectorMainOnMasks[pin];                                                                                  \
-injectorMainPulseWidthsRealtime[pin] = injectorMainPulseWidthsMath[outputEventNumber];                            \
+outputEventPulseWidthsRealtime[pin] = outputEventPulseWidthsMath[outputEventNumber];                            \
 selfSetTimer &= injectorMainOffMasks[pin];                                                                        // End of macro block!
 
 
@@ -201,16 +209,16 @@ selfSetTimer &= injectorMainOffMasks[pin];                                      
 numberScheduled = 0;                                                                        \
 unsigned char outputEventNumber;                                                            \
 for(outputEventNumber=0;outputEventNumber<MAX_NUMBER_OF_OUTPUT_EVENTS;outputEventNumber++){ \
-	if(outputEventInputEventNumbers[outputEventNumber] == currentEvent){                    \
+	if(outputEventInputEventNumbers[outputEventNumber] == KeyUserDebugs.currentEvent){      \
 		skipEventFlags &= ~(1UL << outputEventNumber);                                      \
 		schedulePortTPin(outputEventNumber, timeStamp);                                     \
 		numberScheduled++;                                                                  \
 	}else if(skipEventFlags & (1UL << outputEventNumber)){                                  \
 		unsigned char eventBeforeCurrent = 0;                                               \
-		if(currentEvent == 0){                                                              \
+		if(KeyUserDebugs.currentEvent == 0){                                                \
 			eventBeforeCurrent = numberOfRealEvents - 1;                                    \
 		}else{                                                                              \
-			eventBeforeCurrent = currentEvent - 1;                                          \
+			eventBeforeCurrent = KeyUserDebugs.currentEvent - 1;                            \
 		}                                                                                   \
                                                                                             \
 		if(outputEventInputEventNumbers[outputEventNumber] == eventBeforeCurrent){          \
@@ -240,6 +248,7 @@ const unsigned char numberOfRealEvents = NUMBER_OF_REAL_EVENTS;
 const unsigned char numberOfVirtualEvents = NUMBER_OF_VIRTUAL_EVENTS;
 const unsigned short totalEventAngleRange = 720 * oneDegree; //TOTAL_EVENT_ANGLE_RANGE;
 const unsigned short decoderMaxCodeTime = DECODER_MAX_CODE_TIME;
+const unsigned char decoderName[] = BASE_FILE_NAME;
 
 #endif
 
@@ -256,53 +265,50 @@ const unsigned short decoderMaxCodeTime = DECODER_MAX_CODE_TIME;
 //
 //// Live vars for subprocess intercommunication
 #define MAX_NUMBER_OF_OUTPUT_EVENTS 24
-EXTERN unsigned char outputEventExtendNumberOfRepeats[MAX_NUMBER_OF_OUTPUT_EVENTS];
-EXTERN unsigned short outputEventExtendRepeatPeriod[MAX_NUMBER_OF_OUTPUT_EVENTS];
-EXTERN unsigned short outputEventExtendFinalPeriod[MAX_NUMBER_OF_OUTPUT_EVENTS];
-EXTERN unsigned char outputEventExtendNumberOfRepeatsHolding[INJECTION_CHANNELS];
-EXTERN unsigned short outputEventExtendRepeatPeriodHolding[INJECTION_CHANNELS];
-EXTERN unsigned short outputEventExtendFinalPeriodHolding[INJECTION_CHANNELS];
-EXTERN unsigned char outputEventExtendNumberOfRepeatsRealtime[INJECTION_CHANNELS];
-EXTERN unsigned short outputEventExtendRepeatPeriodRealtime[INJECTION_CHANNELS];
-EXTERN unsigned short outputEventExtendFinalPeriodRealtime[INJECTION_CHANNELS];
+
 EXTERN unsigned char outputEventPinNumbers[MAX_NUMBER_OF_OUTPUT_EVENTS];            // 0xFF (disabled) by default, populated to actual pin numbers by the scheduler
 EXTERN unsigned char outputEventInputEventNumbers[MAX_NUMBER_OF_OUTPUT_EVENTS];     // 0xFF (disabled) by default, populated to actual input event numbers by the scheduler
-// see injectorMainPulseWidthsMath below, rename to this? EXTERN unsigned short outputEventDurations[MAX_NUMBER_OF_OUTPUT_EVENTS];            // Unused if above are not configured, set from either dwell (stretched or not) or pulsewidth (scaled for number of shots or not)
-// older array immediately below used, rename to this? EXTERN unsigned short outputEventPostInputEventDelays[MAX_NUMBER_OF_OUTPUT_EVENTS]; // Unused if above are not configured, set either fixed or from angle calculations (always the latter for ignition)
-EXTERN unsigned short postReferenceEventDelays[MAX_NUMBER_OF_OUTPUT_EVENTS];
-// old, remove it... EXTERN unsigned char pinEventDurations[6];                 // Set from decoder when setting timer registers etc, set from outputEventDurations, along with other data from there.
-/// @todo TODO back this ^ array with flags saying set, and then clear them when fired, check the flag before setting, and if required buffer in a secondary array, maybe mimic that to several levels such that a queue is formed, and shuffle them through the queue as we go, or move a pointer around or somthing like that.
 
-/// @todo TODO Perhaps use some of the space freed by shrinking all timing tables for this:
-////unsigned long wheelEventTimeStamps[numberOfWheelEvents]; // For logging wheel patterns as observed. LOTS of memory :-/ may not be possible except by sending lastStamp rapidly at low RPM
+EXTERN unsigned short outputEventPulseWidthsMath[MAX_NUMBER_OF_OUTPUT_EVENTS];
+EXTERN unsigned char  outputEventExtendNumberOfRepeats[MAX_NUMBER_OF_OUTPUT_EVENTS];
+EXTERN unsigned short outputEventExtendRepeatPeriod[MAX_NUMBER_OF_OUTPUT_EVENTS];
+EXTERN unsigned short outputEventDelayFinalPeriod[MAX_NUMBER_OF_OUTPUT_EVENTS];
+EXTERN unsigned long  outputEventDelayTotalPeriod[MAX_NUMBER_OF_OUTPUT_EVENTS];
+
+EXTERN unsigned short outputEventPulseWidthsHolding[INJECTION_CHANNELS];
+EXTERN unsigned char outputEventExtendNumberOfRepeatsHolding[INJECTION_CHANNELS];
+EXTERN unsigned short outputEventExtendRepeatPeriodHolding[INJECTION_CHANNELS];
+EXTERN unsigned short outputEventDelayFinalPeriodHolding[INJECTION_CHANNELS];
+
+EXTERN unsigned short outputEventPulseWidthsRealtime[INJECTION_CHANNELS];
+EXTERN unsigned char outputEventExtendNumberOfRepeatsRealtime[INJECTION_CHANNELS];
+EXTERN unsigned short outputEventExtendRepeatPeriodRealtime[INJECTION_CHANNELS];
+EXTERN unsigned short outputEventDelayFinalPeriodRealtime[INJECTION_CHANNELS];
+
+EXTERN unsigned short injectorMainStartOffsetHolding[INJECTION_CHANNELS];
 
 
-
-/* WAS injector stuff, now GP output stuff, and soon to be ign stuff, maybe, refactor all names... */
 
 /* Register addresses */
-EXTERN volatile unsigned short * volatile injectorMainTimeRegisters[INJECTION_CHANNELS];
-EXTERN volatile unsigned char * volatile injectorMainControlRegisters[INJECTION_CHANNELS];
+EXTERN volatile unsigned short * volatile injectorMainTimeRegisters[INJECTION_CHANNELS]; // Static during a run, setup at init, shouldn't be in RAM, FIXME
+EXTERN volatile unsigned char * volatile injectorMainControlRegisters[INJECTION_CHANNELS]; // Static during a run, setup at init, shouldn't be in RAM, FIXME
+
 
 /* Timer holding vars (init not required) */
-EXTERN unsigned short injectorMainStartOffsetHolding[INJECTION_CHANNELS];
-EXTERN unsigned long injectorMainEndTimes[INJECTION_CHANNELS];
-
-// TODO make these names consistent
-/* Code time to run variables (init not required) */
-EXTERN unsigned short injectorCodeOpenRuntimes[INJECTION_CHANNELS];
-EXTERN unsigned short injectorCodeCloseRuntimes[INJECTION_CHANNELS];
-
-/* individual channel pulsewidths (init not required) */
-EXTERN unsigned short injectorMainPulseWidthsMath[MAX_NUMBER_OF_OUTPUT_EVENTS];
-EXTERN unsigned short injectorMainPulseWidthsRealtime[INJECTION_CHANNELS];
-EXTERN unsigned short injectorMainPulseWidthsHolding[INJECTION_CHANNELS];
-
+EXTERN unsigned long injectorMainEndTimes[INJECTION_CHANNELS]; // Used for scheduling calculations
 /* Channel latencies (init not required) */
-EXTERN unsigned short injectorCodeLatencies[INJECTION_CHANNELS];
+EXTERN unsigned short injectorCodeLatencies[INJECTION_CHANNELS]; // Used for injector control in a dysfunctional way.
 
 
+/* Code time to run variables (init not required) */
+EXTERN unsigned short injectorCodeOpenRuntimes[INJECTION_CHANNELS]; // Stats only, remove or change to something accessible
+EXTERN unsigned short injectorCodeCloseRuntimes[INJECTION_CHANNELS]; // Stats only, remove or change to something accessible
 
+
+/// @todo TODO Perhaps use some of the space freed by shrinking all timing tables for this:
+////unsigned long wheelEventTimeStamps[numberOfWheelEvents]; // For logging wheel patterns as observed
+// Could be useful for really nice RPM readings done in the main loop.
+// Logging of this nature will use the serial buffer which it will hold a lock over for the duration of the log.
 
 
 // Helpers - force all these to be inlined!

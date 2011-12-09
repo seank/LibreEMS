@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/**	@file freeEMS.h
+/** @file
+ *
  * @ingroup allHeaders
  * @ingroup globalHeaders
  *
@@ -57,18 +58,24 @@
 #include "globalDefines.h"
 
 /* Include data types at the top as other includes use them */
-#include "structs.h" /// @todo TODO split this out into more chunks as it's too big.
+#include "generalTypes.h"
+#include "counterTypes.h"
+#include "containerTypes.h"
+#include "tableTypes.h"
 #include "FixedConfigs.h"
 #include "TunableConfigs.h"
+
+/* Run size checks on all of the key struct types! */
+#include "typeChecks.h"
 
 /* Global constant declarations */
 #include "globalConstants.h"
 
 
-/* Where extern is used instead of EXTERN it indicates that   	*/
-/* the variable is initialised in staticInit.c, if someone    	*/
-/* attempts to use extern and doesn't initialise the variable 	*/
-/* statically then the linker should error on undefined symbol	*/
+/* Where extern is used instead of EXTERN it indicates that    */
+/* the variable is initialised in staticInit.c, if someone     */
+/* attempts to use extern and doesn't initialise the variable  */
+/* statically then the linker should error on undefined symbol */
 
 
 #ifdef EXTERN
@@ -88,13 +95,13 @@
  *
  * BEWARE : Be explicit!!
  *
- * char			8 bit (defaults to unsigned, but always specify signed/unsigned anyway)
- * short		16 bit (defaults to signed, but always specify signed/unsigned anyway)
- * int			16 bit DO NOT USE! (current compile flags make this 16 bits, but a change of flags could will change your program if you use this because they will all be 32 bit all of a sudden)
- * long			32 bit (defaults to signed, but always specify signed/unsigned anyway)
- * long long	64 bit (inefficient, avoid these, if using : defaults to signed, but always specify signed/unsigned anyway)
- * float		32 bit IEEE floating point numbers (inefficient, avoid these, used fixed point math)
- * double		64 bit IEEE floating point numbers (inefficient, avoid these, used fixed point math)
+ * char        8 bit (defaults to unsigned, but always specify signed/unsigned anyway)
+ * short      16 bit (defaults to signed, but always specify signed/unsigned anyway)
+ * int        16 bit DO NOT USE! (current compile flags make this 16 bits, but a change of flags could will change your program if you use this because they will all be 32 bit all of a sudden)
+ * long       32 bit (defaults to signed, but always specify signed/unsigned anyway)
+ * long long  64 bit (inefficient, avoid these, if using : defaults to signed, but always specify signed/unsigned anyway)
+ * float      32 bit IEEE floating point numbers (inefficient, avoid these, used fixed point math)
+ * double     64 bit IEEE floating point numbers (inefficient, avoid these, used fixed point math)
  */
 
 
@@ -103,32 +110,14 @@
 
 
 // temporary test vars
-extern unsigned short tachoPeriod;
 EXTERN unsigned char portHDebounce;
 
-// these should not be here... TODO move to a comms header
-#define asyncDatalogOff			0x00
-#define asyncDatalogBasic		0x01
-// currently unimplemented :
-#define asyncDatalogConfig		0x02
-#define asyncDatalogLogic		0x03
-#define asyncDatalogADC			0x04
-#define asyncDatalogCircBuf		0x05
-#define asyncDatalogCircCAS		0x06
-#define asyncDatalogTrigger		0x07 // what is this
-#define asyncDatalogByteLA      0x08 // ^ probably this...
-EXTERN unsigned short configuredBasicDatalogLength;
-
-
-// temporary test vars
-EXTERN unsigned char ShouldSendLog;
 
 /* Declare instances of variable structs for use */
-EXTERN Clock Clocks;					/* Timer Clocks for various functions */
-EXTERN Counter Counters;				/* Execution count for various blocks of code */
-EXTERN RuntimeVar RuntimeVars;			/* Execution times for various blocks of code */
-EXTERN ISRLatencyVar ISRLatencyVars;	/* Delay in execution start for various blocks of code */
-
+EXTERN Clock Clocks;                  ///< Timer Clocks for various functions.
+EXTERN Counter Counters;              ///< Execution count for various blocks of code.
+EXTERN KeyUserDebug KeyUserDebugs;    ///< Formalised key logging vars in one place.
+EXTERN Flaggable Flaggables;          ///< The single instance of our flaggable struct.
 
 /** @page bankedRunningVariables Banked Running Variables
  *
@@ -163,26 +152,18 @@ EXTERN ISRLatencyVar ISRLatencyVars;	/* Delay in execution start for various blo
  * tracking and is well worth the extra memory expense and complication.
  */
 
-EXTERN CoreVar* CoreVars;			/** Pointer to the core running variables */
-EXTERN CoreVar CoreVars0;			/** Bank 0 core running variables */
+EXTERN CoreVar* CoreVars; /** Pointer to the core running variables */
+EXTERN CoreVar CoreVars0; /** Bank 0 core running variables */
 /* If we move to xgate or isr driven logging, add bank 1 back in */
 
-EXTERN DerivedVar* DerivedVars;		/** Pointer to the secondary running variables */
-EXTERN DerivedVar DerivedVars0;		/** Bank 0 secondary running variables */
+EXTERN DerivedVar* DerivedVars; /** Pointer to the secondary running variables */
+EXTERN DerivedVar DerivedVars0; /** Bank 0 secondary running variables */
 /* If we move to xgate or isr driven logging, add bank 1 back in */
 
-EXTERN ADCArray* ADCArrays;			/** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
-EXTERN ADCArray* ADCArraysRecord;	/** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
-EXTERN ADCArray ADCArrays0;			/** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
-EXTERN ADCArray ADCArrays1;			/** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
-
-EXTERN ADCArray* asyncADCArrays;		/** secondary adc storage area for asynchronously sampling in the RTC/RTI ISR */
-EXTERN ADCArray* asyncADCArraysRecord;	/** secondary adc storage area for asynchronously sampling in the RTC/RTI ISR */
-EXTERN ADCArray asyncADCArrays0;		/** secondary adc storage area for asynchronously sampling in the RTC/RTI ISR */
-EXTERN ADCArray asyncADCArrays1;		/** secondary adc storage area for asynchronously sampling in the RTC/RTI ISR */
-
-EXTERN unsigned short* mathSampleTimeStamp; // TODO temp, remove
-EXTERN unsigned short* mathSampleTimeStampRecord; // TODO temp, remove
+EXTERN ADCBuffer* ADCBuffers;       /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
+EXTERN ADCBuffer* ADCBuffersRecord; /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
+EXTERN ADCBuffer ADCBuffers0;       /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
+EXTERN ADCBuffer ADCBuffers1;       /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
 
 /*break this on purpose so i fix it later
 #define VETablereference (*((volatile mainTable*)(0x1000)))
@@ -281,12 +262,10 @@ EXTERN unsigned char currentTimeRPage;
 extern unsigned short masterPulseWidth;
 EXTERN unsigned short totalDwell;
 
-EXTERN unsigned long bootFuelConst;	/* constant derived from configurable constants */
-EXTERN unsigned short TPSMAPRange;	/* The MAP range used to convert fake TPS from MAP and vice versa */
-EXTERN unsigned short TPSADCRange;	/* The ADC range used to generate TPS percentage */
+EXTERN unsigned long bootFuelConst;  /* constant derived from configurable constants */
+EXTERN unsigned short TPSMAPRange;   /* The MAP range used to convert fake TPS from MAP and vice versa */
+EXTERN unsigned short TPSADCRange;   /* The ADC range used to generate TPS percentage */
 EXTERN unsigned short boundedTPSADC; // temp to view to debug
-
-EXTERN unsigned short bootTimeAAP; /* TODO populate this at switch on time depending on a few things. */
 
 
 /* ALL STATUS STUFF HERE */
@@ -295,56 +274,69 @@ EXTERN unsigned short bootTimeAAP; /* TODO populate this at switch on time depen
 /* State variables : 0 = false (don't forget to change the init mask to suit!) */
 EXTERN unsigned char coreStatusA;	/* Each bit represents the state of some core parameter, masks below */
 /* Bit masks for coreStatusA */ // TODO needs a rename as does coresetingsA
-#define FUEL_PUMP_PRIME	BIT0		/*  0 */
-#define STAGED_REQUIRED	BIT1		/*  1 Fire the staged injectors */
-#define CALC_FUEL_IGN	BIT2		/*  2 Fuel and ignition require calculation (i.e. variables have been updated) */
-#define FORCE_READING	BIT3		/*  3 Flag to force ADC sampling at low rpm/stall */
-#define COREA04         BIT4		/*  4 */
-#define COREA05         BIT5		/*  5 */
-#define COREA06         BIT6		/*  6 */
-//#define COREA07         BIT7		/*  7 Currently used for dual stop byte hack... */
+#define FUEL_PUMP_PRIME BIT0 /* 0 */
+#define STAGED_REQUIRED BIT1 /* 1 Fire the staged injectors */
+#define CALC_FUEL_IGN   BIT2 /* 2 Fuel and ignition require calculation (i.e. variables have been updated) */
+#define FORCE_READING   BIT3 /* 3 Flag to force ADC sampling at low rpm/stall */
+#define BENCH_TEST_ON   BIT4 /* 4 Bench test running TEMPORARY */
+#define COREA05         BIT5 /* 5 */
+#define COREA06         BIT6 /* 6 */
+//#define COREA07         BIT7 /* 7 Currently used for dual stop byte hack... */
 
-#define CLEAR_FUEL_PUMP_PRIME NBIT0_16	/* */
-#define STAGED_NOT_REQUIRED	NBIT1_16	/*  9 Do not fire the staged injectors */
-#define CLEAR_CALC_FUEL_IGN	NBIT2_16	/* 10 Fuel and ignition don't require calculation */
-#define CLEAR_FORCE_READING	NBIT3_16	/* 11 Clear flag to force ADC sampling at low rpm/stall */
 
+#define CLEAR_FUEL_PUMP_PRIME NBIT0 /* */
+#define STAGED_NOT_REQUIRED   NBIT1 /*  9 Do not fire the staged injectors */
+#define CLEAR_CALC_FUEL_IGN   NBIT2 /* 10 Fuel and ignition don't require calculation */
+#define CLEAR_FORCE_READING   NBIT3 /* 11 Clear flag to force ADC sampling at low rpm/stall */
+#define CLEAR_BENCH_TEST_ON   NBIT4
 
 //TODO make this volatile?
 /* ECT IC extension variable (init not required, don't care where it is, only differences between figures) */
-unsigned short timerExtensionClock;						/* Increment for each overflow of the main timer, allows finer resolution and longer time period */
+unsigned short timerExtensionClock; /* Increment for each overflow of the main timer, allows finer resolution and longer time period */
 /* section 10.3.5 page 290 68hc11 reference manual e.g. groups.csail.mit.edu/drl/courses/cs54-2001s/pdf/M68HC11RM.pdf */
+
+
+// Default to off
+#ifndef DECODER_BENCHMARKS
+#define DECODER_BENCHMARKS FALSE
+#else
+#undef DECODER_BENCMARKS
+#define DECODER_BENCHMARKS TRUE
+#endif
+
+
+/** This macro turns a pin ON based on an enable flag, a port address and a pin
+ * mask for that port. It is used to keep the code clean and free from ifdefs
+ * whilst allowing a developer to turn on benchmarking outputs very easily. Note
+ * that it gets optimised out due to the constant literal conditional required.
+ */
+#define DEBUG_TURN_PIN_ON(BENCHMARK_ENABLED, PIN_ON_MASK, PORT_ADDRESS)   \
+if(BENCHMARK_ENABLED){                                                    \
+	PORT_ADDRESS |= PIN_ON_MASK;                                          \
+}                                                                         // End macro
+
+
+/** This macro turns a pin OFF based on an enable flag, a port address and a pin
+ * mask for that port. It is used to keep the code clean and free from ifdefs
+ * whilst allowing a developer to turn on benchmarking outputs very easily. Note
+ * that it gets optimised out due to the constant literal conditional required.
+ */
+#define DEBUG_TURN_PIN_OFF(BENCHMARK_ENABLED, PIN_OFF_MASK, PORT_ADDRESS) \
+if(BENCHMARK_ENABLED){                                                    \
+	PORT_ADDRESS &= PIN_OFF_MASK;                                         \
+}                                                                         // End macro
 
 
 /* For extracting 32 bit long time stamps from the overflow counter and timer registers */
 typedef union { /* Declare Union http://www.esacademy.com/faq/docs/cpointers/structures.htm */
-    unsigned long timeLong;
-    unsigned short timeShorts[2];
+	unsigned long timeLong;
+	unsigned short timeShorts[2];
 } LongTime;
 
 
-/* Flag registers, init to zero required */
-EXTERN unsigned char mainOn;				/* Keep track of where we are at for possible use as multi interrupt per injection */
-EXTERN unsigned short dwellOn;				/* Keep track of ignition output state */
-EXTERN unsigned char stagedOn;				/* Ensure we turn an injector off again if we turn it on. */
-EXTERN unsigned char selfSetTimer;			/* Set the start time of injection at the end of the last one in the channels ISR instead of the input ISR */
-EXTERN unsigned char rescheduleFuelFlags;	/* Pulse width is probably longer than engine cycle so schedule a restart at the next start time */
-
-
-
-
-EXTERN unsigned short primaryTeethDroppedFromLackOfSync;
-
-/* Ignition stuff */
-
-// ignition experimentation stuff
-EXTERN unsigned char dwellQueueLength;				/* 0 = no dwell pending start, 1 = single event scheduled, 2 = one scheduled, and one in the queue, etc */
-EXTERN unsigned char ignitionQueueLength;			/* 0 = no spark event pending, 1 = single event scheduled, 2 = one scheduled, and one in the queue, etc */
-EXTERN unsigned char nextDwellChannel;				/* Which one to bang off next */
-EXTERN unsigned char nextIgnitionChannel;			/* Which one to bang off next */
-EXTERN unsigned short ignitionAdvances[IGNITION_CHANNELS * 2]; // Uses channel + offset to have two values at any time
-EXTERN unsigned short queuedDwellOffsets[IGNITION_CHANNELS]; // Uses next channel as index
-EXTERN unsigned short queuedIgnitionOffsets[IGNITION_CHANNELS]; // Uses next channel as index
+#ifdef XGATE
+#include "xgateGlobals.h"
+#endif
 
 
 #undef EXTERN

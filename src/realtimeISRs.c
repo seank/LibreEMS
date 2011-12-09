@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010, 2011 Fred Cooke, Sean Keys
+ * Copyright 2008-2011 Fred Cooke, Sean Keys
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/**	@file realtimeISRs.c
+/** @file
+ *
  * @ingroup interruptHandlers
  *
  * @brief Real time interrupts
@@ -32,8 +33,6 @@
  * This file contains real time interrupt handlers. Mainly it holds the RTI
  * handler itself, however the modulus down counter and ETC timer overflow
  * functions are here too.
- *
- * @author Fred Cooke
  */
 
 
@@ -56,8 +55,7 @@ void RTIISR(){
 	/* Clear the RTI flag */
 	CRGFLG = 0x80;
 
-	/* Record time stamp for code run time reporting */
-	unsigned short codeStartTimeStamp = TCNT;
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT3, PORTB);
 
 	/* Increment the counter */
 	Clocks.realTimeClockMain++;
@@ -85,14 +83,16 @@ void RTIISR(){
 			PORTA |= BIT7;
 		}
 
+
+#ifdef XGATE_TESTS
+#include "xgateTests.c"
+#endif
+
+
 		/* Every 100 millis is one tenth */
 		if(Clocks.millisToTenths % 100 == 0){
 			/* Increment the tenths counter */
 			Clocks.realTimeClockTenths++;
-
-#ifdef XGATE
-//#include "xgateTests.c"
-#endif
 
 			/* Increment the tenths roll over variable */
 			Clocks.tenthsToSeconds++;
@@ -128,9 +128,6 @@ void RTIISR(){
 					PORTA &= NBIT7;
 				}
 
-				// temp throttling for log due to tuner performance issues (in the bedroom)
-				ShouldSendLog = TRUE;
-
 				/* Every 60 seconds is one minute, 65535 minutes is enough for us :-) */
 				if(Clocks.secondsToMinutes % 60 == 0){
 					/* Increment the minutes counter */
@@ -150,35 +147,7 @@ void RTIISR(){
 			}
 		}
 	}
-	RuntimeVars.RTCRuntime = TCNT - codeStartTimeStamp;
-}
-
-
-/** @brief Tacho pulse generator
- *
- * Currently this is being used to generate a variable frequency tachometer
- * output. Although this is a bit of a waste of a timer resource it does allow
- * tachometers that were intended for engines with a different cylinder count
- * to be used where it would otherwise not be possible.
- *
- * @author Fred Cooke
- */
-void ModDownCtrISR(){
-	/* Clear the modulus down counter interrupt flag */
-	MCFLG = 0x80;
-
-	/* If the rpm isn't genuine go ultra slow */
-	if(engineCyclePeriod == ticksPerCycleAtOneRPM){
-		tachoPeriod = 65535;
-	}else{
-		/* Use engine cycle period to setup the frequency of this counter and thereby act as a tacho out */
-		tachoPeriod = (unsigned long)engineCyclePeriod / fixedConfigs1.tachoSettings.tachoTotalFactor;
-	}
-	/* Set the count down value */
-	MCCNT = tachoPeriod;
-
-	/* Bit bang the output port */
-//	PO-leave this alone for now-RTA ^= 0x40; // SM pin (A6)
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT3, PORTB);
 }
 
 
@@ -186,16 +155,20 @@ void ModDownCtrISR(){
  *
  * When the ECT free running timer hits 65535 and rolls over, this is run. Its
  * job is to extend the timer to an effective 32 bits for longer measuring much
- * longer periods with the same resolution.
+ * longer periods with the same resolution. Please see section 10.5.5 of the
+ * 68HC11 reference manual for more information on this technique!
+ *
+ * @warning The extension var should be incremented before the flag is cleared!
  *
  * @author Fred Cooke
  */
 void TimerOverflow(){
 	/* Increment the timer extension variable */
 	timerExtensionClock++;
-
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT5, PORTB); // TODO Should this go after the flag, or before the timer inc??? 6 possibilities here!
 	/* Clear the timer overflow interrupt flag */
 	TFLGOF = 0x80;
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT5, PORTB);
 }
 
 

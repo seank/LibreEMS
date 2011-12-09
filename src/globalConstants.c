@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,37 +24,19 @@
  */
 
 
-/**	@file globalConstants.c
+/** @file
+ *
  * @ingroup dataInitialisers
  *
  * @brief Global constant values
  *
  * All global constants values are, and should be, defined here.
- *
- * @author Fred Cooke
  */
 
 
 #define GLOBAL_CONSTANTS_C
 #define NO_CONST_ARRAYS
 #include "inc/freeEMS.h"
-
-
-/* Types summary
- *
- * BEWARE : Be explicit!!
- *
- * char			8 bit (defaults to unsigned, but always specify signed/unsigned anyway)
- * short		16 bit (defaults to signed, but always specify signed/unsigned anyway)
- * int			16 bit DO NOT USE! (current compile flags make this 16 bits, but a change of flags could will change your program if you use this because they will all be 32 bit all of a sudden)
- * long			32 bit (defaults to signed, but always specify signed/unsigned anyway)
- * long long	64 bit (inefficient, avoid these, if using : defaults to signed, but always specify signed/unsigned anyway)
- * float		32 bit IEEE floating point numbers (inefficient, avoid these, used fixed point math)
- * double		64 bit IEEE floating point numbers (inefficient, avoid these, used fixed point math)
- */
-
-
-const unsigned short maxBasicDatalogLength = sizeof(CoreVar) + sizeof(DerivedVar);
 
 
 /* Constants */
@@ -68,13 +50,16 @@ const unsigned short maxBasicDatalogLength = sizeof(CoreVar) + sizeof(DerivedVar
  * This field consists of 3 chars for a 3 part version number and a free form string. For any unique string the version
  * number is also unique. In this way tools can easily support a range of versions for a specific unique string ID
  */
-const unsigned char interfaceVersionAndType[20] = {0,0,0,'I','F','r','e','e','E','M','S',' ','V','a','n','i','l','l','a',0};
+const unsigned char interfaceVersion[INTERFACE_VERSION_LENGTH] = { INTERFACE_VERSION }; // TODO change spec to not have numerics and to parse from string, maybe pull from somewhere?
 
 /** Displayable firmware version identifier
  *
  * This should change every time the code is changed at all (even a little) before each release.
  */
-const unsigned char firmwareVersion[31] = {"FreeEMS Vanilla 0.1.2 SNAPSHOT"};
+const unsigned char firmwareVersion[FIRMWARE_VERSION_LENGTH] = { FIRMWARE_VERSION }; // TODO shorten the comments here, add docs and refer to them
+const unsigned char buildTimeAndDate[FIRMWARE_BUILD_DATE_LENGTH] = { FIRMWARE_BUILD_DATE }; ///< GCC supplied compiler version
+const unsigned char compilerVersion[COMPILER_VERSION_LENGTH] = { __VERSION__ };             ///< GCC supplied compiler version
+const unsigned char operatingSystem[OPERATING_SYSTEM_LENGTH] = { OPERATING_SYSTEM };        ///< Operating system type
 
 /** Divisors and untunable physical constants combined into a single master fuel constant
  *
@@ -128,10 +113,6 @@ const unsigned short injectorMinimumPulseWidth = 100;
 /* Masks for setting ignition status bits and turning on the channels themselves */
 /* Masks for clearing ignition status bits and turning off the channels themselves */
 
-
-/* Dwell masks                                            { CYL1 B0, CYL2 B1, CYL3  B2, CYL4  B3, CYL5  B4, CYL6  B5, CYL7  B6, CYL8  B7, CYL9 A0,CYL10 A1,CYL11 A2,CYL12 A3}; */
-const unsigned short dwellStartMasks[IGNITION_CHANNELS] = { BIT8_16, BIT9_16, BIT10_16, BIT11_16, BIT12_16, BIT13_16, BIT14_16, BIT15_16, BIT0_16, BIT1_16, BIT2_16, BIT3_16};		/* Set of masks such that a cylinder can be dwelled with a single line of code */
-const unsigned short ignitionMasks[IGNITION_CHANNELS]   = {NBIT8_16,NBIT9_16,NBIT10_16,NBIT11_16,NBIT12_16,NBIT13_16,NBIT14_16,NBIT15_16,NBIT0_16,NBIT1_16,NBIT2_16,NBIT3_16};		/* Set of masks such that a cylinder can be fired with a single line of code */
 
 /* Injection masks */
 

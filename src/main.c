@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010, 2011 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,7 @@
  */
 
 
-/** @file main.c
+/** @file
  *
  * @brief The main function!
  *
@@ -77,9 +77,9 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 			/* Check to ensure that a reading wasn't take before we entered a non interruptable state */
 			if(coreStatusA & FORCE_READING){ // do we still need to do this TODO ?
 
-				sampleEachADC(ADCArraysRecord); // TODO still need to do a pair of loops and clock these two functions for performance.
-				//sampleLoopADC(&ADCArrays);
-				resetToNonRunningState(0);
+				sampleEachADC(ADCBuffersRecord); // TODO still need to do a pair of loops and clock these two functions for performance.
+				//sampleLoopADC(&ADCBuffers);
+				resetToNonRunningState(EVENT_ARRIVAL_TIMEOUT);
 				Counters.timeoutADCreadings++;
 
 				/* Set flag to say calc required */
@@ -98,20 +98,16 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 			/* Atomic block to ensure that we don't clear the flag for the next data set when things are tight */
 
 			/* Switch input bank so that we have a stable set of the latest data */
-			if(ADCArrays == &ADCArrays1){
+			if(ADCBuffers == &ADCBuffers1){
 				ticksPerDegree = &ticksPerDegree0; // TODO temp, remove, maybe
 				ticksPerDegreeRecord = &ticksPerDegree1; // TODO temp, remove, maybe
-				ADCArrays = &ADCArrays0;
-				ADCArraysRecord = &ADCArrays1;
-				mathSampleTimeStamp = &ISRLatencyVars.mathSampleTimeStamp0; // TODO temp, remove
-				mathSampleTimeStampRecord = &ISRLatencyVars.mathSampleTimeStamp1; // TODO temp, remove
+				ADCBuffers = &ADCBuffers0;
+				ADCBuffersRecord = &ADCBuffers1;
 			}else{
 				ticksPerDegree = &ticksPerDegree1; // TODO temp, remove, maybe
 				ticksPerDegreeRecord = &ticksPerDegree0; // TODO temp, remove, maybe
-				ADCArrays = &ADCArrays1;
-				ADCArraysRecord = &ADCArrays0;
-				mathSampleTimeStamp = &ISRLatencyVars.mathSampleTimeStamp1; // TODO temp, remove
-				mathSampleTimeStampRecord = &ISRLatencyVars.mathSampleTimeStamp0; // TODO temp, remove
+				ADCBuffers = &ADCBuffers1;
+				ADCBuffersRecord = &ADCBuffers0;
 			}
 
 			/* Clear the calc required flag */
@@ -119,36 +115,24 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 
 			ATOMIC_END(); /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
 
-			/* Store the latency from sample time to runtime */
-			ISRLatencyVars.mathLatency = TCNT - *mathSampleTimeStamp;
+			// TODO DEBUG/TUNING MACRO HERE!
 			/* Keep track of how many calcs we are managing per second... */
 			Counters.calculationsPerformed++;
-			/* ...and how long they take each */
-			unsigned short mathStartTime = TCNT;
 
 			/* Generate the core variables from sensor input and recorded tooth timings */
 			generateCoreVars();
-
-			RuntimeVars.genCoreVarsRuntime = TCNT - mathStartTime;
-			unsigned short derivedStartTime = TCNT;
+			// TODO DEBUG/TUNING MACRO HERE!
 
 			/* Generate the derived variables from the core variables based on settings */
 			generateDerivedVars();
-
-			RuntimeVars.genDerivedVarsRuntime = TCNT - derivedStartTime;
-			unsigned short calcsStartTime = TCNT;
+			// TODO DEBUG/TUNING MACRO HERE!
 
 			/* Perform the calculations TODO possibly move this to the software interrupt if it makes sense to do so */
 			calculateFuelAndIgnition();
-
-			RuntimeVars.calcsRuntime = TCNT - calcsStartTime;
-			/* Record the runtime of all the math total */
-			RuntimeVars.mathTotalRuntime = TCNT - mathStartTime;
-
-			RuntimeVars.mathSumRuntime = RuntimeVars.calcsRuntime + RuntimeVars.genCoreVarsRuntime + RuntimeVars.genDerivedVarsRuntime;
+			// TODO DEBUG/TUNING MACRO HERE!
 		}else{
 			/* In the event that no calcs are required, sleep a little before returning to retry. */
-			sleepMicro(RuntimeVars.mathTotalRuntime); // not doing this will cause the ISR lockouts to run for too high a proportion of the time
+			sleepMicro(3000); // TODO tune this, and then replace it completely. not doing this will cause the ISR lockouts to run for too high a proportion of the time
 			/* Using 0.8 ticks as micros so it will run for a little longer than the math did */
 		}
 
@@ -164,7 +148,7 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 			}else{// if(lastCalcCount != Counters.calculationsPerformed){ // substitute true for full speed continuous stream test...
 
 				/* send asynchronous data log if required */
-				switch (TablesB.SmallTablesB.datalogStreamType) {
+				switch (TablesB.SmallTablesB.loggingSettings.datalogStreamType) {
 					case asyncDatalogOff:
 					{
 						break;
@@ -191,7 +175,7 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 						TXBufferCurrentPositionHandler += 2;
 
 						/* Set the length */
-						*((unsigned short*)TXBufferCurrentPositionHandler) = configuredBasicDatalogLength;
+						*((unsigned short*)TXBufferCurrentPositionHandler) = TablesB.SmallTablesB.loggingSettings.basicDatalogLength;
 						TXBufferCurrentPositionHandler += 2;
 
 						/* populate data log */
@@ -199,37 +183,31 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 						finaliseAndSend(0);
 						break;
 					}
-					case asyncDatalogConfig:
+					case asyncDatalogScratchPad:
 					{
-						/// TODO @todo
 						break;
 					}
-					case asyncDatalogTrigger:
+					case asyncDatalogStructs:
 					{
-						/// TODO @todo
 						break;
 					}
-					case asyncDatalogADC:
+					case asyncDatalogPosition:
 					{
-						/// TODO @todo
 						break;
 					}
-					case asyncDatalogCircBuf:
+					case asyncDatalogBlockBytes:
 					{
-						/// TODO @todo
 						break;
 					}
-					case asyncDatalogCircCAS:
+					case asyncDatalogBlockWords:
 					{
-						/// TODO @todo
 						break;
 					}
-					case asyncDatalogLogic:
+					case asyncDatalogBlockLongs:
 					{
-						/// TODO @todo
 						break;
 					}
-					case asyncDatalogByteLA:
+					case asyncDatalogStreamByte:
 					{
 						/* Flag that we are transmitting! */
 						TXBufferInUseFlags |= COM_SET_SCI0_INTERFACE_ID;
@@ -255,6 +233,14 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 						TXBufferCurrentPositionHandler++;
 
 						finaliseAndSend(0);
+						break;
+					}
+					case asyncDatalogStreamWord:
+					{
+						break;
+					}
+					case asyncDatalogStreamLong:
+					{
 						break;
 					}
 				}

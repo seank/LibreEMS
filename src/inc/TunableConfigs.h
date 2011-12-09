@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,9 +24,11 @@
  */
 
 
-/**	@file TunableConfigs.h
+/** @file
+ *
  * @ingroup allHeaders
  * @ingroup globalHeaders
+ * @ingroup dataStructures
  *
  * @brief Struct typedefs for tunable configuration
  *
@@ -37,8 +39,6 @@
  * You should add your configuration item here if it is best that it is adjusted with
  * instant results on a running engine. For everything else, please consider placing
  * it in one of the fixed configuration structs.
- *
- * @author Fred Cooke
  */
 
 
@@ -54,6 +54,7 @@
 #define ARRAY_OF_16_VOLTAGES      { 6000,  7200,  8400,  9000,  9600, 10200, 10800, 11400, 12000, 12600, 13200, 13800, 14400, 17800, 21000, 24500}
 /** An array of 16 dwell times in native ticks. */
 #define ARRAY_OF_16_DWELLS        {18188, 14375, 11625, 10625,  9875,  9188,  8688,  8125,  7688,  7188,  6844,  6500,  6188,  4750,  3563,  2500}
+#define LS1COILS_16_DWELLS        { 9875,  9875,  9875,  9875,  9875,  9188,  8688,  8125,  7688,  7188,  6844,  6500,  6188,  4750,  3563,  2500}
 #define BRNVOLVO_16_DWELLS        {29100, 23000, 18600, 17000, 15800, 14700, 13900, 13000, 12300, 11500, 10950, 10400,  9900,  7600,  5700,  4000}
 #define SEANKLT1_16_DWELLS        { 2500,  2500,  2500,  2500,  2500,  2500,  2500,  2500,  2500,  2500,  2500,  2500,  2500,  2500,  2500,  2500}
 /** An array of 16 maximum dwell times in native ticks. */
@@ -78,6 +79,26 @@
 #define ARRAY_OF_6_FUEL_TRIMS	{32768, 32768, 32768, 32768, 32768, 32768}
 
 
+/** Holds all configuration for logging.
+ *
+ * These are in tunable config such that the system can pick up where it left
+ * off if reset with settings burned to flash, or simply switch back to default
+ * if changed in ram and not burned and then reset.
+ */
+typedef struct {
+	unsigned char datalogStreamType;            ///< Which type of datalog to pump out as fast as we can. @see commsCore.h
+	unsigned char datalogPollingType;           ///< Which type of datalog to pump out as fast as we can. @see commsCore.h
+	unsigned short basicDatalogLength;          ///< How much of the basic datalog to send, cuts off the trailing end.
+	void* datalogByteStreamSourceAddress;       ///< Where to grab our data from.
+	void* datalogWordStreamSourceAddress;       ///< Where to grab our data from.
+	void* datalogLongStreamSourceAddressFirst;  ///< Where to grab our data from. If the second address is set to zero, get 4 bytes from this address.
+	void* datalogLongStreamSourceAddressSecond; ///< Where to grab our data from. If this is non-zero, get 2 bytes from the first address and 2 from this address.
+	// TODO scratch pad configs
+	// TODO structs configs
+	// Note, position type has no config and "just works"
+} loggingSetting;
+
+
 #define SMALL_TABLES_1_FILLER_SIZE (flashSectorSize - (sizeof(twoDTableUS) * 8))  // Update this if adding another table!
 /**
  * One of four structs of live tunable data such as small tables and fuel trims
@@ -87,47 +108,41 @@
  * - The lookupBlockDetails() function in blockDetailsLookup.c
  * - The JSON data map and other related firmware interface definition files
  *
- * @todo TODO add doxy comments for each element of the struct
  */
 typedef struct {
-	twoDTableUS dwellDesiredVersusVoltageTable;
-	twoDTableUS injectorDeadTimeTable;
-	twoDTableUS postStartEnrichmentTable;
-	twoDTableUS postStartTaperTimeTable;
-	twoDTableUS engineTempEnrichmentTableFixed;
-	/// @todo TODO define units. perhaps micro litres (cubic milli meters) would be good, 5 - 100 seem to be the norm 327.68 = 65535/200
-	twoDTableUS primingVolumeTable;
-	twoDTableUS engineTempEnrichmentTablePercent;
-	twoDTableUS dwellMaxVersusRPMTable;
+	twoDTableUS dwellDesiredVersusVoltageTable;   ///< Standard dwell curve dependent on voltage.
+	twoDTableUS injectorDeadTimeTable;            ///< Injector dead time curve dependent on voltage.
+	twoDTableUS postStartEnrichmentTable;         ///< Unused at this time.
+	twoDTableUS postStartTaperTimeTable;          ///< Unused at this time.
+	twoDTableUS engineTempEnrichmentTableFixed;   ///< Unused at this time.
+	twoDTableUS primingVolumeTable;               ///< Unused at this time. @todo TODO define units. perhaps micro litres (cubic milli meters) would be good, 5 - 100 seem to be the norm 327.68 = 65535/200
+	twoDTableUS engineTempEnrichmentTablePercent; ///< Engine temperature enrichment by percent, AKA warmup curve.
+	twoDTableUS dwellMaxVersusRPMTable;           ///< Unused at this time.
 	unsigned char filler[SMALL_TABLES_1_FILLER_SIZE];
 } SmallTables1;
-CASSERT((sizeof(SmallTables1) == flashSectorSize), SmallTables1)
 
 
-#define SMALL_TABLES_2_FILLER_SIZE (flashSectorSize - (1 + 12)) // Update this if adding another table!
+#define SMALL_TABLES_2_FILLER_SIZE (flashSectorSize - (sizeof(loggingSetting) + 12)) // Update this if adding another table/struct!
 /** @copydoc SmallTables1 */
 typedef struct {
-	unsigned char datalogStreamType;
-	unsigned short perCylinderFuelTrims[INJECTION_CHANNELS]; /* Trims for injection, from 0% to 200% of base */
-	unsigned char filler[SMALL_TABLES_2_FILLER_SIZE];
+	loggingSetting loggingSettings;                          ///< @copydoc loggingSetting
+	unsigned short perCylinderFuelTrims[INJECTION_CHANNELS]; ///< Trims for injection, from 0% to 200% of base.
+	unsigned char filler[SMALL_TABLES_2_FILLER_SIZE];        ///< Padding data.
 } SmallTables2;
-CASSERT((sizeof(SmallTables2) == flashSectorSize), SmallTables2)
 
 
-#define SMALL_TABLES_3_FILLER_SIZE flashSectorSize // Update this if adding another table!
+#define SMALL_TABLES_3_FILLER_SIZE flashSectorSize // Update this if adding a table!
 /** @copydoc SmallTables1 */
 typedef struct {
-	unsigned char filler[flashSectorSize];
+	unsigned char filler[SMALL_TABLES_3_FILLER_SIZE]; ///< Padding data.
 } SmallTables3;
-CASSERT((sizeof(SmallTables3) == flashSectorSize), SmallTables3)
 
 
-#define SMALL_TABLES_4_FILLER_SIZE flashSectorSize // Update this if adding another table!
+#define SMALL_TABLES_4_FILLER_SIZE flashSectorSize // Update this if adding a table!
 /** @copydoc SmallTables1 */
 typedef struct {
-	unsigned char filler[SMALL_TABLES_4_FILLER_SIZE];
+	unsigned char filler[SMALL_TABLES_4_FILLER_SIZE]; ///< Padding data.
 } SmallTables4;
-CASSERT((sizeof(SmallTables4) == flashSectorSize), SmallTables4)
 
 
 #else

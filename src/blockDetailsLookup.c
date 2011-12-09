@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/**	@file blockDetailsLookup.c
+/** @file
+ *
  * @ingroup communicationsFiles
  *
  * @brief Memory block details lookup
@@ -373,15 +374,22 @@ unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* detai
 		break;
 
 	/* TablesB small tables */
-	case liveTunableBlockNumeroUno:
-		details->size = 1;//sizeof(someSTruct);
+	case loggingSettingsLocationID:
+		details->size = sizeof(loggingSetting);
 		details->RAMPage = RPAGE_TUNE_ONE;
 		details->FlashPage = TUNETABLES_PPAGE;
-		details->RAMAddress = (void*)&TablesB.SmallTablesB;
-		details->FlashAddress = SmallTablesBFlashLocation;
+		details->RAMAddress = (void*)&TablesB.SmallTablesB.loggingSettings;
+		details->FlashAddress = loggingSettingsLocation;
 		details->parent = SmallTablesBLocationID;
 		break;
-		// TODO add data chunks from TablesC when some are put in
+	case loggingSettings2LocationID:
+		details->size = sizeof(loggingSetting);
+		details->RAMPage = RPAGE_TUNE_TWO;
+		details->FlashPage = TUNETABLES_PPAGE;
+		details->RAMAddress = (void*)&TablesB.SmallTablesB.loggingSettings;
+		details->FlashAddress = loggingSettings2Location;
+		details->parent = SmallTablesBLocationID;
+		break;
 
 	/* TablesC small tables */
 		// TODO add data chunks from TablesC when some are put in
@@ -513,6 +521,38 @@ unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* detai
 		details->parent = FixedConfig2LocationID;
 		break;
 
+// Internal blocks of variables that are sometimes useful to read out
+	case ADCRegistersLocationID:
+		details->size = sizeof(ADCBuffer);
+		details->RAMPage = RPAGE_LINEAR;
+		details->RAMAddress = &ADCBuffers;
+		break;
+	case coreVarsLocationID:
+		details->size = sizeof(CoreVars);
+		details->RAMPage = RPAGE_LINEAR;
+		details->RAMAddress = &CoreVars;
+		break;
+	case DerivedVarsLocationID:
+		details->size = sizeof(DerivedVars);
+		details->RAMPage = RPAGE_LINEAR;
+		details->RAMAddress = &DerivedVars;
+		break;
+	case CountersLocationID:
+		details->size = sizeof(Counters);
+		details->RAMPage = RPAGE_LINEAR;
+		details->RAMAddress = &Counters;
+		break;
+	case ClocksLocationID:
+		details->size = sizeof(Clocks);
+		details->RAMPage = RPAGE_LINEAR;
+		details->RAMAddress = &Clocks;
+		break;
+	case FlaggablesLocationID:
+		details->size = sizeof(Flaggables);
+		details->RAMPage = RPAGE_LINEAR;
+		details->RAMAddress = &Flaggables;
+		break;
+
 	default:
 		/* Return early if locationID is not valid. */
 		return locationIDNotFound;
@@ -542,10 +582,13 @@ unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* detai
 		details->flags |= block_has_parent | block_is_in_ram | block_is_configuration;
 	}else if(locationID < FixedConfigBlocks_FixedConfigSubBlocks_Border){
 		details->flags |= block_for_backup_restore;
-	}else{ // FixedConfigSubBlocks
+	}else if(locationID < FixedConfigSubBlocks_Border_ReadOnlyVarBlocks){
 		details->flags |= block_has_parent | block_is_configuration;
+	}else{ // RO variable blocks exposed polling and streaming
+		details->flags |= block_is_read_only | block_is_in_ram;
+		details->flags &= ~block_is_in_flash;
 	}
 
-	/* Fall through to not return error */
+/* Fall through to not return error */
 	return 0;
 }

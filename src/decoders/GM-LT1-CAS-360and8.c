@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2009, 2010, 2011 Sean Keys, Fred Cooke
+ * Copyright 2009-2011 Sean Keys, Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/**	@file GM-LT1-CAS-360and8.c
+/** @file
+ *
  * @ingroup interruptHandlers
  * @ingroup enginePositionRPMDecoders
  *
@@ -48,11 +49,10 @@
 
 #include "../inc/freeEMS.h"
 #include "../inc/interrupts.h"
-#include "../inc/LT1-360-8.h"
+#include "inc/GM-LT1-CAS-360and8.h"
 #include "../inc/decoderInterface.h"
 #include "../inc/utils.h"
 
-const unsigned char decoderName[] = "LT1-360-8";
 const unsigned short eventAngles[] = {(  0 * oneDegree), ( 86 * oneDegree), (130 * oneDegree), (176 * oneDegree),
                                       (180 * oneDegree), (266 * oneDegree), (280 * oneDegree), (356 * oneDegree),
                                       (360 * oneDegree), (446 * oneDegree), (470 * oneDegree), (536 * oneDegree),
@@ -93,7 +93,7 @@ void decoderInitPreliminary(void){
 	// set to capture on rising and falling this way if we have an odd number in the PA we know something went wrong
 	// disable interrupt on PT1
 	ICPAR = 0x02; // set the second bit in ICPAR (PAC1) to enable PT1's pulse accumulator
-	// enable interrupt on overflow and set count to 0xFF-245 to enable an int on every ten teeth
+	// enable interrupt on overflow and set count to 0xFF-245 to enable an interrupt on every ten teeth
 	PACN1 = 0x00; // reset our count register
 	TCTL4 = 0xFF; /* Capture on both edges of pin 0 and only on the falling edges of pin 1, capture off for 2,3 */ // FRED why interrupt on the other one at all, there is no code and you're *causing* jitter in your primary rpm by doing this, along with eating CPU up.
 	//TIE = 0x01; // FRED necessary to do this too? I think so, but check the docs.
@@ -117,23 +117,23 @@ void PrimaryRPMISR(void){
 	TFLG = 0x01;
 	// Grab this first as it is the most critical var in this decoder
 	accumulatorRegisterCount = PACN1;/* save count before it changes */
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT0, PORTB);
 
 	/* Save all relevant available data here */
 	unsigned char PTITCurrentState = PTIT; /* Save the values on port T regardless of the state of DDRT */
-	unsigned short codeStartTimeStamp = TCNT; /* Save the current timer count */
 	unsigned short edgeTimeStamp = TC0; /* Save the edge time stamp */
+
 	windowState = PTITCurrentState & 0x01; /* Save the high/low state of the port, HIGH PRIORITY some windows are only 2deg wide */
-	ISRLatencyVars.primaryInputLatency = codeStartTimeStamp - edgeTimeStamp; /* Calculate the latency in ticks */
 	unsigned char accumulatorCount = accumulatorRegisterCount - lastPARegisterReading;/* save count before it changes */
 	lastPARegisterReading = accumulatorRegisterCount;
 	unsigned char i; /* temp loop var */
 
-	Counters.primaryTeethSeen++;
-	Counters.secondaryTeethSeen += accumulatorCount;
-//	Counters.testUS5 = accumulatorCount; // TODO remove DEBUG
+	KeyUserDebugs.primaryTeethSeen++;
+	KeyUserDebugs.secondaryTeethSeen += accumulatorCount;
+//	DEBUG = accumulatorCount; // TODO remove DEBUG
 
 	/* always make sure you have two good counts(there are a few windows that share counts) */
-	if(!(decoderFlags & CAM_SYNC)){
+	if(!(KeyUserDebugs.decoderFlags & CAM_SYNC)){
 		// FRED do this on a per edge basis to lower chances of false match with +/- 1 counts
 		if(accumulatorCount == AMBIGUOUS_COUNT){
 			return;
@@ -142,11 +142,11 @@ void PrimaryRPMISR(void){
 			for(i = 0; numberOfRealEvents > i; i++){
 				if(windowCounts[i] == accumulatorCount){
 					if(i == 0){ /* keep our counter from going out of range */
-						currentEvent = 0xFF; // Will be rolled over to 0
+						KeyUserDebugs.currentEvent = 0xFF; // Will be rolled over to 0
 						lastEvent = NUMBER_OF_REAL_EVENTS - 1;
 					}else{
 						lastEvent = i - 1;
-						currentEvent = lastEvent; // Will be rolled up to current
+						KeyUserDebugs.currentEvent = lastEvent; // Will be rolled up to current
 					}
 					break;
 				}
@@ -155,7 +155,7 @@ void PrimaryRPMISR(void){
 			if(lastEvent == 0xFF){ // Indicates that we didn't find a match, previously uncaught, would have occasionally matched last event with i = max and no match found on THIS event
 				return;
 			}else if(windowCounts[lastEvent] == lastAccumulatorCount){ /* if true we are in sync! */
-				decoderFlags |= CAM_SYNC;
+				SET_SYNC_LEVEL_TO(CAM_SYNC);
 			}else{
 				// TODO missedsync opportunity ++ or something
 			}
@@ -173,10 +173,10 @@ void PrimaryRPMISR(void){
 		}
 	}
 
-	if(decoderFlags & CAM_SYNC){
-		currentEvent++;
-		if(currentEvent == numberOfRealEvents){ /* roll our event over if we are at the end */
-			currentEvent = 0;
+	if(KeyUserDebugs.decoderFlags & CAM_SYNC){
+		KeyUserDebugs.currentEvent++;
+		if(KeyUserDebugs.currentEvent == numberOfRealEvents){ /* roll our event over if we are at the end */
+			KeyUserDebugs.currentEvent = 0;
 		}
 
 		/*
@@ -186,12 +186,12 @@ void PrimaryRPMISR(void){
 		 * to keep a running track of past bastardTeeth too. TODO
 		 */
 
-		signed char bastardTeeth = accumulatorCount - windowCounts[currentEvent];
+		signed char bastardTeeth = accumulatorCount - windowCounts[KeyUserDebugs.currentEvent];
 		cumulativeBastardTeeth += bastardTeeth;
 
-		Counters.testUS4 = cumulativeBastardTeeth; // TODO remove DEBUG
-		Counters.testUS5 = bastardTeeth;
-//		Counters.testUS0 = windowCounts[currentEvent]; // TODO remove DEBUG
+//		DEBUG = cumulativeBastardTeeth; // TODO remove DEBUG
+//		DEBUG = bastardTeeth;
+//		DEBUG = windowCounts[currentEvent]; // TODO remove DEBUG
 
 		// Cumulative Tolerance Code TODO add counters to monitor aggressiveness of this
 		if(windowsPerAllowedCumulativeBastardTooth){
@@ -200,7 +200,7 @@ void PrimaryRPMISR(void){
 				cumulativeBastardTeethEroderCounter = 0;
 				if(cumulativeBastardTeeth > 0){
 					cumulativeBastardTeeth--;
-					Counters.testUS0++;
+					// DEBUG++;
 					// counter for decrement
 				}else if(cumulativeBastardTeeth < 0){
 					cumulativeBastardTeeth++;
@@ -224,14 +224,14 @@ void PrimaryRPMISR(void){
 		}
 
 		if((bastardTeeth > MAX_BASTARD_TEETH) || (bastardTeeth < -MAX_BASTARD_TEETH)){
-			resetToNonRunningState(BASTARD_SYNC_LOSS_ID_BASE + bastardTeeth);
+			resetToNonRunningState(BASTARD_SYNC_LOSS_ID_BASE + bastardTeeth); // TODO move this to the syncLossIDs.h header
 			return;
 		}else if((cumulativeBastardTeeth > MAX_CUMULATIVE_BASTARD_TEETH) || (cumulativeBastardTeeth < -MAX_CUMULATIVE_BASTARD_TEETH)){
-			resetToNonRunningState(BASTARD_CUMULATIVE_SYNC_LOSS_ID_BASE + cumulativeBastardTeeth);
+			resetToNonRunningState(BASTARD_CUMULATIVE_SYNC_LOSS_ID_BASE + cumulativeBastardTeeth); // TODO move this to the syncLossIDs.h header
 			return;
 		}else{
 			/* TODO all required calcs etc as shown in other working decoders */
-			if((currentEvent % 2) == 1){ /* if we captured on a rising edge that is to say an evenly spaced edge perform the cacls */
+			if((KeyUserDebugs.currentEvent % 2) == 1){ /* if we captured on a rising edge that is to say an evenly spaced edge perform the cacls */
 				// temporary data from inputs
 				unsigned long primaryLeadingEdgeTimeStamp = timeStamp.timeLong;
 				unsigned long timeBetweenSuccessivePrimaryPulses = primaryLeadingEdgeTimeStamp - lastPrimaryEventTimeStamp;
@@ -249,30 +249,19 @@ void PrimaryRPMISR(void){
 				// tpd would still need to be calculated for scheduling reasons, and the different scalings would need to be checked for overflow there.
 
 				// TODO Once sampling/RPM is configurable, use this tooth for a lower MAP reading.
-				sampleEachADC(ADCArrays);
+				sampleEachADC(ADCBuffers);
 				Counters.syncedADCreadings++;
-				*mathSampleTimeStampRecord = TCNT;
 				/* Set flag to say calc required */
 				coreStatusA |= CALC_FUEL_IGN;
 				/* Reset the clock for reading timeout */
 				Clocks.timeoutADCreadingClock = 0;
-				RuntimeVars.primaryInputLeadingRuntime = TCNT - codeStartTimeStamp;
 			}
 		}
-
-		RuntimeVars.primaryInputLeadingRuntime = TCNT - codeStartTimeStamp;
-
 		SCHEDULE_ECT_OUTPUTS();
 	}
-	RuntimeVars.secondaryInputTrailingRuntime = numberScheduled;
-	RuntimeVars.primaryInputTrailingRuntime = TCNT - codeStartTimeStamp;
+
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT0, PORTB);
 }
 
 
-/* Update the scheduler every time 5 teeth are counted by the pulse accumulator. */
-void SecondaryRPMISR(void){
-	// TODO Change the accumulator mode to overflow every 5 inputs on PT0 making our 360 tooth wheel interrupt like a 72 tooth wheel
-	// TODO Decide if an explicit parameter is necessary if not use a existing status var instead for now it's explicit.
-	/* Clear the interrupt flag for this input compare channel */
-	TFLG = 0x02;
-}
+#include "inc/defaultSecondaryRPMISR.c"

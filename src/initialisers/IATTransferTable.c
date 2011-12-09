@@ -24,7 +24,8 @@
  */
 
 
-/**	@file IATTransferTable.c
+/** @file
+ *
  * @ingroup dataInitialisers
  *
  * @brief Inlet Air Temperature Transfer Table
@@ -47,5 +48,19 @@
  * @author FreeTherm
  */
 const volatile unsigned short IATTransferTable[1024] LOOKUPD = {
+#ifdef TRUCK
 #include "../data/thermistors/Bosch.h"
+#elif PRESTO
+#include "../data/thermistors/Bosch.h"
+#elif SEANKLT1
+#include "../data/thermistors/Bosch.h"
+#elif SEANKR1
+#include "../data/thermistors/Bosch.h"
+#elif JOSHBROWN
+#include "../data/thermistors/Bosch.h"
+#elif SNOTROCKET
+#include "../data/thermistors/GM-2k4Bias.h"
+#else // Default to correctly biased Jap sensor.
+#include "../data/thermistors/Denso-2k7Bias.h"
+#endif
 };

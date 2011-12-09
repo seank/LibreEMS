@@ -23,7 +23,8 @@
  * Thank you for choosing FreeEMS to run your engine!
  */
 
-/** @file decoderInterface.c
+
+/** @file
  *
  * @ingroup enginePositionRPMDecoders
  *
@@ -32,6 +33,7 @@
  * To maximise code reuse and minimise bugs it is strongly recommended that you
  * use these pre-canned functions to do work required in your decoder.
  */
+
 
 #define DECODER_INTERFACE_C
 #include "inc/freeEMS.h"
@@ -44,9 +46,14 @@
  *
  * @todo TODO bring this up to date and/or find a better way to do it.
  *
+ * @param uniqueLossID 0 is reserved for system use, within your decoder never use the same value twice.
  * @author Fred Cooke
  */
 void resetToNonRunningState(unsigned char uniqueLossID){
+	if(uniqueLossID){
+		KeyUserDebugs.syncResetCalls++;
+	}
+
 	/* Reset RPM to zero */
 	ticksPerDegree0 = 0;
 	ticksPerDegree1 = 0;
@@ -55,18 +62,20 @@ void resetToNonRunningState(unsigned char uniqueLossID){
 	engineCyclePeriod = ticksPerCycleAtOneRPM;
 
 	// Keep track of lost sync in counters
-	if(decoderFlags & (CAM_SYNC | CRANK_SYNC | COMBUSTION_SYNC)){
-		Counters.decoderSyncLosses++;
+	if(KeyUserDebugs.decoderFlags & (CAM_SYNC | CRANK_SYNC | COMBUSTION_SYNC)){
+		FLAG_AND_INC_FLAGGABLE(FLAG_DECODER_SYNC_LOSSES_OFFSET);
+	}else{
+		FLAG_AND_INC_FLAGGABLE(FLAG_DECODER_SYNC_STATE_CLEARS_OFFSET);
 	}
 
 	// record unique loss ID
-	syncLostWithThisID = uniqueLossID;
+	KeyUserDebugs.syncLostWithThisID = uniqueLossID;
 
 	// record current event
-	syncLostOnThisEvent = currentEvent;
+	KeyUserDebugs.syncLostOnThisEvent = KeyUserDebugs.currentEvent;
 
 	/* Clear all sync flags to lost state */
-	decoderFlags &= (CLEAR_CAM_SYNC & CLEAR_CRANK_SYNC & CLEAR_COMBUSTION_SYNC & CLEAR_LAST_PERIOD_VALID & CLEAR_LAST_TIMESTAMP_VALID);
+	KeyUserDebugs.decoderFlags = 0; // Nothing should use this except for us anyway!
 	perDecoderReset();
 	// TODO more stuff needs resetting here, but only critical things.
 }
@@ -84,7 +93,7 @@ void schedulePortTPin(unsigned char outputEventNumber, LongTime timeStamp){
 		postReferenceEventDelay = decoderMaxCodeTime;
 		skipEventFlags &= ~(1UL << outputEventNumber); // Clear the flag
 	}else{
-		postReferenceEventDelay = postReferenceEventDelays[outputEventNumber];
+		postReferenceEventDelay = outputEventDelayFinalPeriod[outputEventNumber];
 	}
 	// determine the long and short start times
 	unsigned short startTime = timeStamp.timeShorts[1] + postReferenceEventDelay;
@@ -120,10 +129,10 @@ void schedulePortTPin(unsigned char outputEventNumber, LongTime timeStamp){
 				if(newStartIsAfterOutputEndTimeAndCanSelfSet){
 					// self sched
 					injectorMainStartOffsetHolding[pin] = startTime - *injectorMainTimeRegisters[pin];
-					injectorMainPulseWidthsHolding[pin] = injectorMainPulseWidthsMath[outputEventNumber];
+					outputEventPulseWidthsHolding[pin] = outputEventPulseWidthsMath[outputEventNumber];
 					outputEventExtendNumberOfRepeatsHolding[pin] = outputEventExtendNumberOfRepeats[outputEventNumber];
 					outputEventExtendRepeatPeriodHolding[pin] = outputEventExtendRepeatPeriod[outputEventNumber];
-					outputEventExtendFinalPeriodHolding[pin] = outputEventExtendFinalPeriod[outputEventNumber];
+					outputEventDelayFinalPeriodHolding[pin] = outputEventDelayFinalPeriod[outputEventNumber];
 					selfSetTimer |= injectorMainOnMasks[pin]; // setup a bit to let the timer interrupt know to set its own new start from a var
 					Counters.pinScheduledToSelfSchedule++;
 				}else{
@@ -147,4 +156,8 @@ void schedulePortTPin(unsigned char outputEventNumber, LongTime timeStamp){
 		SCHEDULE_ONE_ECT_OUTPUT();
 		Counters.pinScheduledFromCold++;
 	}
+
+#ifdef XGATE // This has to be here because the timing of the ECT stuff is critical and it must run first.
+#include "xgateScheduler.c"
+#endif // Also, this should always run so can't be inside the above if/else block.
 }

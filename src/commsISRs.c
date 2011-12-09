@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/**	@file commsISRs.c
+/** @file
+ *
  * @ingroup interruptHandlers
  * @ingroup communicationsFiles
  *
@@ -121,12 +122,13 @@ void resetReceiveState(unsigned char sourceIDState){
 	}else if(sourceIDState & COM_SET_CAN0_INTERFACE_ID){
 		/* Turn off all others here */
 		/* Only SCI for now */
-		SCI0CR2 &= SCICR2_RX_DISABLE;
 		SCI0CR2 &= SCICR2_RX_ISR_DISABLE;
 		/* SPI ? I2C ? SCI1 ? */
 	}else{ /* If clearing all flags then enable RX on all interfaces */
 		/* Only SCI for now */
-		SCI0CR2 |= SCICR2_RX_ENABLE;
+		unsigned char devnull; // Is there a better way to do this?
+		devnull = SCI0SR1; // Reading the flags combined with...
+		devnull = SCI0DRL; // ...reading the data clears the flags
 		SCI0CR2 |= SCICR2_RX_ISR_ENABLE;
 		/// @todo TODO CAN0CTL1 |= CANCTL1_RX_ENABLE;
 		/// @todo TODO CAN0CTL1 |= CANCTL1_RX_ISR_ENABLE;
@@ -153,8 +155,7 @@ void SCI0ISR(){
 	unsigned char flags = SCI0SR1;
 	/* Note: Combined with reading or writing the data register this also clears the flags. */
 
-	/* Start counting */
-	unsigned short start = TCNT;
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT4, PORTB);
 
 	/* If the RX interrupt is enabled check RX related flags */
 	if(SCI0CR2 & SCICR2_RX_ISR_ENABLE){
@@ -163,28 +164,32 @@ void SCI0ISR(){
 
 		/* If there is noise on the receive line record it */
 		if(flags & SCISR1_RX_NOISE){
-			Counters.serialNoiseErrors++;
+			FLAG_AND_INC_FLAGGABLE(FLAG_SERIAL_NOISE_ERRORS_OFFSET);
+			KeyUserDebugs.serialHardwareErrors++;
 			resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
 			return;
 		}
 
 		/* If an overrun occurs record it */
 		if(flags & SCISR1_RX_OVERRUN){
-			Counters.serialOverrunErrors++;
+			FLAG_AND_INC_FLAGGABLE(FLAG_SERIAL_OVERRUN_ERRORS_OFFSET);
+			KeyUserDebugs.serialOverrunErrors++;
 			resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
 			return;
 		}
 
 		/* If a framing error occurs record it */
 		if(flags & SCISR1_RX_FRAMING){
-			Counters.serialFramingErrors++;
+			FLAG_AND_INC_FLAGGABLE(FLAG_SERIAL_FRAMING_ERRORS_OFFSET);
+			KeyUserDebugs.serialHardwareErrors++;
 			resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
 			return;
 		}
 
 		/* If a parity error occurs record it */
 		if(flags & SCISR1_RX_PARITY){
-			Counters.serialParityErrors++;
+			FLAG_AND_INC_FLAGGABLE(FLAG_SERIAL_PARITY_ERRORS_OFFSET);
+			KeyUserDebugs.serialHardwareErrors++;
 			resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
 			return;
 		}
@@ -196,20 +201,21 @@ void SCI0ISR(){
 				/* If another interface is using it (Note, clear flag, not normal) */
 				if(RXBufferContentSourceID & COM_CLEAR_SCI0_INTERFACE_ID){
 					/* Turn off our reception */
-					SCI0CR2 &= SCICR2_RX_DISABLE;
 					SCI0CR2 &= SCICR2_RX_ISR_DISABLE;
 				}else{
 					/* If we are using it */
 					if(RXBufferContentSourceID & COM_SET_SCI0_INTERFACE_ID){
 						/* Increment the counter */
-						Counters.serialStartsInsideAPacket++;
+						FLAG_AND_INC_FLAGGABLE(FLAG_SERIAL_STARTS_INSIDE_A_PACKET_OFFSET);
+						KeyUserDebugs.serialAndCommsCodeErrors++;
 					}
 					/* Reset to us using it unless someone else was */
 					resetReceiveState(COM_SET_SCI0_INTERFACE_ID);
 				}
 			}else if(RXPacketLengthReceived >= RX_BUFFER_SIZE){
 				/* Buffer was full, record and reset */
-				Counters.serialPacketsOverLength++;
+				FLAG_AND_INC_FLAGGABLE(FLAG_SERIAL_PACKETS_OVER_LENGTH_OFFSET);
+				KeyUserDebugs.serialAndCommsCodeErrors++;
 				resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
 			}else if(RXBufferContentSourceID & COM_SET_SCI0_INTERFACE_ID){
 				if(RXStateFlags & RX_SCI_ESCAPED_NEXT){
@@ -228,14 +234,14 @@ void SCI0ISR(){
 					}else{
 						/* Otherwise reset and record as data is bad */
 						resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
-						Counters.serialEscapePairMismatches++;
+						FLAG_AND_INC_FLAGGABLE(FLAG_SERIAL_ESCAPE_PAIR_MISMATCHES_OFFSET);
+						KeyUserDebugs.serialAndCommsCodeErrors++;
 					}
 				}else if(rawByte == ESCAPE_BYTE){
 					/* Set flag to indicate that the next byte should be un-escaped. */
 					RXStateFlags |= RX_SCI_ESCAPED_NEXT;
 				}else if(rawByte == STOP_BYTE){
 					/* Turn off reception */
-					SCI0CR2 &= SCICR2_RX_DISABLE;
 					SCI0CR2 &= SCICR2_RX_ISR_DISABLE;
 
 					/* Bring the checksum back to where it should be */
@@ -245,14 +251,16 @@ void SCI0ISR(){
 					/* Check that the checksum matches and that the packet is big enough for header,ID,checksum */
 					if(RXPacketLengthReceived < 4){
 						resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
-						Counters.commsPacketsUnderMinLength++;
+						FLAG_AND_INC_FLAGGABLE(FLAG_SERIAL_PACKETS_UNDER_LENGTH_OFFSET);
+						KeyUserDebugs.serialAndCommsCodeErrors++;
 					}else if(RXCalculatedChecksum == RXReceivedChecksum){
 						/* If it's OK set process flag */
 						RXStateFlags |= RX_READY_TO_PROCESS;
 					}else{
 						/* Otherwise reset the state and record it */
 						resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
-						Counters.commsChecksumMismatches++;
+						FLAG_AND_INC_FLAGGABLE(FLAG_SERIAL_CHECKSUM_MISMATCHES_OFFSET);
+						KeyUserDebugs.serialAndCommsCodeErrors++;
 					}
 				}else{
 					/* If it isn't special process it! */
@@ -289,9 +297,7 @@ void SCI0ISR(){
 		}else{ /* Length is zero */
 			if(coreStatusA & BIT7){
 				/* Turn off transmission interrupt */
-				SCI0CR2 &= SCICR2_TX_ISR_DISABLE;
-				/* Send the stop byte */
-				SCI0DRL = STOP_BYTE;
+				SCI0CR2 &= (SCICR2_TX_ISR_DISABLE & SCICR2_TX_DISABLE);
 				/* Clear the TX in progress flag */
 				TXBufferInUseFlags &= COM_CLEAR_SCI0_INTERFACE_ID;
 				coreStatusA &= NBIT7;
@@ -303,6 +309,5 @@ void SCI0ISR(){
 		}
 	}
 
-	/* Record how long the operation took */
-	RuntimeVars.serialISRRuntime = TCNT - start;
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT4, PORTB);
 }

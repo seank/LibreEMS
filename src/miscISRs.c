@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/** @file miscISRs.c
+/** @file
+ *
  * @ingroup interruptHandlers
  *
  * @brief Miscellaneous Interrupt Handlers
@@ -50,8 +51,9 @@
  * @todo TODO Currently not a problem, but as indirectly pointed out by johntramp, if no flag clearing is being done, then this code will run continuously, which is not a good idea...
  */
 void UISR(void){
-	/* Increment the unimplemented ISR execution counter */
-	Counters.callsToUISRs++;
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
+	FLAG_AND_INC_FLAGGABLE(FLAG_CALLS_TO_UISRS_OFFSET);
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT7, PORTB);
 }
 
 
@@ -64,9 +66,10 @@ void UISR(void){
 void PortPISR(void){
 	/* Clear all port P flags (we only want one at a time) */
 	PIFP = ONES;
-	/* Increment the unimplemented ISR execution counter */
-	Counters.callsToUISRs++;
-}			/* Port P interrupt service routine */
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
+	FLAG_AND_INC_FLAGGABLE(FLAG_CALLS_TO_UISRS_OFFSET);
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT7, PORTB);
+}
 
 
 /** @brief Port J pins ISR
@@ -78,8 +81,9 @@ void PortPISR(void){
 void PortJISR(void){
 	/* Clear all port H flags (we only want one at a time) */
 	PIFJ = ONES;
-	/* Increment the unimplemented ISR execution counter */
-	Counters.callsToUISRs++;
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
+	FLAG_AND_INC_FLAGGABLE(FLAG_CALLS_TO_UISRS_OFFSET);
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT7, PORTB);
 }
 
 
@@ -97,7 +101,11 @@ void PortHISR(void)
 //
 //	/* Clear all port H flags (we only want one at a time) */
 	PIFH = ONES;
-//
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
+
+	// Bump this for the time being as this should not be occurring.
+	FLAG_AND_INC_FLAGGABLE(FLAG_CALLS_TO_UISRS_OFFSET);
+
 //	// Toggle a LED so we can see if the code ran
 //	PO-don't use this-RTA ^= 0x80; // Fuel pump pin (A7)
 //
@@ -193,6 +201,7 @@ void PortHISR(void)
 //	default : // Two or more pressed, nothing to do except wait for another button press
 //		break;
 //	}
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT7, PORTB);
 }
 
 
@@ -205,9 +214,9 @@ void PortHISR(void)
 void IRQISR(void){
 	/* Clear the flag */
 	// ?? TODO
-
-	/* Increment the unimplemented ISR execution counter */
-	Counters.callsToUISRs++;
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
+	FLAG_AND_INC_FLAGGABLE(FLAG_CALLS_TO_UISRS_OFFSET);
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT7, PORTB);
 }
 
 
@@ -220,9 +229,9 @@ void IRQISR(void){
 void XIRQISR(void){
 	/* Clear the flag */
 	// ?? TODO
-
-	/* Increment the unimplemented ISR execution counter */
-	Counters.callsToUISRs++;
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
+	FLAG_AND_INC_FLAGGABLE(FLAG_CALLS_TO_UISRS_OFFSET);
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT7, PORTB);
 }
 
 
@@ -235,7 +244,7 @@ void XIRQISR(void){
 void LowVoltageISR(void){
 	/* Clear the flag */
 	VREGCTRL |= 0x01;
-
-	/* Increment the counter */
-	Counters.lowVoltageConditions++;
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT6, PORTB);
+	FLAG_AND_INC_FLAGGABLE(FLAG_LOW_VOLTATE_CONDITION_OFFSET);
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT6, PORTB);
 }

@@ -24,7 +24,7 @@
  */
 
 
-/** @file StaticBenchTest.c
+/** @file
  *
  * @ingroup testing
  *
@@ -37,5 +37,5 @@
 
 
 #define STATIC_BENCH_TEST_C
-#include "inc/BenchTest.h"
+#include "decoders/inc/BenchTest.h"
 // No code! Just the flag and included header which looks for it! The End!

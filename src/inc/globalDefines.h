@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010, 2011 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/** @file globalDefines.h
+/** @file
+ *
  * @ingroup allHeaders
  * @ingroup globalHeaders
  *
@@ -52,15 +53,15 @@
  */
 
 
-/* Definitions for functions used across the project */
+/* Definitions for functions used across the project TODO these are unused! */
 /* http://www.seattlerobotics.org/encoder/200109/encoder.htm section Assembly */
 #define INLINE_ASSEMBLY(code) __asm__ __volatile__ (code)
 #define ALWAYS_INLINE __attribute__((always_inline))
 
 /* Common macro definitions across the project */
-/* Boolean */
-#define FALSE 0
-#define TRUE !FALSE /* http://c2.com/cgi/wiki?CeePreprocessorStatements */
+/* Booleans from http://c2.com/cgi/wiki?CeePreprocessorStatements */
+#define FALSE (0!=0) // Note, this evaluates to 0 on this platform
+#define TRUE  !FALSE // Note, this evaluates to 1 on this platform
 
 /* 8 bit values */
 #define ZEROS 0x00
@@ -133,7 +134,7 @@
 #define NBIT15_16   0x7FFF    /* 16th bit = 32768 */
 
 
-/* Serial Comms Stuff */
+// Shared serial comms stuff TODO move this to a commsCommon.h header
 #define START_BYTE          0xAA
 #define ESCAPE_BYTE         0xBB
 #define STOP_BYTE           0xCC
@@ -146,6 +147,10 @@
 #define flashSectorSizeInWords  512 /* 512 words to a 1k flash sector */
 
 
+#define IGNITION_TIMING_FACTOR 1024UL // Warning, to be changed to 8 bit, use this:
+#define IT(IGNITION_TIMING_BTDC) (IGNITION_TIMING_BTDC * IGNITION_TIMING_FACTOR)
+
+// TODO unused, make used!
 #define RPM_FACTOR      2
 #define MAP_FACTOR    100
 #define TPS_FACTOR    640
@@ -227,45 +232,48 @@
  */
 
 
-/* Toyota 3bar found on some Toyota Cynos 5E-FE cars (and probably many others), em_knaps and Lev8n are responsible for this data! */
-#define Toyota3BarMin                600       /* Pressure read at lowest ADC reading */
-#define Toyota3BarMax              30000       /* Pressure read at highest ADC reading */
-#define Toyota3BarRange            29400       /* Pressure difference between lowest and highest ADC readings */
+/* Honda Denso 1.8bar found on 88 - ?? Honda vehicles. */
+#define HondaDenso183kPaMin       -664       /* Pressure read at lowest ADC reading */
+#define HondaDenso183kPaMax      18278       /* Pressure read at highest ADC reading */
+#define HondaDenso183kPaRange                (HondaDenso183kPaMax - HondaDenso183kPaMin)
+
+/* Toyota 2.3bar found on some Toyota Cynos 5E-FE cars (and probably many others), em_knaps and Lev8n are responsible for this data! */
+#define ToyotaNA227kPaMin         2500       /* Pressure read at lowest ADC reading */
+#define ToyotaNA227kPaMax        24700       /* Pressure read at highest ADC reading */
+#define ToyotaNA227kPaRange                  (ToyotaNA227kPaMax - ToyotaNA227kPaMin)
+// NOTE: The accuracy of this calibration is highly questionable. Please use the Honda units which is configured above and known to be accurate
 
 /* GM 2bar found on Cyclone Turbo V6 and probably other cars too. TODO These numbers are probably not that accurate... */
-#define GM2BarMin                    150       /* Pressure read at lowest ADC reading */
-#define GM2BarMax                  20000       /* Pressure read at highest ADC reading */
-#define GM2BarRange                20150       /* Pressure difference between lowest and highest ADC readings */
+#define GM2BarMin                  150       /* Pressure read at lowest ADC reading */
+#define GM2BarMax                20000       /* Pressure read at highest ADC reading */
+#define GM2BarRange                          (GM2BarMax - GM2BarMin)
 
 /* www.freescale.com/files/sensors/doc/data_sheet/MPX4100A.pdf */
 #define MPX4100AMin               1400       /* Pressure read at lowest ADC reading */
 #define MPX4100AMax              10750       /* Pressure read at highest ADC reading */
-#define MPX4100ARange             9350       /* Pressure difference between lowest and highest ADC readings */
+#define MPX4100ARange                        (MPX4100AMax - MPX4100AMin)
 
 /* www.freescale.com/files/sensors/doc/data_sheet/MPX4250A.pdf */
 #define MPX4250AMin                800       /* Pressure read at lowest ADC reading */
 #define MPX4250AMax              26000       /* Pressure read at highest ADC reading */
-#define MPX4250ARange            25200       /* Pressure difference between lowest and highest ADC readings */
+#define MPX4250ARange                        (MPX4250AMax - MPX4250AMin)
 
 #define MPXH6300AMin              1200       /* Pressure read at lowest ADC reading */
 #define MPXH6300AMax             32000       /* Pressure read at highest ADC reading */
-#define MPXH6300ARange           30800       /* Pressure difference between lowest and highest ADC readings */
+#define MPXH6300ARange                       (MPXH6300AMax - MPXH6300AMin)
 
 #define MPXH6400AMin              1200       /* Pressure read at lowest ADC reading */
 #define MPXH6400AMax             42000       /* Pressure read at highest ADC reading */
-#define MPXH6400ARange           40800       /* Pressure difference between lowest and highest ADC readings */
+#define MPXH6400ARange                       (MPXH6400AMax - MPXH6400AMin)
 
-#define TPSDefaultMin              255       /* ADC reading at lowest throttle position */
-#define TPSDefaultMax              767       /* ADC reading at highest throttle position */
+#define TPSDefaultMin                0       /* ADC reading at lowest throttle position */
+#define TPSDefaultMax             1023       /* ADC reading at highest throttle position */
 
 #define offIdleMAP                3000       /* 30kPa just above where MAP would be with closed throttle at idle */
 #define nearlyWOTMAP              9500       /* 95kPa just below where MAP would be at WOT */
 
-#define ticksPerCycleAtOneRPMx2  300000000   /* twice how many 0.8us ticks there are in between engine cycles at 1 RPM */
 #define ticksPerCycleAtOneRPM    150000000   /* how many 0.8us ticks there are in between engine cycles at 1 RPM */
-//#define ticksForFiftyRPM         3000000       /* ticksPerCycleAtOneRPM / 50 */
 #define tachoTickFactor4at50     6           /* Provides for a 4 cylinder down to 50 RPM  */
-/*efine tachoEdgesPerCycle4at50  8           /  8 events per cycle for a typical 4 cylinder tacho, 4 on, 4 off */
 #define tachoTotalFactor4at50   48           /* http://www.google.com/search?hl=en&safe=off&q=((150000000+%2F+6)+%2F++8+)+%2F+50&btnG=Search */
 
 //#define lookedUpVEDivisor   512
@@ -283,14 +291,7 @@
 /* Not 1024, the number of gaps between them */
 #define ADC_DIVISIONS 1023
 
-#define IGNITION_CHANNELS  12    /* How many ignition channels the code should support */
 #define INJECTION_CHANNELS  6    /* How many injection channels the code should support */
-
-/* Ignition defines */
-#define DWELL_ENABLE      BIT0
-#define DWELL_DISABLE    NBIT0
-#define IGNITION_ENABLE   BIT1
-#define IGNITION_DISABLE NBIT1
 
 /* Valid RPAGE values :
  *    0xFF - linear
@@ -313,6 +314,7 @@
 #define RPAGE_FUEL_TWO    0xFB
 #define RPAGE_TIME_ONE    0xFC
 #define RPAGE_TIME_TWO    0xFD
+#define RPAGE_LINEAR      0xFD
 #define RPAGE_MIN         0xF8
 #define PPAGE_MIN         0xE0
 #define EPAGE_MIN         0x?? // TODO

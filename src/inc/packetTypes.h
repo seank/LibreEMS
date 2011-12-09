@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/** @file packetTypes.h
+/** @file
+ *
  * @ingroup allHeaders
  */
 
@@ -55,8 +56,8 @@
 //efine replytoSoftSystemReset      0x0009 /* This is reserved */
 #define requestHardSystemReset      0x000A /* System comes up fresh, so no response */
 //efine replytoHardSystemReset      0x000B /* This is reserved */
-#define requestReInitOfSystem      0x000C /* EXPERIMENTAL, currently responds like normal */
-//efine replytoReInitOfSystem      0x000D /* This is reserved */
+#define requestReInitOfSystem       0x000C /* EXPERIMENTAL, currently responds like normal */
+//efine replytoReInitOfSystem       0x000D /* This is reserved */
 
 
 //efine requestAsyncErrorCode       0x000C /* This is reserved */
@@ -74,27 +75,11 @@
 #define retrieveBlockFromFlash      0x0106
 #define burnBlockFromRamToFlash     0x0108
 
-/* Main table manipulation */
-#define adjustMainTableCell         0x012C
-#define adjustMainTableRPMAxis      0x012E
-#define	adjustMainTableLoadAxis     0x0130
-
-/* 2d table manipulation */
-#define adjust2dTableAxis           0x0132
-#define adjust2dTableCell           0x0134
-
 /* Datalog request packets */
-#define requestBasicDatalog         0x0190
+#define requestDatalogPacket        0x0190
 #define responseBasicDatalog        0x0191 /* Defined because it can be used both synchronously and asynchronously */
-#define requestConfigurableDatalog  0x0192
-#define responseConfigurableDatalog 0x0193 /* Defined because it can be used both synchronously and asynchronously */
-#define setAsyncDatalogType         0x0194
 #define requestByteLADatalog        0x0196 // logic analyser
 #define responseByteLADatalog       0x0197 // logic analyser
-
-/* Special function */
-#define forwardPacketOverCAN        0x01F4
-#define forwardPacketOverOtherUART  0x01F6
 
 /* Generic memory grabber for debugging */
 #define retrieveArbitraryMemory     0x0258
@@ -108,8 +93,19 @@
 // Data interrogation gold
 #define retrieveListOfLocationIDs   0xDA5E // Idea is Dave's, impl is Fred's
 #define retrieveLocationIDDetails   0xF8E0 // Idea is Fred's, impl is Fred's
-#define requestDecoderName          0xEEEE // Ensure interogation knows everything about this firmware
+#define requestDecoderName          0xEEEE // Makes interrogation unique within a single build
+#define requestFirmwareBuildDate    0xEEF0 // When it was built
+#define requestCompilerVersion      0xEEF2 // Which GCC built it
+#define requestOperatingSystem      0xEEF4 // Which OS was it built on
+#define clearCountersAndFlagsToZero 0xFFF0 // Clean slate to perform tests of any type. Clears various flags too, should not affect running
 
+// DEPRECATED TODO Remove once certain no users exist
+#define adjustMainTableCell         0x012C
+#define adjustMainTableRPMAxis      0x012E
+#define adjustMainTableLoadAxis     0x0130
+#define adjust2dTableAxis           0x0132
+#define adjust2dTableCell           0x0134
+#define setAsyncDatalogType         0x0194
 
 #else
 	/* let us know if we are being untidy with headers */

@@ -24,7 +24,7 @@
  */
 
 
-/**	@file injectorISR.c
+/** @file
  *
  * @brief Injector ISR shared code
  *
@@ -52,25 +52,37 @@
  * - 6	Calculate and record code run time
  * - 7	Return
  *
- * @author Fred Cooke
+ * @see injectionISRs.c
  */
 
 
+// Courtesy of Dave Cramer
+#define INJECTOR_MAIN_ON_MASK (BIT2<<INJECTOR_CHANNEL_NUMBER)
+
+/** A template function for ECT injector/coil operation.
+ *
+ * Note, this function does not exist in the binary, only in source and the
+ * Doxygen docs. In contrast the 6 real ones only exist in binary and not the
+ * source or Doxygen docs, hence if you want to look at the source, this is the
+ * place to do so.
+ */
 void InjectorXISR(){
 	/* Clear the interrupt flag for this channel */
-	TFLG = injectorMainOnMasks[INJECTOR_CHANNEL_NUMBER];
+	TFLG = INJECTOR_MAIN_ON_MASK;
 
 	/* Record the current time as start time */
 	unsigned short TCNTStart = TCNT;
+
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT2, PORTB);
 
 	/* Record the edge time stamp from the IC register */
 	unsigned short edgeTimeStamp = *injectorMainTimeRegisters[INJECTOR_CHANNEL_NUMBER];
 
 	/* If rising edge triggered this */
-	if(PTIT & injectorMainOnMasks[INJECTOR_CHANNEL_NUMBER]){ // Stuff for switch on time
+	if(PTIT & INJECTOR_MAIN_ON_MASK){ // Stuff for switch on time
 
 		/* Find out what max and min for pulse width are */
-		unsigned short localPulseWidth = injectorMainPulseWidthsRealtime[INJECTOR_CHANNEL_NUMBER];
+		unsigned short localPulseWidth = outputEventPulseWidthsRealtime[INJECTOR_CHANNEL_NUMBER];
 		unsigned short localMinimumPulseWidth = injectorSwitchOnCodeTime + injectorCodeLatencies[INJECTOR_CHANNEL_NUMBER];
 
 		/** @todo TODO *maybe* instead of checking min and increasing pulse, just force it straight off if diff between start and now+const is greater than desired pulsewidth */
@@ -114,25 +126,25 @@ void InjectorXISR(){
 				Counters.injectorTimerExtensions++;
 			}else{
 				*injectorMainControlRegisters[INJECTOR_CHANNEL_NUMBER] |= injectorMainEnableMasks[INJECTOR_CHANNEL_NUMBER];
-				*injectorMainTimeRegisters[INJECTOR_CHANNEL_NUMBER] += outputEventExtendFinalPeriodRealtime[INJECTOR_CHANNEL_NUMBER];
-				// this is already set from the decoder, we're just delaying use of it: injectorMainPulseWidthsRealtime[INJECTOR_CHANNEL_NUMBER]
+				*injectorMainTimeRegisters[INJECTOR_CHANNEL_NUMBER] += outputEventDelayFinalPeriodRealtime[INJECTOR_CHANNEL_NUMBER];
+				// this is already set from the decoder, we're just delaying use of it: outputEventPulseWidthsRealtime[INJECTOR_CHANNEL_NUMBER]
 				Counters.injectorTimerExtensionFinals++;
 			}
 		}else{ // if set to off action (implicit)
 			/* Set the action for compare to switch on and the time to next start time, clear the self timer flag */
-			if(selfSetTimer & injectorMainOnMasks[INJECTOR_CHANNEL_NUMBER]){
+			if(selfSetTimer & INJECTOR_MAIN_ON_MASK){
 				if(outputEventExtendNumberOfRepeatsHolding[INJECTOR_CHANNEL_NUMBER] > 0){
 					*injectorMainControlRegisters[INJECTOR_CHANNEL_NUMBER] &= injectorMainDisableMasks[INJECTOR_CHANNEL_NUMBER];
 					outputEventExtendNumberOfRepeatsRealtime[INJECTOR_CHANNEL_NUMBER] = outputEventExtendNumberOfRepeatsHolding[INJECTOR_CHANNEL_NUMBER];
 					outputEventExtendRepeatPeriodRealtime[INJECTOR_CHANNEL_NUMBER] = outputEventExtendRepeatPeriodHolding[INJECTOR_CHANNEL_NUMBER];
-					outputEventExtendFinalPeriodRealtime[INJECTOR_CHANNEL_NUMBER] = outputEventExtendFinalPeriodHolding[INJECTOR_CHANNEL_NUMBER];
+					outputEventDelayFinalPeriodRealtime[INJECTOR_CHANNEL_NUMBER] = outputEventDelayFinalPeriodHolding[INJECTOR_CHANNEL_NUMBER];
 					Counters.injectorSelfScheduleExtensions++;
 				}else{
 					*injectorMainControlRegisters[INJECTOR_CHANNEL_NUMBER] |= injectorMainGoHighMasks[INJECTOR_CHANNEL_NUMBER];
 					Counters.injectorSelfSchedules++;
 				}
 				*injectorMainTimeRegisters[INJECTOR_CHANNEL_NUMBER] += injectorMainStartOffsetHolding[INJECTOR_CHANNEL_NUMBER];
-				injectorMainPulseWidthsRealtime[INJECTOR_CHANNEL_NUMBER] = injectorMainPulseWidthsHolding[INJECTOR_CHANNEL_NUMBER];
+				outputEventPulseWidthsRealtime[INJECTOR_CHANNEL_NUMBER] = outputEventPulseWidthsHolding[INJECTOR_CHANNEL_NUMBER];
 				selfSetTimer &= injectorMainOffMasks[INJECTOR_CHANNEL_NUMBER];
 			}else{
 				// Disable interrupts and actions incase the period from this end to the next start is long (saves cpu)
@@ -146,4 +158,6 @@ void InjectorXISR(){
 	}
 	/* Calculate and store the latency based on compare time and start time */
 	injectorCodeLatencies[INJECTOR_CHANNEL_NUMBER] = TCNTStart - edgeTimeStamp;
+
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT2, PORTB);
 }

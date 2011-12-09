@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2008, 2009, 2010, 2011 Fred Cooke
+ * Copyright 2008-2011 Fred Cooke
  *
  * This file is part of the FreeEMS project.
  *
@@ -24,7 +24,8 @@
  */
 
 
-/**	@file commsCore.c
+/** @file
+ *
  * @ingroup communicationsFiles
  *
  * @brief Core communications functions.
@@ -54,7 +55,7 @@
 #include "inc/init.h"
 #include <string.h> /// @todo TODO this is pulling in the system string.h not the m68hc1x version, and functions other than memcpy do not work because they are not in crt1.o or other included-by-default libs
 #include <datalogPopulator.c>
-#include "inc/BenchTest.h"
+#include "decoders/inc/BenchTest.h"
 
 
 /** @brief Populate a basic datalog packet
@@ -74,6 +75,11 @@ void populateBasicDatalog(){
 
 	// By default, default values are populated, but if you drop code into the custom directory, that replaces the defaults.
 	populateCustomDatalog();
+	// Done here to overwrite cheeky custom users data:
+	KeyUserDebugs.coreStatusA = coreStatusA;
+	KeyUserDebugs.tempClock++;
+	KeyUserDebugs.clockIn8thsOfAMilli = Clocks.realTimeClockMain;
+	KeyUserDebugs.clockInMilliSeconds = Clocks.realTimeClockMillis;
 
 	/* Get core vars */
 	memcpy(TXBufferCurrentPositionHandler, CoreVars, sizeof(CoreVar));
@@ -82,20 +88,12 @@ void populateBasicDatalog(){
 	memcpy(TXBufferCurrentPositionHandler, DerivedVars, sizeof(DerivedVar));
 	TXBufferCurrentPositionHandler += sizeof(DerivedVar);
 	/* Get raw adc counts */
-//	memcpy(TXBufferCurrentPositionHandler, ADCArrays, sizeof(ADCArray));
-//	TXBufferCurrentPositionHandler += sizeof(ADCArray);
+	memcpy(TXBufferCurrentPositionHandler, &KeyUserDebugs, sizeof(KeyUserDebug));
+	TXBufferCurrentPositionHandler += sizeof(KeyUserDebug);
 
 	/* Set/Truncate the log to the specified length */
-	TXBufferCurrentPositionHandler = position + configuredBasicDatalogLength;
+	TXBufferCurrentPositionHandler = position + TablesB.SmallTablesB.loggingSettings.basicDatalogLength;
 }
-
-
-//void populateLogicAnalyser(){
-//	// get portT rpm input and inj main
-//	// get portB ign
-//	// get portA ign
-//	// get portK inj staged
-//}
 
 
 // All of these require some range checking, eg only some registers, and all RAM, not flash, not other regs
@@ -136,7 +134,7 @@ void populateBasicDatalog(){
 // /* Just dump the ADC channels as fast as possible */
 //void populateScopeLogADCAll(){
 //	sampleBlockADC(TXBufferCurrentPositionHandler);
-//	TXBufferCurrentPositionHandler += sizeof(ADCArray);
+//	TXBufferCurrentPositionHandler += sizeof(ADCBuffer);
 //}
 
 
@@ -178,19 +176,12 @@ void finaliseAndSend(unsigned short errorID){
 		TXPacketLengthToSendSCI0 = TXPacketLengthToSend;
 		TXPacketLengthToSendCAN0 = TXPacketLengthToSend;
 
-		/* Queue preamble by clearing and then setting transmit enable	*/
-		/* See section 11.4.5.2 of the xdp512 specification document	*/
-		//SCI0CR2 &= SCICR2_TX_DISABLE;
-		//SCI0CR2 |= SCICR2_TX_ENABLE;
-
 		/* Initiate transmission */
 		SCI0DRL = START_BYTE;
-		while(!(SCI0SR1 & 0x80)){/* Wait for ever until able to send then move on */}
-		SCI0DRL = START_BYTE; // nasty hack that works... means at least one and most 2 starts are sent so stuff works, but is messy... there must be a better way.
 
 		/* Note : Order Is Important! */
 		/* TX empty flag is already set, so we must clear it by writing out before enabling the interrupt */
-		SCI0CR2 |= SCICR2_TX_ISR_ENABLE;
+		SCI0CR2 |= (SCICR2_TX_ENABLE | SCICR2_TX_ISR_ENABLE);
 	}
 	/* CAN0 - Main CAN interface */
 	if(TXBufferInUseFlags & COM_SET_CAN0_INTERFACE_ID){
@@ -327,12 +318,12 @@ void decodePacketAndRespond(){
 			}
 
 			/* This type must have a length field, set that up */
-			*((unsigned short*)TXBufferCurrentPositionHandler) = sizeof(interfaceVersionAndType);
+			*((unsigned short*)TXBufferCurrentPositionHandler) = sizeof(interfaceVersion);
 			*TXHeaderFlags |= HEADER_HAS_LENGTH;
 			TXBufferCurrentPositionHandler += 2;
 			/* Load the body into place */
-			memcpy((void*)TXBufferCurrentPositionHandler, (void*)&interfaceVersionAndType, sizeof(interfaceVersionAndType));
-			TXBufferCurrentPositionHandler += sizeof(interfaceVersionAndType);
+			memcpy((void*)TXBufferCurrentPositionHandler, (void*)&interfaceVersion, sizeof(interfaceVersion));
+			TXBufferCurrentPositionHandler += sizeof(interfaceVersion);
 			break;
 		}
 		case requestFirmwareVersion:
@@ -407,16 +398,54 @@ void decodePacketAndRespond(){
 			break;
 		}
 	// FreeEMS Vanilla Firmware Specific cases
-		case requestDecoderName:
+		case clearCountersAndFlagsToZero:
 		{
-			/// @todo TODO add this call to the documentation, John maybe?
 			if(RXCalculatedPayloadLength != 0){
 				errorID = payloadLengthTypeMismatch;
 				break;
 			}
 
+			unsigned short zeroCounter;
+			unsigned char* counterPointer = (char*) &Counters;
+			for(zeroCounter = 0;zeroCounter < sizeof(Counter);zeroCounter++){
+				*counterPointer = 0;
+				counterPointer++;
+			}
+			KeyUserDebugs.flaggableFlags = 0;
+			unsigned char* flaggablePointer = (char*) &Flaggables;
+			for(zeroCounter = 0;zeroCounter < sizeof(Flaggable);zeroCounter++){
+				*flaggablePointer = 0;
+				flaggablePointer++;
+			}
+			break;
+		}
+		case requestDecoderName:
+		case requestFirmwareBuildDate:
+		case requestCompilerVersion:
+		case requestOperatingSystem:
+		{
+			if(RXCalculatedPayloadLength != 0){
+				errorID = payloadLengthTypeMismatch;
+				break;
+			}
+
+			unsigned char* stringToSend = 0;
+			switch (RXHeaderPayloadID) {
+				case requestDecoderName:
+					stringToSend = (unsigned char*)decoderName;
+					break;
+				case requestFirmwareBuildDate:
+					stringToSend = (unsigned char*)buildTimeAndDate;
+					break;
+				case requestCompilerVersion:
+					stringToSend = (unsigned char*)compilerVersion;
+					break;
+				case requestOperatingSystem:
+					stringToSend = (unsigned char*)operatingSystem;
+					break;
+			}
 			/* This type must have a length field, set that up and load the body into place at the same time */
-			*((unsigned short*)TXBufferCurrentPositionHandler) = stringCopy((TXBufferCurrentPositionHandler + 2), (unsigned char*)decoderName);
+			*((unsigned short*)TXBufferCurrentPositionHandler) = stringCopy((TXBufferCurrentPositionHandler + 2), stringToSend);
 			*TXHeaderFlags |= HEADER_HAS_LENGTH;
 			// Update with length field and string length.
 			TXBufferCurrentPositionHandler += 2 + *((unsigned short*)TXBufferCurrentPositionHandler);
@@ -445,6 +474,12 @@ void decodePacketAndRespond(){
 			// Look up the memory location details
 			blockDetails details;
 			lookupBlockDetails(locationID, &details);
+
+			// Don't let anyone write to running variables unless we are running BenchTest firmware!
+			if((details.flags & block_is_read_only) && !(compare((char*)&decoderName, BENCH_TEST_NAME, sizeof(BENCH_TEST_NAME)))){
+				errorID = attemptToWriteToReadOnlyBlock;
+				break;
+			}
 
 			// Subtract six to allow for the locationID, size, offset
 			if((RXCalculatedPayloadLength - 6) != size){
@@ -502,6 +537,7 @@ void decodePacketAndRespond(){
 
 				// If the validation failed, report it
 				if(errorID != 0){
+					RPAGE = oldRamPage; // Restore the original RAM page, even when getting an error condition.
 					break;
 				}
 			}
@@ -820,7 +856,7 @@ void decodePacketAndRespond(){
 			errorID = writeBlock(&details, leftOverBuffer);
 			break;
 		}
-		case requestBasicDatalog:
+		case requestDatalogPacket: // Set type through standard configuration methods
 		{
 			if((RXCalculatedPayloadLength > 2) || (RXCalculatedPayloadLength == 1)){
 				errorID = payloadLengthTypeMismatch;
@@ -831,23 +867,17 @@ void decodePacketAndRespond(){
 					errorID = datalogLengthExceedsMax;
 					break;
 				}else{
-					configuredBasicDatalogLength = newConfiguredLength;
+					TablesB.SmallTablesB.loggingSettings.basicDatalogLength = newConfiguredLength;
 				}
 			}// fall through to use existing configured length
 
 			/* Set the length field up */
 			*TXHeaderFlags |= HEADER_HAS_LENGTH;
-			*(unsigned short*)TXBufferCurrentPositionHandler = configuredBasicDatalogLength;
+			*(unsigned short*)TXBufferCurrentPositionHandler = TablesB.SmallTablesB.loggingSettings.basicDatalogLength;
 			TXBufferCurrentPositionHandler += 2;
 
 			/* Fill out the log and send */
-			populateBasicDatalog();
-			break;
-		}
-		case requestConfigurableDatalog:
-		{
-			/// perform function TODO @todo REWORK review this
-			errorID = unimplementedFunction;
+			populateBasicDatalog(); // TODO change this to pull type from settings and call generic populator which populates with passed in type
 			break;
 		}
 		case setAsyncDatalogType:
@@ -858,24 +888,12 @@ void decodePacketAndRespond(){
 			}
 
 			unsigned char newDatalogType = *((unsigned char*)RXBufferCurrentPosition);
-			if(newDatalogType > 0x01){
+			if(newDatalogType > asyncDatalogLastType){
 				errorID = noSuchAsyncDatalogType;
 				break;
 			}
 
-			TablesB.SmallTablesB.datalogStreamType = newDatalogType;
-			break;
-		}
-		case forwardPacketOverCAN:
-		{
-			/// perform function TODO @todo REWORK review this
-			errorID = unimplementedFunction;
-			break;
-		}
-		case forwardPacketOverOtherUART:
-		{
-			/// perform function TODO @todo REWORK review this
-			errorID = unimplementedFunction;
+			TablesB.SmallTablesB.loggingSettings.datalogStreamType = newDatalogType;
 			break;
 		}
 		case retrieveArbitraryMemory:
@@ -1111,15 +1129,60 @@ void decodePacketAndRespond(){
 		{
 			// see TODO on include at top and modify this line appropriately
 			if(!(compare((char*)&decoderName, BENCH_TEST_NAME, sizeof(BENCH_TEST_NAME)))){
-				if(RXCalculatedPayloadLength != 24){
+				if(RXCalculatedPayloadLength < 1){
 					errorID = payloadLengthTypeMismatch;
 					break;
 				}
 
-				testMode = *((unsigned char*)RXBufferCurrentPosition); //1; // The only mode, for now.
+				unsigned char localTestMode = *((unsigned char*)RXBufferCurrentPosition); //1; // The only mode, for now.
 				RXBufferCurrentPosition++;
-				if(testMode != 1){
+				if(localTestMode > TEST_MODE_BUMP_UP_CYCLES){
 					errorID = unimplementedTestMode;
+					break;
+				}else if((localTestMode == TEST_MODE_STOP) && (RXCalculatedPayloadLength == 1)){
+					if(!(coreStatusA & BENCH_TEST_ON)){
+						errorID = benchTestNotRunningToStop;
+						break;
+					}
+
+					// Ensure we succeed at stopping it as quickly as possible.
+					ATOMIC_START();
+					KeyUserDebugs.currentEvent = testEventsPerCycle - 1; // Gets incremented then compared with testEventsPerCycle
+					testNumberOfCycles = 1;                              // Gets decremented then compared with zero
+					ATOMIC_END();
+
+					// eventually save and return where it got to
+					break;
+				}else if((localTestMode == TEST_MODE_BUMP_UP_CYCLES) && (RXCalculatedPayloadLength == 2)){
+					if(!(coreStatusA & BENCH_TEST_ON)){
+						errorID = benchTestNotRunningToBump;
+						break;
+					}
+
+					// Get bump value from payload
+					unsigned char bumpCycles = *((unsigned char*)RXBufferCurrentPosition); //1; // The only mode, for now.
+					RXBufferCurrentPosition++;
+
+					if(bumpCycles == 0){
+						errorID = bumpingByZeroMakesNoSense;
+						break;
+					}
+
+					// Bump count by value from payload
+					testNumberOfCycles += bumpCycles;
+					// Given that this function is only for situations when A it's getting near to
+					// zero and B the user is watching, not checking for overflow is reasonable.
+					break;
+				}else if((localTestMode == TEST_MODE_ITERATIONS) && (RXCalculatedPayloadLength == 24)){
+					testMode = localTestMode;
+					// do nothing to fall through, or move other code into here
+				}else{
+					errorID = packetSizeWrongForTestMode;
+					break;
+				}
+
+				if(coreStatusA & BENCH_TEST_ON){
+					errorID = benchTestAlreadyRunning;
 					break;
 				}
 
@@ -1160,8 +1223,8 @@ void decodePacketAndRespond(){
 					if(testPulseWidths[channel] > injectorSwitchOnCodeTime){ // See next block for warning.
 						// use as-is
 						outputEventPinNumbers[channel] = channel;
-						postReferenceEventDelays[channel] = decoderMaxCodeTime;
-						injectorMainPulseWidthsMath[channel] = testPulseWidths[channel];
+						outputEventDelayFinalPeriod[channel] = decoderMaxCodeTime;
+						outputEventPulseWidthsMath[channel] = testPulseWidths[channel];
 						outputEventInputEventNumbers[channel] = testEventNumbers[channel];
 					}else if(testPulseWidths[channel] > 2){
 						// less than the code time, and not special, error!
@@ -1171,14 +1234,14 @@ void decodePacketAndRespond(){
 					}else if(testPulseWidths[channel] == 2){
 						// use the dwell from the core maths and input vars.
 						outputEventPinNumbers[channel] = channel;
-						postReferenceEventDelays[channel] = decoderMaxCodeTime;
-						injectorMainPulseWidthsMath[channel] = DerivedVars->Dwell;
+						outputEventDelayFinalPeriod[channel] = decoderMaxCodeTime;
+						outputEventPulseWidthsMath[channel] = DerivedVars->Dwell;
 						outputEventInputEventNumbers[channel] = testEventNumbers[channel];
 					}else if(testPulseWidths[channel] == 1){
 						// use the reference pulse width from the core maths and input vars.
 						outputEventPinNumbers[channel] = channel;
-						postReferenceEventDelays[channel] = decoderMaxCodeTime;
-						injectorMainPulseWidthsMath[channel] = DerivedVars->RefPW;
+						outputEventDelayFinalPeriod[channel] = decoderMaxCodeTime;
+						outputEventPulseWidthsMath[channel] = DerivedVars->RefPW;
 						outputEventInputEventNumbers[channel] = testEventNumbers[channel];
 					}else{ // is zero
 						// Set this channel to zero for and therefore off, don't set this channel.
@@ -1194,10 +1257,13 @@ void decodePacketAndRespond(){
 
 				if(errorID == 0){
 					// Let the first iteration roll it over to zero.
-					currentEvent = 0xFF; // Needs to be here in case of multiple runs, init is not sufficient
+					KeyUserDebugs.currentEvent = 0xFF; // Needs to be here in case of multiple runs, init is not sufficient
 
 					// Trigger decoder interrupt to fire thus starting the loop!
 					TIE = 0x01; // The ISR does the rest!
+
+					// Nothing went wrong, now set flag.
+					coreStatusA |= BENCH_TEST_ON;
 				}else{
 					break;
 				}
@@ -1228,18 +1294,18 @@ void decodePacketAndRespond(){
 //				outputEventPinNumbers[3] = 3; // 4 ign/2 fuel
 //				outputEventPinNumbers[4] = 4; // 3 fuel
 //				outputEventPinNumbers[5] = 5; // 4 fuel
-//				postReferenceEventDelays[0] = decoderMaxCodeTime;
-//				postReferenceEventDelays[1] = decoderMaxCodeTime;
-//				postReferenceEventDelays[2] = decoderMaxCodeTime;
-//				postReferenceEventDelays[3] = decoderMaxCodeTime;
-//				postReferenceEventDelays[4] = decoderMaxCodeTime;
-//				postReferenceEventDelays[5] = decoderMaxCodeTime;
-//				injectorMainPulseWidthsMath[0] = SHORTMAX;
-//				injectorMainPulseWidthsMath[1] = SHORTMAX;
-//				injectorMainPulseWidthsMath[2] = SHORTMAX;
-//				injectorMainPulseWidthsMath[3] = SHORTMAX;
-//				injectorMainPulseWidthsMath[4] = SHORTMAX;
-//				injectorMainPulseWidthsMath[5] = SHORTMAX;
+//				outputEventDelayFinalPeriod[0] = decoderMaxCodeTime;
+//				outputEventDelayFinalPeriod[1] = decoderMaxCodeTime;
+//				outputEventDelayFinalPeriod[2] = decoderMaxCodeTime;
+//				outputEventDelayFinalPeriod[3] = decoderMaxCodeTime;
+//				outputEventDelayFinalPeriod[4] = decoderMaxCodeTime;
+//				outputEventDelayFinalPeriod[5] = decoderMaxCodeTime;
+//				outputEventPulseWidthsMath[0] = SHORTMAX;
+//				outputEventPulseWidthsMath[1] = SHORTMAX;
+//				outputEventPulseWidthsMath[2] = SHORTMAX;
+//				outputEventPulseWidthsMath[3] = SHORTMAX;
+//				outputEventPulseWidthsMath[4] = SHORTMAX;
+//				outputEventPulseWidthsMath[5] = SHORTMAX;
 //
 //				unsigned short edgeTimeStamp = TCNT;
 //				// call sched output with args
@@ -1303,7 +1369,7 @@ void sendErrorIfClear(unsigned short errorID){
 		TXBufferInUseFlags = ONES;
 		sendErrorInternal(errorID);
 	}else{
-		Counters.commsErrorMessagesNotSent++;
+		FLAG_AND_INC_FLAGGABLE(FLAG_COMMS_ERROR_MESSAGES_NOT_SENT_OFFSET);
 	}
 }
 
@@ -1399,7 +1465,7 @@ void sendDebugIfClear(unsigned char* message){
 		TXBufferInUseFlags = ONES;
 		sendDebugInternal(message);
 	}else{
-		Counters.commsDebugMessagesNotSent++;
+		FLAG_AND_INC_FLAGGABLE(FLAG_COMMS_DEBUG_MESSAGES_NOT_SENT_OFFSET);
 	}
 }
 

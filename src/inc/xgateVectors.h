@@ -23,7 +23,9 @@
  * Thank you for choosing FreeEMS to run your engine!
  */
 
-/** @file xgateVectors.h
+/** @file
+ *
+ * @ingroup xgateFiles
  * @ingroup xgateHeaders
  *
  * @brief C header for assembly xgate functions
@@ -56,9 +58,11 @@
 #define	PRIORITY_LEVEL_TWO	0x02
 #define SCHEDULER_BUSY 0x01
 
+
 #define ROUTE_INTERRUPT(channel_id, cpu_assignment, priority) \
         INT_CFADDR = (channel_id * 2) & 0xF0;                 \
         INT_CFDATA_ARR[((channel_id * 2) & 0x0F) >> 1] = (cpu_assignment | priority);
+
 
 typedef struct {
 	unsigned short programCounterValue; /* This data is forced into the XGATE PC register */
@@ -111,6 +115,7 @@ EXTERN const xgateIntVector xgateIntVectorTable[121];
 
 // Xgate control value
 #define XGATE_ERROR_HANDLER 0x0000 /* TODO Create the XGATE error handling thread in asm. */
+
 
 #else
         /* let us know if we are being untidy with headers */

@@ -24,7 +24,7 @@
  */
 
 
-/**	@file BenchTest.c
+/** @file
  *
  * @ingroup enginePositionRPMDecoders
  *
@@ -51,7 +51,7 @@
 #include "../inc/freeEMS.h"
 #include "../inc/interrupts.h"
 #include "../inc/decoderInterface.h"
-#include "../inc/BenchTest.h"
+#include "inc/BenchTest.h"
 
 
 // Setup the timer interrupts as internal timers only triggered by a serial call that returns if this isn't the decoder.
@@ -73,7 +73,6 @@ void decoderInitPreliminary(){
 void perDecoderReset(){} // Nothing special to reset for this code
 
 
-const unsigned char decoderName[] = BENCH_TEST_NAME;
 const unsigned short eventAngles[] = {0};           // no events really...
 const unsigned char eventValidForCrankSync[] = {0}; // no events really...
 
@@ -87,12 +86,12 @@ const unsigned char eventValidForCrankSync[] = {0}; // no events really...
  */
 void PrimaryRPMISR(){
 	TFLG = 0x01;
+	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT0, PORTB);
+
+	unsigned short edgeTimeStamp = TC0;
 
 	/* Reset the clock for reading timeout */
 	Clocks.timeoutADCreadingClock = 0;
-
-	/// @todo TODO Migrate this to the decoder itself once the necessary configuration has been setup.
-	unsigned short edgeTimeStamp = TC0;
 
 	// call sched output with args
 	LongTime timeStamp;
@@ -105,26 +104,25 @@ void PrimaryRPMISR(){
 		timeStamp.timeShorts[0] = timerExtensionClock;
 	}
 
-	unsigned char shouldFire = 0;
+	unsigned char shouldFire = 1;
 //	unsigned long localPeriod = 0; // mutlifire or busy wait, if doing this, check last period for some min, and if too small, shrink second to last and increase last
 //	unsigned short localPeriod = 0; // normal mode
 	if(testMode == TEST_MODE_ITERATIONS){
-		currentEvent++;
-		if(currentEvent == testEventsPerCycle){
-			currentEvent = 0;
+		KeyUserDebugs.currentEvent++;
+		if(KeyUserDebugs.currentEvent == testEventsPerCycle){
+			KeyUserDebugs.currentEvent = 0;
 			testNumberOfCycles--;
 			if(testNumberOfCycles == 0){
 				// Disable the interrupt again, to be enabled by a serial trigger
 				TIE &= NBIT0;
-			}else{
-				shouldFire = 1;
+				shouldFire = 0;
+				coreStatusA &= CLEAR_BENCH_TEST_ON;
+				return;
 			}
 		}
 
 		// TODO make this more sophisticated
 		TC0 += testTicksPerEvent;
-
-		shouldFire = ONES;
 	}else if(testMode == TEST_MODE_REVOLUTIONS){
 		// sub modes of different patterns, use scheduler for this by setting the ADC array up and probing/triggering/touching/poking/starting/
 		// switch statement for selecting different const arrays of angles, use busy wait, or multiple interrupt to do larger gaps for lower rpms/coarse events
@@ -154,14 +152,13 @@ void PrimaryRPMISR(){
 		// fire outputs here
 		unsigned char channel;
 		for(channel = 0;channel < 6;channel++){
-			if(currentEvent == outputEventInputEventNumbers[channel]){
+			if(KeyUserDebugs.currentEvent == outputEventInputEventNumbers[channel]){
 				schedulePortTPin(channel, timeStamp);
 			}
 		}
 	}
+	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT0, PORTB);
 }
 
 
-void SecondaryRPMISR(){
-	TFLG = 0x02;
-}
+#include "inc/defaultSecondaryRPMISR.c"

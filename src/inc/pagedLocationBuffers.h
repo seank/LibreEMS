@@ -24,7 +24,8 @@
  */
 
 
-/**	@file pagedLocationBuffers.h
+/** @file
+ *
  * @ingroup allHeaders
  *
  * @brief Pointers to paged memory blocks
@@ -114,6 +115,8 @@ EXTERN void* dwellMaxVersusRPMTableLocation;
 EXTERN void* dwellMaxVersusRPMTable2Location;
 
 /* Small chunks of TablesB here */
+EXTERN void* loggingSettingsLocation;
+EXTERN void* loggingSettings2Location;
 EXTERN void* perCylinderFuelTrimsLocation;
 EXTERN void* perCylinderFuelTrims2Location;
 

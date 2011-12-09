@@ -24,7 +24,9 @@
  */
 
 
-/**	@file
+/** @file
+ *
+ * @ingroup xgateFiles
  * @ingroup interruptHandlers
  *
  * @brief XGATE Interrupt Vector Table
