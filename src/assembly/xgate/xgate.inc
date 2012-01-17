@@ -1,6 +1,6 @@
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2010-2011 Sean Keys
+ * Copyright 2010, 2011, 2012 Sean Keys
  *
  * This file is part of the FreeEMS project.
  *
