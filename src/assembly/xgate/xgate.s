@@ -136,8 +136,7 @@ BEQ xgsPIT0Clear
 	LDW R2, R4, #XGS_VARIABLE_XGS_FLAGS_OFFSET
 	ORL R2, #XGS_FLAG_JUMPED_TO_PIT0_LOOP
 	STW R2,  R4, #XGS_VARIABLE_XGS_FLAGS_OFFSET
-	LDD R7, xgatePITBangLoop
-	JAL R7
+	BRA xgatePITBangLoop
 	xgsContinue:
 	;clear jumped flag
 	LDD R4, xGSSystemVars
@@ -163,8 +162,7 @@ BEQ xgsPIT0Clear
 	LDW R4, R3, #PARAMETER_CHANNEL_ID_OFFSET
  	SUBL R4, #NUMBER_OF_EVENT_STRUCTURES
 BLS xgsChannelIDOk
-	LDD R7, xgsParameterLoopNext
-JAL R7
+	BRA xgsParameterLoopNext
  	xgsChannelIDOk:
 	;take our delayTime and add our runTime to get "runtimeDelay"
 	LDW R4, R3, #PARAMETER_DELAY_LOWWORD_OFFSET ;load
@@ -360,11 +358,7 @@ xgsParameterLoopCheck:
 	CMP R1, R2
 BEQ xgsParameterLoopDone
 	SUBL R2, #MAX_NUMBER_OF_PARAMETERS ;make sure we are operating withing our parameter allocation
-BEQ xgsParameterLoopDone
-;BNE xgsParameterLoop ;our loop is now too big so we need to use a JAL
-	LDD R7, xgsParameterLoop
-	JAL R7
-
+BNE xgsParameterLoop
 xgsParameterLoopDone:
 	;see if we have approachable events
 xgsApproachableCheck:
@@ -588,7 +582,7 @@ xgatePITBangLoopCall:
 	ANDL R1, #PDS_FLAG_SELF_UPDATE_BIT_XOR
 	STW R1, R2, #PDS_VARIABLE_PITDELAYFLAGS_OFFSET
 
-;BRA XGQEND
+;BRA XGQEND ;this skips the optimized bang loop
 ;;;;;;;;START FAST BANG LOOP
 	LDL R1, #0x00 ;initialize loop count register
 	LDD R2, eventsStructStart ;initialize our structure pointer to start of onEvents array
