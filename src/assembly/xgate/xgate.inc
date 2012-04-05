@@ -207,9 +207,9 @@
 
 /*-----------------------------------------CONFIG-------------------------------------------/* 
  	/* Constants */
-.equ NUMBER_OF_EVENT_STRUCTURES, 0x24 /* number of events we have defined in memory */
+;.equ NUMBER_OF_EVENT_STRUCTURES, 0x24 /* number of events we have defined in memory */
 ;.equ NUMBER_OF_EVENT_STRUCTURES, 0x10 /* number of events we have defined in memory */
-;.equ NUMBER_OF_EVENT_STRUCTURES, 0x08 /* number of events we have defined in memory */
+.equ NUMBER_OF_EVENT_STRUCTURES, 0x08 /* number of events we have defined in memory */
 .equ EVENT_STRUCTURE_SIZE, 0x16 /* 16 bytes or 8 words TODO MAKE A VAR */
 .equ MAX_NUMBER_OF_PARAMETERS, 0x06 /* 6 parameters can be loaded by the scheduler in one shot */
 .equ PARAMETER_STRUCTURE_SIZE, 0x0C /* 12 bytes or 6 words */
@@ -222,25 +222,25 @@
 .equ EVENT_0_REGISTER_MASK, 0x01 /* first pin on port B */
 
 .equ EVENT_1_REGISTER_ADDRESS, PORTB
-.equ EVENT_1_REGISTER_MASK, 0x01 /* second pin on port B */
+.equ EVENT_1_REGISTER_MASK, 0x02 /* second pin on port B */
 
 .equ EVENT_2_REGISTER_ADDRESS, PORTB
-.equ EVENT_2_REGISTER_MASK, 0x01 /* third pin on port B */
+.equ EVENT_2_REGISTER_MASK, 0x04 /* third pin on port B */
 
 .equ EVENT_3_REGISTER_ADDRESS, PORTB
-.equ EVENT_3_REGISTER_MASK, 0x01 /* fourth pin on port B */
+.equ EVENT_3_REGISTER_MASK, 0x08 /* fourth pin on port B */
 
 .equ EVENT_4_REGISTER_ADDRESS, PORTB
-.equ EVENT_4_REGISTER_MASK, 0x01 /* fifth pin on port B */
+.equ EVENT_4_REGISTER_MASK, 0x10 /* fifth pin on port B */
 
 .equ EVENT_5_REGISTER_ADDRESS, PORTB
-.equ EVENT_5_REGISTER_MASK, 0x01 /* sixth pin on port B */
+.equ EVENT_5_REGISTER_MASK, 0x20 /* sixth pin on port B */
 
 .equ EVENT_6_REGISTER_ADDRESS, PORTB
-.equ EVENT_6_REGISTER_MASK, 0x01 /* seventh pin on port B */
+.equ EVENT_6_REGISTER_MASK, 0x40 /* seventh pin on port B */
 
 .equ EVENT_7_REGISTER_ADDRESS, PORTB
-.equ EVENT_7_REGISTER_MASK, 0x01 /* eighth pin on port B */
+.equ EVENT_7_REGISTER_MASK, 0x80 /* eighth pin on port B */
 
 .equ EVENT_8_REGISTER_ADDRESS, PORTB
 .equ EVENT_8_REGISTER_MASK, 0x01 /* first pin on port B */
