@@ -37,8 +37,10 @@
  * @author Sean Keys
  */
 
-if(outputEventPinNumbers[outputEventNumber] == 0){
-		unsigned char savedRPage = RPAGE;
+if(outputEventPinNumbers[outputEventNumber] == 0) {
+if(0)
+	{
+	unsigned char savedRPage = RPAGE;
 		RPAGE = RPAGE_TUNE_TWO;
 		*xgsInStamp = timeStamp.timeShorts[1];
 		*xgsEventsToSch = 1;
@@ -47,4 +49,5 @@ if(outputEventPinNumbers[outputEventNumber] == 0){
 		XGOutputEvents[0].delay = outputEventDelayTotalPeriod[outputEventNumber];
 		XGSCHEDULE();
 		RPAGE = savedRPage;
+	}
 }
