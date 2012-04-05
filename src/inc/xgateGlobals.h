@@ -46,7 +46,7 @@
 // Use this block to schedule an xgate event
 typedef struct {
 	unsigned short channelID;
-	unsigned long delay;
+	unsigned long  delay;
 	unsigned short runtimeHigh;
 	unsigned short runtime;
 	unsigned short inputTS;
