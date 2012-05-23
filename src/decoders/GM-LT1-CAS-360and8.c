@@ -117,7 +117,7 @@ void PrimaryRPMISR(void){
 	TFLG = 0x01;
 	// Grab this first as it is the most critical var in this decoder
 	accumulatorRegisterCount = PACN1;/* save count before it changes */
-	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT0, PORTB);
+//	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT0, PORTB);
 
 	/* Save all relevant available data here */
 	unsigned char PTITCurrentState = PTIT; /* Save the values on port T regardless of the state of DDRT */
@@ -138,11 +138,6 @@ void PrimaryRPMISR(void){
 		if(accumulatorCount == AMBIGUOUS_COUNT){
 			return;
 		}else{
-
-asm volatile ("nop");
-PORTA |= 0x01;
-PORTB &= 0x01;
-asm volatile ("nop");
 			unsigned char lastEvent = 0xFF;
 			for(i = 0; numberOfRealEvents > i; i++){
 				if(windowCounts[i] == accumulatorCount){
@@ -247,8 +242,9 @@ asm volatile ("nop");
 				*xgsInStamp = timeStamp.timeShorts[1];
 				*xgsEventsToSch = 1;
 				XGOutputEvents[0].channelID = KeyUserDebugs.currentEvent / 2;
-				XGOutputEvents[0].runtime = outputEventPulseWidthsMath[KeyUserDebugs.currentEvent];
-				XGOutputEvents[0].delay = outputEventDelayTotalPeriod[KeyUserDebugs.currentEvent];
+				XGOutputEvents[0].runtime = 2 * outputEventPulseWidthsMath[KeyUserDebugs.currentEvent];
+				//XGOutputEvents[0].delay = outputEventDelayTotalPeriod[KeyUserDebugs.currentEvent];
+				XGOutputEvents[0].delay = 2500;
 				XGSCHEDULE();
 				RPAGE = savedRPage;
 
@@ -275,7 +271,7 @@ asm volatile ("nop");
 		SCHEDULE_ECT_OUTPUTS();
 	}
 
-	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT0, PORTB);
+//	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT0, PORTB);
 }
 
 
