@@ -109,7 +109,7 @@ TAGNAME = $(OUTDIR)/gitTagName.txt
 
 # Program prefixes, for the main cpu and for the xgate coprocessor
 PREFIX = m68hc11-
-XGPREFIX = mc9xgate-
+XGPREFIX = xgate-
 
 # All of the tools
 CP = cp
@@ -254,7 +254,7 @@ GCDDUMMY = $(patsubst $(S19DIR)/%,$(OUTDIR)/%.txt.dummy,$(GCDS19S))
 
 # http://www.gnu.org/software/m68hc11/m68hc11_gcc.html shows code size with different options used
 # include debug info, optimise , 16 bit ints, hcs12 platform
-GCCOPTS1 = -g -Wall -Werror -Winline -O -m68hcs12 -mshort -ffunction-sections -idirafter custom -idirafter default
+GCCOPTS1 = -g0 -Wall -Werror -Winline -O -m68hcs12 -mshort -ffunction-sections -idirafter custom -idirafter default
 GCCOPTS2 = -fomit-frame-pointer -msoft-reg-count=8 -mauto-incdec -fsigned-char
 GCCOPTS = $(GCCOPTS1) $(GCCOPTS2) $(CLIFLAGS) -D FIRMWARE_VERSION=\"$(FIRMWARE_VERSION)\" -D FIRMWARE_BUILD_DATE=\"$(BUILD_DATE)\" -D OPERATING_SYSTEM=\"$(OS)\"
 # -ffunction-sections option splits out the functions such that the garbage collection can get
