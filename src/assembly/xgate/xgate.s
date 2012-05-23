@@ -445,6 +445,9 @@ xgateScheduleEnd:
 */
 
 xgateMetronome: ; PIT 2 ISR, called by PIT2 interrupt. Decrement out delayCounter.
+;debug heartbeat code
+;LDD R5, xgatePORTPFlip
+;JAL R5
     ;TODO save start time stamp
 	LDD R2, xGMStartTime
 	LDD R3, PITCNT1
@@ -582,7 +585,7 @@ xgatePITBangLoopCall:
 	ANDL R1, #PDS_FLAG_SELF_UPDATE_BIT_XOR
 	STW R1, R2, #PDS_VARIABLE_PITDELAYFLAGS_OFFSET
 
-;BRA XGQEND ;this skips the optimized bang loop
+BRA XGQEND ;Debug this skips the optimized bang loop
 ;;;;;;;;START FAST BANG LOOP
 	LDL R1, #0x00 ;initialize loop count register
 	LDD R2, eventsStructStart ;initialize our structure pointer to start of onEvents array
@@ -648,9 +651,10 @@ BRA XGQPIT0BangLoop
 ;;;;;END FAST BANG LOOP
 XGQEND:
 
-;set this to highest possobile value initially so any value will be the soonest
+; Set this to a high value initially so any value will be the soonest.
+; But not so high things could roll over
 	LDD R1, pitDelaySubSystemVars
-	LDD R3, 0xFFFF
+	LDD R3, 0xFF00
 	STW R3, R1, #PDS_VARIABLE_PITDELAYNEXTCOUNTDOWN_OFFSET
 	;************************************************************************************
 	; loop thought events if event is flagged as EVENT_FLAG_APPROACHABLE and countdown is zero
@@ -768,7 +772,7 @@ BRA XGPITOnLoop1
 		;BHI XGPITOnLoop1Block
 		MOV R3, R1
 		SUBL R3, #NUMBER_OF_EVENT_STRUCTURES
-		BNE XGPITOnLoop1Block  ; if R4 >= R2
+		BNE XGPITOnLoop1Block
 	;Check our SELF_UPDATE bit and set downcounter if we have an approchable event
 	LDD R2, pitDelaySubSystemVars
 	LDW R3, R2, #PDS_VARIABLE_PITDELAYFLAGS_OFFSET
