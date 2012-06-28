@@ -44,6 +44,7 @@
 #include "inc/freeEMS.h"
 #include "inc/xgateVectors.h"
 
+//__attribute__ ((cpu (".XGATE")))
 
 /* Currently this gets copied from wherever it ends up into the XGATE flash pages */
 const xgateIntVector xgateIntVectorTable[] PPAGE_E0X = {

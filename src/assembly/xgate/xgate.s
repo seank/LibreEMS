@@ -35,6 +35,7 @@
 ; *****************************************************************************
 ;debug code
 .global eventFlags1
+.global xgatePORTPFlip
 
 ;	.sect .data
     .sect .ppageE1
@@ -446,8 +447,8 @@ xgateScheduleEnd:
 
 xgateMetronome: ; PIT 2 ISR, called by PIT2 interrupt. Decrement out delayCounter.
 ;debug heartbeat code
-;LDD R5, xgatePORTPFlip
-;JAL R5
+LDD R5, xgatePORTPFlip
+JAL R5
     ;TODO save start time stamp
 	LDD R2, xGMStartTime
 	LDD R3, PITCNT1
@@ -861,16 +862,6 @@ xgateErrorThread:
 /**
  * @cond DOXYGEN_IGNORE_ASM
 */
-
-xgatePORTPFlip: ;Flip bit 7 at PORTP
-	LDD R2, #PORTP ;load port-p address
-	LDB R1, R2, #ZERO_OFFSET ;load data(1 byte) at port-p address to R1
-	COM R3, R1 ;flip the bits
-	ANDL R1, #0x7F
-	ANDL R3, #0x80
-	OR R1, R3, R1
-	STB R1, R2, #0x00 ;write the byte to port-p address
-	JAL R5 ;return
 
 ;IMULU: ; multiply two registers(R1*R2)
 ;	STW R1, (R0,-R7)
