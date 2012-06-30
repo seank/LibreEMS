@@ -51,6 +51,9 @@
  * starting XGATE
  *
  */
+
+extern void startXGATECode();
+
 void initXgate(){
 	/* route interrupt to xgate, vector address = channel_id * 2 */
 	ROUTE_INTERRUPT(0x39, XGATE_INTERRUPT, PRIORITY_LEVEL_ONE) /*enable xgate int on software0 interrupt */
@@ -67,7 +70,7 @@ void initXgate(){
 	PPAGE = 0xE1;
 	// we can't use the symbols for the memcpy part because the symbols need to contain xgate relevant values
 	//memcpy(START_OF_RAM_WINDOW, START_OF_FLASH_WINDOW, XGATE_RAM_ALLOCATION_SIZE);
-	memcpy((unsigned short *)0x3030, START_OF_FLASH_WINDOW, XGATE_RAM_ALLOCATION_SIZE);
+	memcpy(startXGATECode, START_OF_FLASH_WINDOW, XGATE_RAM_ALLOCATION_SIZE);
 	//TODO set RAM protection
 	//RPAGE = savedRPAGE;
 	PPAGE = savedPPAGE;
@@ -104,7 +107,10 @@ void initXgate(){
 	PITFLT = ONES; // clear flags
 
 	/* Initialize our global xgate pointers */
-	XGOutputEvents = (XGOutputEvent*) (parametersBase - RPAGE_TUNE_TWO_WINDOW_DIFFERENCE);
-	xgsInStamp = (unsigned short*) (xGSInputEdgeStamp - RPAGE_TUNE_TWO_WINDOW_DIFFERENCE);
-	xgsEventsToSch = (unsigned short*) (xgsNumOfEventsToSchedule - RPAGE_TUNE_TWO_WINDOW_DIFFERENCE);
+	//XGOutputEvents = (XGOutputEvent*) (parametersBase - RPAGE_TUNE_TWO_WINDOW_DIFFERENCE);
+	//xgsInStamp = (unsigned short*) (xGSInputEdgeStamp - RPAGE_TUNE_TWO_WINDOW_DIFFERENCE);
+	//xgsEventsToSch = (unsigned short*) (xgsNumOfEventsToSchedule - RPAGE_TUNE_TWO_WINDOW_DIFFERENCE);
+	XGOutputEvents = (XGOutputEvent*) parametersBase;
+	xgsInStamp = (unsigned short*) xGSInputEdgeStamp;
+	xgsEventsToSch = (unsigned short*) xgsNumOfEventsToSchedule;
 }

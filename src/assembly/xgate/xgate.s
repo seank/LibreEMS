@@ -39,9 +39,9 @@
 
 ;	.sect .data
     .sect .ppageE1
-startXGATECode:
 
 include "assembly/xgate/xgate.inc"
+startXGATECode:
 /**
  * @endcond
 */

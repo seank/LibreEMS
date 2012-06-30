@@ -237,8 +237,8 @@ void PrimaryRPMISR(void){
 				unsigned long timeBetweenSuccessivePrimaryPulses = primaryLeadingEdgeTimeStamp - lastPrimaryEventTimeStamp;
 				lastPrimaryEventTimeStamp = primaryLeadingEdgeTimeStamp;
 
-				unsigned char savedRPage = RPAGE;
-				RPAGE = RPAGE_TUNE_TWO;
+		//		unsigned char savedRPage = RPAGE;
+		//		RPAGE = RPAGE_TUNE_TWO;
 				*xgsInStamp = timeStamp.timeShorts[1];
 				*xgsEventsToSch = 1;
 				XGOutputEvents[0].channelID = KeyUserDebugs.currentEvent / 2;
@@ -246,7 +246,7 @@ void PrimaryRPMISR(void){
 				//XGOutputEvents[0].delay = outputEventDelayTotalPeriod[KeyUserDebugs.currentEvent];
 				XGOutputEvents[0].delay = 2500;
 				XGSCHEDULE();
-				RPAGE = savedRPage;
+		//		RPAGE = savedRPage;
 
 				/* RPM CALC, KISS for now and only run this part of the ISR when the edge has gone high
 				 * this way we have evenly spaced teeth
