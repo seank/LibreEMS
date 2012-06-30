@@ -63,12 +63,13 @@ void initXgate(){
 	unsigned char savedRPAGE = RPAGE;
 	unsigned char savedPPAGE = PPAGE;
 	// XGATE threads execute from RAM
-	RPAGE = RPAGE_TUNE_TWO;
+	//RPAGE = RPAGE_TUNE_TWO;
 	PPAGE = 0xE1;
 	// we can't use the symbols for the memcpy part because the symbols need to contain xgate relevant values
-	memcpy(START_OF_RAM_WINDOW, START_OF_FLASH_WINDOW, XGATE_RAM_ALLOCATION_SIZE);
+	//memcpy(START_OF_RAM_WINDOW, START_OF_FLASH_WINDOW, XGATE_RAM_ALLOCATION_SIZE);
+	memcpy((unsigned short *)0x3030, START_OF_FLASH_WINDOW, XGATE_RAM_ALLOCATION_SIZE);
 	//TODO set RAM protection
-	RPAGE = savedRPAGE;
+	//RPAGE = savedRPAGE;
 	PPAGE = savedPPAGE;
 	// Set the XGVBR register to its start address in flash (page 0xE0 after 2K register space)
 	XGVBR = (unsigned short )0x0800; // EO region is divided to ensure vectors end up here visible to xgate

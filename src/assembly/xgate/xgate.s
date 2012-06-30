@@ -83,6 +83,7 @@ include "assembly/xgate/xgate.inc"
 */
 
 xgateSchedule:
+LDD R2, xgateSchedule
 	;lock semaphore
 	SSEM #0
 	SSEM #0

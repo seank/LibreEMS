@@ -52,12 +52,13 @@
 #define START_OF_FLASH_WINDOW	(unsigned short*)0x8000 /* 16KB long */
 #define START_OF_RAM_WINDOW		(unsigned short*)0x1000 /* 4KB long */
 #define XGATE_RAM_ALLOCATION_SIZE	0x0800 /* 2 KBytes */
-#define RPAGE_TUNE_TWO_WINDOW_DIFFERENCE (0x8000) /*xgate RPAGE2 starts at 0x9000 but the s12 window starts at 0x10000 */
+//#define RPAGE_TUNE_TWO_WINDOW_DIFFERENCE (0x8000) /*xgate RPAGE2 starts at 0x9000 but the s12 window starts at 0x10000 */
+#define RPAGE_TUNE_TWO_WINDOW_DIFFERENCE (0xC000) /*xgate RPAGE2 starts at 0x9000 but the s12 window starts at 0x10000 */
+
 #define XGATE_INTERRUPT	0x80
 #define	PRIORITY_LEVEL_ONE	0x01
 #define	PRIORITY_LEVEL_TWO	0x02
 #define SCHEDULER_BUSY 0x01
-
 
 #define ROUTE_INTERRUPT(channel_id, cpu_assignment, priority) \
         INT_CFADDR = (channel_id * 2) & 0xF0;                 \
