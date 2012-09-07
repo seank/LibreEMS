@@ -127,7 +127,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		anglesOfTDC: {ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540)}, // 1,2,3,4: Firing order: 1-3-4-2 set up in loom
 		outputEventPinNumbers:           {0,1,2,3}, // COP/CNP ignition only
 		schedulingConfigurationBits:     {0,0,0,0}, // All ignition
-		decoderEngineOffset:         ANGLE(482.00), // Volvo B21A with DSM/Miata CAS + 24and1 disk
+		decoderEngineOffset:         ANGLE(566.00), // Volvo B21A with DSM/Miata CAS + 24and1 disk
 		numberOfConfiguredOutputEvents:          4, // COP setup
 		numberOfInjectionsPerEngineCycle:        1  // Ditto
 
