@@ -150,7 +150,7 @@ void SecondaryRPMISR(){
 
 	/* Save all relevant available data here */
 	unsigned short edgeTimeStamp = TC1;    /* Save the timestamp */
-	unsigned char PTITCurrentState = PTIT; /* Save the values on port T regardless of the state of DDRT */
+//	unsigned char PTITCurrentState = PTIT; /* Save the values on port T regardless of the state of DDRT */
 
 	KeyUserDebugs.secondaryTeethSeen++;
 
