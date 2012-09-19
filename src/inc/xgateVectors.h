@@ -49,16 +49,21 @@
 #define EXTERN extern
 #endif
 
-#define START_OF_FLASH_WINDOW            (unsigned short*)0x8000 /* 16KB long */
-#define START_OF_RAM_WINDOW              (unsigned short*)0x1000 /* 4KB long  */
-#define XGATE_RAM_ALLOCATION_SIZE        0x0200 /* 512Bytes */
-#define RPAGE_TUNE_TWO_WINDOW_DIFFERENCE (0x8000) /*xgate RPAGE2 starts at 0x9000 but the s12 window starts at 0x10000 */
-#define XGATE_INTERRUPT                  0x80
-#define PRIORITY_LEVEL_ONE               0x01
+#define START_OF_FLASH_WINDOW	(unsigned short*)0x8000 /* 16KB long */
+#define START_OF_RAM_WINDOW		(unsigned short*)0x1000 /* 4KB long */
+#define XGATE_RAM_ALLOCATION_SIZE	0x0800 /* 2 KBytes */
+//#define RPAGE_TUNE_TWO_WINDOW_DIFFERENCE (0x8000) /*xgate RPAGE2 starts at 0x9000 but the s12 window starts at 0x10000 */
+#define RPAGE_TUNE_TWO_WINDOW_DIFFERENCE (0xC000) /*xgate RPAGE2 starts at 0x9000 but the s12 window starts at 0x10000 */
+
+#define XGATE_INTERRUPT	0x80
+#define	PRIORITY_LEVEL_ONE	0x01
+#define	PRIORITY_LEVEL_TWO	0x02
+#define SCHEDULER_BUSY 0x01
 
 #define ROUTE_INTERRUPT(channel_id, cpu_assignment, priority) \
         INT_CFADDR = (channel_id * 2) & 0xF0;                 \
         INT_CFDATA_ARR[((channel_id * 2) & 0x0F) >> 1] = (cpu_assignment | priority);
+
 
 typedef struct {
 	unsigned short programCounterValue; /* This data is forced into the XGATE PC register */
@@ -68,11 +73,43 @@ typedef struct {
 // This statement imports the symbol from the xgate ASM for use in the vector table
 extern void xgateSchedule(); // extern not EXTERN because it is defined outside of C
 extern void xgatePITTurnOff();
-extern void xgatePITTurnOn();
-extern void xgateDelayCounter();
+extern void xgatePITBangLoop();
+extern void xgateMetronome();
 extern void startXGATECode();
 extern void endXGATECode();
-extern void parameterGuard(); /* counter that gets update when a write to shared RAM begins and again when the write is complete */
+
+/* parameter variables */  //TODO there should be a better way to define these  ex unsigned short
+extern void parametersBase();
+extern void parameterChannelID();
+extern void parameterDelayH();
+extern void parameterDelay();
+extern void parameterRuntime();
+extern void parameterChannelID1();
+extern void parameterDelayH1();
+extern void parameterDelay1();
+extern void parameterRuntime1();
+extern void parameterChannelID2();
+extern void parameterDelayH2();
+extern void parameterDelay2();
+extern void parameterRuntime2();
+extern void parameterChannelID3();
+extern void parameterDelayH3();
+extern void parameterDelay3();
+extern void parameterRuntime3();
+extern void parameterChannelID4();
+extern void parameterDelayH4();
+extern void parameterDelay4();
+extern void parameterRuntime4();
+extern void parameterChannelID5();
+extern void parameterDelayH5();
+extern void parameterDelay5();
+extern void parameterRuntime5();
+
+//extern void parameterInputStamp();
+extern void xGSInputEdgeStamp();
+extern void xGSFlags();
+extern void xgsNumOfEventsToSchedule();
+//extern void parameterGuard(); /* counter that gets update when a write to shared RAM begins and again when the write is complete */
 
 EXTERN const xgateIntVector xgateIntVectorTable[121];
 
