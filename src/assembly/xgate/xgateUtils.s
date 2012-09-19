@@ -1,9 +1,6 @@
-// Temporary file to make Sean's life easy!
-
-
 /* FreeEMS - the open source engine management system
  *
- * Copyright 2011 Sean Keys
+ * Copyright 2010-2011 Sean Keys
  *
  * This file is part of the FreeEMS project.
  *
@@ -26,19 +23,17 @@
  * Thank you for choosing FreeEMS to run your engine!
  */
 
+/* @defgroup xgateUtilityFunctions */
+.sect .ppageE1
 
-/** @file
- *
- * @ingroup xgateFiles
- *
- * @brief XGATE global vars and pointers
- *
- * TODO full description
- *
- * @author Sean Keys
- */
-
-
-XGOutputEvent *XGOutputEvents = 0;
-unsigned short *xgsInStamp = 0;
-unsigned short *xgsEventsToSch = 0;
+include "assembly/xgate/xgate.inc"
+.global xgatePORTPFlip
+xgatePORTPFlip: ;Flip bit 7 at PORTP
+	LDD R2, #PORTP ;load port-p address
+	LDB R1, R2, #ZERO_OFFSET ;load data(1 byte) at port-p address to R1
+	COM R3, R1 ;flip the bits
+	ANDL R1, #0x7F
+	ANDL R3, #0x80
+	OR R1, R3, R1
+	STB R1, R2, #0x00 ;write the byte to port-p address
+	JAL R5 ;return
