@@ -80,12 +80,18 @@ const volatile fixedConfig2 fixedConfigs2 FIXEDCONF2 = {
 #elif CONFIG == DEUCECOUPE_ID
 		MAPMinimum:    MPX4100AMin,
 		MAPRange:      MPX4100ARange,
+#elif CONFIG == SEANKR1_ID
+		MAPMinimum:    MPX4250AMin,
+		MAPRange:      MPX4250ARange,
 #else
 		MAPMinimum:    MPX4250AMin,
 		MAPRange:      MPX4250ARange,
 #endif
 // AAP Sensor Configuration
 #if CONFIG == SNOTROCKET_ID
+		AAPMinimum:    HondaDenso183kPaMin,
+		AAPRange:      HondaDenso183kPaRange,
+#elif CONFIG == SEANKR1_ID
 		AAPMinimum:    HondaDenso183kPaMin,
 		AAPRange:      HondaDenso183kPaRange,
 #else
@@ -202,6 +208,9 @@ const volatile fixedConfig2 fixedConfigs2 FIXEDCONF2 = {
 #elif CONFIG == SNOTROCKET_ID
 		accelerationInputEventTimeTolerance: ACCEL_TIME_TOL(100),
 		decelerationInputEventTimeTolerance: DECEL_TIME_TOL(100),
+#elif CONFIG == SEANKR1_ID
+		accelerationInputEventTimeTolerance: ACCEL_TIME_TOL(135),
+		decelerationInputEventTimeTolerance: DECEL_TIME_TOL(135),
 #else
 		accelerationInputEventTimeTolerance: ACCEL_TIME_TOL(50),
 		decelerationInputEventTimeTolerance: DECEL_TIME_TOL(50),

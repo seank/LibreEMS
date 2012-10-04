@@ -52,8 +52,8 @@ const volatile unsigned short CHTTransferTable[1024] LOOKUPD = {
 #include "../data/thermistors/Bosch.h"
 #elif CONFIG == SEANKLT1_ID
 #include "../data/thermistors/Bosch.h"
-#elif SEANKR1 // No ID assigned yet!
-#include "../data/thermistors/Bosch.h"
+#elif CONFIG == SEANKR1
+#include "../data/thermistors/Denso-2k7Bias.h"
 #elif CONFIG == SNOTROCKET_ID
 #include "../data/thermistors/GM-2k4Bias.h"
 #elif CONFIG == SLATER_ID
