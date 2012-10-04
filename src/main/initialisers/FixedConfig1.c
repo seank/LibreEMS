@@ -52,7 +52,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 #elif CONFIG == SEANKLT1_ID
 		perCylinderVolume:  CYLINDER_VOLUME(727),
 		injectorFlow:       CC_PER_MINUTE(525),
-#elif SEANKR1 // No ID assigned yet!
+#elif CONFIG == SEANKR1
 		perCylinderVolume:  CYLINDER_VOLUME(250),
 		injectorFlow:       CC_PER_MINUTE(230), // http://www.witchhunter.com/flowdatapix/bcdh210.jpg
 #elif CONFIG == SLATER_ID
@@ -193,6 +193,14 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		numberOfConfiguredOutputEvents:              8, // See two lines above
 		numberOfInjectionsPerEngineCycle:            2  // Semi-sequential, for now.
 
+#elif CONFIG == SEANKR1_ID // Firing order 1-2-3-4
+		anglesOfTDC: {ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540)},
+		outputEventPinNumbers:      	 {0,1,2,3}, // COP/CNP ignition only
+		schedulingConfigurationBits: 	 {0,0,0,0}, // All ignition
+		decoderEngineOffset:           ANGLE(0.00), //
+		numberOfConfiguredOutputEvents:          4, //
+		numberOfInjectionsPerEngineCycle:        1  // Sequential ignition, Sequential fuel(via XGATE) :-p
+
 #else // Nothing scheduled by default, no sensible default for all possible vehicle setups.
 		anglesOfTDC:                            {}, // Depends on cylinder count and other variables
 		outputEventPinNumbers:       {0,1,2,3,4,5}, // Default to a variety of pins for testing purposes. Note: Won't do anything without
@@ -213,6 +221,9 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 #elif CONFIG == SCAVENGER_ID
 			disableThreshold:  RPM(7200),
 			reenableThreshold: RPM(7150)
+#elif CONFIG == SEANKR1_ID
+			disableThreshold:  RPM(12050),
+			reenableThreshold: RPM(11800)
 #else
 			disableThreshold:  RPM(5000),
 			reenableThreshold: RPM(4900)  // Come back on before ignition does
@@ -240,6 +251,9 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 #elif CONFIG == SCAVENGER_ID
 			disableThreshold:  RPM(7200),
 			reenableThreshold: RPM(7100)
+#elif CONFIG == SEANKR1_ID
+			disableThreshold:  RPM(12100),
+			reenableThreshold: RPM(11900)
 #else
 			disableThreshold:  RPM(5000),
 			reenableThreshold: RPM(4800)  // Come back on after injection does

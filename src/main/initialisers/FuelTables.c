@@ -60,6 +60,9 @@ const volatile mainTable VETableMainFlashV FUELTABLESD = {
 #elif CONFIG == SCAVENGER_ID
 	RPMLength:  24,
 	LoadLength: 19,
+#elif CONFIG == SEANKR1_ID
+	RPMLength:  25,
+	LoadLength: 16,
 #else
 	RPMLength:  16,
 	LoadLength: 16,
@@ -71,8 +74,8 @@ const volatile mainTable VETableMainFlashV FUELTABLESD = {
 #include "../data/tables/axis/FredsTruck-RPM.h"
 #elif CONFIG == SEANKLT1_ID
 #include "../data/tables/axis/SeansLT1-RPM.h"
-#elif SEANKR1 // No ID assigned yet!
-#include "../data/tables/axis/FredsTruck-RPM.h"
+#elif CONFIG == SEANKR1_ID
+#include "../data/tables/axis/SeansR1-RPM.h"
 #elif CONFIG == SLATER_ID
 #include "../data/tables/axis/Slater-RPM.h"
 #elif CONFIG == PETERJSERIES_ID
@@ -96,8 +99,8 @@ const volatile mainTable VETableMainFlashV FUELTABLESD = {
 #include "../data/tables/axis/FredsTruck-Load.h"
 #elif CONFIG == SEANKLT1_ID
 #include "../data/tables/axis/FredsTruck-Load.h"
-#elif SEANKR1 // No ID assigned yet!
-#include "../data/tables/axis/FredsTruck-Load.h"
+#elif CONFIG == SEANKR1_ID
+#include "../data/tables/axis/SeansR1-Load.h"
 #elif CONFIG == SLATER_ID
 #include "../data/tables/axis/Slater-Load.h"
 #elif CONFIG == PETERJSERIES_ID
@@ -121,8 +124,8 @@ const volatile mainTable VETableMainFlashV FUELTABLESD = {
 #include "../data/tables/ve/flat60Percent.h"
 #elif CONFIG == SEANKLT1_ID
 #include "../data/tables/ve/SeansLT1VE.h"
-#elif SEANKR1 // No ID assigned yet!
-#include "../data/tables/ve/flat80Percent.h"
+#elif CONFIG == SEANKR1_ID
+#include "../data/tables/ve/SeansR1VE.h"
 #elif CONFIG == SLATER_ID
 #include "../data/tables/ve/SlaterVE.h"
 #elif CONFIG == PETERJSERIES_ID
@@ -194,6 +197,8 @@ const volatile mainTable LambdaTableFlashV FUELTABLESD = {
 #include "../data/tables/axis/Slater-RPM.h"
 #elif CONFIG == DEUCES10_ID
 #include "../data/tables/axis/Deuces3100-RPM.h"
+//#elif CONFIG == SEANKR1_ID
+//#include "../data/tables/axis/SeansR1-RPM.h"
 #else
 #include "../data/tables/axis/FredsTruck-RPM.h"
 #endif
@@ -207,6 +212,8 @@ const volatile mainTable LambdaTableFlashV FUELTABLESD = {
 #include "../data/tables/axis/Slater-Load.h"
 #elif CONFIG == DEUCES10_ID
 #include "../data/tables/axis/Deuces3100-Load.h"
+//#elif CONFIG == SEANKR1_ID
+//#include "../data/tables/axis/SeansR1-Load.h"
 #else
 #include "../data/tables/axis/FredsTruck-Load.h"
 #endif

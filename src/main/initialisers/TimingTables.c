@@ -65,6 +65,9 @@ const volatile mainTable IgnitionAdvanceTableMainFlashV TIMETABLESD = {
 #elif CONFIG == SCAVENGER_ID
 	RPMLength:  24,
 	LoadLength: 19,
+#elif CONFIG == SEANKR1_ID
+	RPMLength:  25,
+	LoadLength: 16,
 #else
 	RPMLength:  16,
 	LoadLength: 16,
@@ -78,8 +81,8 @@ const volatile mainTable IgnitionAdvanceTableMainFlashV TIMETABLESD = {
 #include "../data/tables/axis/FredsTruck-RPM.h"
 #elif CONFIG == SEANKLT1_ID
 #include "../data/tables/axis/SeansLT1-RPM.h"
-#elif SEANKR1 // No ID assigned yet!
-#include "../data/tables/axis/FredsTruck-RPM.h"
+#elif CONFIG == SEANKR1_ID
+#include "../data/tables/axis/SeansR1-RPM.h"
 #elif CONFIG == SNOTROCKET_ID
 #include "../data/tables/axis/SimsVolvo-RPM.h"
 #elif CONFIG == SLATER_ID
@@ -107,8 +110,8 @@ const volatile mainTable IgnitionAdvanceTableMainFlashV TIMETABLESD = {
 #include "../data/tables/axis/FredsTruck-Load.h"
 #elif CONFIG == SEANKLT1_ID
 #include "../data/tables/axis/FredsTruck-Load.h"
-#elif SEANKR1 // No ID assigned yet!
-#include "../data/tables/axis/FredsTruck-Load.h"
+#elif CONFIG == SEANKR1_ID
+#include "../data/tables/axis/SeansR1-Load.h"
 #elif CONFIG == SNOTROCKET_ID
 #include "../data/tables/axis/SimsVolvo-Load.h"
 #elif CONFIG == SLATER_ID
@@ -137,8 +140,8 @@ const volatile mainTable IgnitionAdvanceTableMainFlashV TIMETABLESD = {
 #include "../data/tables/ign/flat15degrees.h"
 #elif CONFIG == SEANKLT1_ID
 #include "../data/tables/ign/SeansLT1IgnitionTiming.h"
-#elif SEANKR1 // No ID assigned yet!
-#include "../data/tables/ign/flat0degrees.h"
+#elif CONFIG == SEANKR1_ID
+#include "../data/tables/ign/SeansR1IgnitionTiming.h"
 #elif CONFIG == SNOTROCKET_ID
 #include "../data/tables/ign/SimsVolvoIgnitionTiming.h"
 #elif CONFIG == SLATER_ID
