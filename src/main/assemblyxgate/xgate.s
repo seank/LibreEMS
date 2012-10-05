@@ -36,6 +36,7 @@
 ;debug code
 .global eventFlags1
 .global xgatePORTPFlip
+.global xgatePORTBFlip
 
 ;	.sect .data
     .sect .ppageE1
@@ -448,7 +449,7 @@ xgateScheduleEnd:
 
 xgateMetronome: ; PIT 2 ISR, called by PIT2 interrupt. Decrement out delayCounter.
 ;debug heartbeat code
-LDD R5, xgatePORTPFlip
+LDD R5, xgatePORTBFlip
 JAL R5
     ;TODO save start time stamp
 	LDD R2, xGMStartTime
