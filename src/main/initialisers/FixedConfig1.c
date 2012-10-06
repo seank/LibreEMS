@@ -194,11 +194,13 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		numberOfInjectionsPerEngineCycle:            2  // Semi-sequential, for now.
 
 #elif CONFIG == SEANKR1_ID // Firing order 1-2-3-4
-		anglesOfTDC: {ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540)},
-		outputEventPinNumbers:      	 {0,1,2,3}, // COP/CNP ignition only
-		schedulingConfigurationBits: 	 {0,0,0,0}, // All ignition
+		/*TODO finish, I'll have to reread the scheduler code, I'm curious as to how this handles
+		 a situation where you have more event channels than anglesOfTDC. Maybe create xgateOutputEventChannel:? */
+		anglesOfTDC: {ANGLE(0), ANGLE(45), ANGLE(90), ANGLE(135), ANGLE(180), ANGLE(225), ANGLE(270), ANGLE(315), ANGLE(360), ANGLE(405), ANGLE(450), ANGLE(495), ANGLE(540), ANGLE(585), ANGLE(540), ANGLE(630)},
+		outputEventPinNumbers:       {0,1,2,3,4,5}, // COP/CNP ignition only
+		schedulingConfigurationBits: {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, // All ignition
 		decoderEngineOffset:           ANGLE(0.00), //
-		numberOfConfiguredOutputEvents:          4, //
+		numberOfConfiguredOutputEvents:         16, //
 		numberOfInjectionsPerEngineCycle:        1  // Sequential ignition, Sequential fuel(via XGATE) :-p
 
 #else // Nothing scheduled by default, no sensible default for all possible vehicle setups.
