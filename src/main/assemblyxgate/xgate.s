@@ -87,7 +87,6 @@ xgateSchedule:
 LDD R2, xgateSchedule
 	;lock semaphore
 	SSEM #0
-	SSEM #0
 	;pull a pin high to mark the start of our thread
 	;LDD R1, #1
 	;LDD R2, #2
@@ -366,7 +365,6 @@ xgsParameterLoopDone:
 	;see if we have approachable events
 xgsApproachableCheck:
 ;clear semaphore
-
 CSEM #0
 
 ;pull a pin low to mark the end of our thread
@@ -450,7 +448,7 @@ xgateScheduleEnd:
 xgateMetronome: ; PIT 2 ISR, called by PIT2 interrupt. Decrement out delayCounter.
 ;debug heartbeat code
 LDD R5, xgatePORTBFlip
-JAL R5
+;JAL R5
     ;TODO save start time stamp
 	LDD R2, xGMStartTime
 	LDD R3, PITCNT1
