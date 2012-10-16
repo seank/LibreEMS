@@ -98,8 +98,10 @@
 
 /* Port registers */
 .equ	PORTP, 0x0258     /* PORT-P register */
-.equ	PORTBA, 0x0000	  /* PORT-BA register */
+.equ	PORTBA, 0x0000	  /* PORT-BA register(without a mutex writing to this is unsafe) */
+.equ	PORTA, 0x0000	  /* PORTB register(without a mutex writing to this is unsafe) */  
 .equ	PORTB, 0x0001	  /* PORT-B register */
+.equ	PORTC, 0x0004	  /* PORT-C register(144+ versions only)
 .equ	PORTT, 0x0240	  /* PORT-T register */
 
 /* General Defines */
@@ -209,7 +211,8 @@
  	/* Constants */
 ;.equ NUMBER_OF_EVENT_STRUCTURES, 0x24 /* number of events we have defined in memory */
 ;.equ NUMBER_OF_EVENT_STRUCTURES, 0x10 /* number of events we have defined in memory */
-.equ NUMBER_OF_EVENT_STRUCTURES, 0x08 /* number of events we have defined in memory */
+;.equ NUMBER_OF_EVENT_STRUCTURES, 0x08 /* number of events we have defined in memory */
+.equ NUMBER_OF_EVENT_STRUCTURES, 0x0C /* number of events we have defined in memory, R1 has 12 */
 .equ EVENT_STRUCTURE_SIZE, 0x16 /* 16 bytes or 8 words TODO MAKE A VAR */
 .equ MAX_NUMBER_OF_PARAMETERS, 0x06 /* 6 parameters can be loaded by the scheduler in one shot */
 .equ PARAMETER_STRUCTURE_SIZE, 0x0C /* 12 bytes or 6 words */
@@ -242,17 +245,17 @@
 .equ EVENT_7_REGISTER_ADDRESS, PORTB
 .equ EVENT_7_REGISTER_MASK, 0x80 /* eighth pin on port B */
 
-.equ EVENT_8_REGISTER_ADDRESS, PORTB
-.equ EVENT_8_REGISTER_MASK, 0x01 /* first pin on port B */
+.equ EVENT_8_REGISTER_ADDRESS, PORTC
+.equ EVENT_8_REGISTER_MASK, 0x01 /* first pin on port C */
 
-.equ EVENT_9_REGISTER_ADDRESS, PORTB
-.equ EVENT_9_REGISTER_MASK, 0x02 /* second pin on port B */
+.equ EVENT_9_REGISTER_ADDRESS, PORTC
+.equ EVENT_9_REGISTER_MASK, 0x02 /* second pin on port C */
 
-.equ EVENT_10_REGISTER_ADDRESS, PORTB
-.equ EVENT_10_REGISTER_MASK, 0x04 /* third pin on port B */
+.equ EVENT_10_REGISTER_ADDRESS, PORTC
+.equ EVENT_10_REGISTER_MASK, 0x04 /* third pin on port C */
 
-.equ EVENT_11_REGISTER_ADDRESS, PORTB
-.equ EVENT_11_REGISTER_MASK, 0x08 /* fourth pin on port B */
+.equ EVENT_11_REGISTER_ADDRESS, PORTC
+.equ EVENT_11_REGISTER_MASK, 0x08 /* fourth pin on port C */
 
 .equ EVENT_12_REGISTER_ADDRESS, PORTB
 .equ EVENT_12_REGISTER_MASK, 0x10 /* fifth pin on port B */
