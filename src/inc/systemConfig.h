@@ -56,6 +56,9 @@
 #define PETERJSERIES_ID 10 // Winter thrasher, works so well he refuses to whinge
 #define DEUCECOUPE_ID   11 // Work in progress, ignition not setup yet
 #define PETERTRUCK_ID   12 // Work horse vehicle, about to get boosted
+
+#define SEANKR1_ID      14 // Desert/Sand Rail Turbo Yamaha R1
+
 // Looking forward to there being links to threads here soon! In no particular order:
 //#define LEV8N
 //#define SEANKR1
@@ -105,6 +108,9 @@
 #elif defined PETERTRUCK
 #define CONFIG PETERTRUCK_ID
 #define PRELIM_CONFIG "PETERTRUCK"
+#elif defined SEANKR1
+#define CONFIG SEANKR1_ID
+#define PRELIM_CONFIG "SEANKR1"
 #elif defined CLIFLAGS && !(defined XGATE)
 #error "CLIFLAGS defined, but no build matched! Not allowing config to fall back to default!"
 #define CONFIG -1
