@@ -93,7 +93,17 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 			schedulePortTPin(activeFuelChannels[outputPin], timeStamp);
 		}
 	}
-
+#ifdef XGATE
+//TODO add priming code to xgate outputs
+//	unsigned char ouputChannel;
+//	for(ouputChannel = 0; ouputChannel< NUMBER_OF_OUTPUT_CHANNELS; ouputChannel++){
+//		if(activeFuelChannels[ouputChannel] < MAX_NUMBER_OF_OUTPUT_EVENTS){
+//			outputEventPulseWidthsMath[activeFuelChannels[ouputChannel]] = primingPulseWidth;
+//			outputEventDelayFinalPeriod[activeFuelChannels[ouputChannel]] = SHORTHALF;
+//			schedulePortTPin(activeFuelChannels[ouputChannel], timeStamp);
+//		}
+//	}
+#endif
 	// Run forever repeating.
 	while(TRUE){
 		//unsigned short start = realTimeClockMillis;
@@ -102,7 +112,7 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 			ATOMIC_START(); /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
 			/* Atomic block to ensure a full set of readings are taken together */
 
-			/* Check to ensure that a reading wasn't take before we entered a non interruptable state */
+			/* Check to ensure that a reading wasn't take before we entered a non interruptible state */
 			if(coreStatusA & FORCE_READING){ // do we still need to do this TODO ?
 
 				sampleEachADC(ADCBuffersRecord); // TODO still need to do a pair of loops and clock these two functions for performance.
