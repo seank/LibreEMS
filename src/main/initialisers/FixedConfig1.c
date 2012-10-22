@@ -195,11 +195,11 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 
 #elif CONFIG == SEANKR1_ID // Firing order 1-2-3-4
 		anglesOfTDC: {ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540), ANGLE(45), ANGLE(90), ANGLE(145), ANGLE(270), ANGLE(315), ANGLE(450), ANGLE(495), ANGLE(630)},
-		outputEventPinNumbers:       {0,1,2,3,4,5,4,5,4,5,4,5}, // COP/CNP ignition only
+		outputEventPinNumbers:       {0,1,2,3,5,4,4,4,4,4,4,4}, // COP/CNP ignition only
 		schedulingConfigurationBits: {0,0,0,0,1,1,1,1,1,1,1,1}, // First 4 ign, 8 fuel
 		decoderEngineOffset:           ANGLE(0.00), //
-		numberOfConfiguredOutputEvents:          12, //
-		numberOfInjectionsPerEngineCycle:        4  // keep pulsewidths small, so that we can at leat reference their starting point against xgate ouput
+		numberOfConfiguredOutputEvents:          12, // 4 coils 8 injectors
+		numberOfInjectionsPerEngineCycle:        1  // pin 5 of port-t will be our only fuel reference
 
 #else // Nothing scheduled by default, no sensible default for all possible vehicle setups.
 		anglesOfTDC:                            {}, // Depends on cylinder count and other variables
