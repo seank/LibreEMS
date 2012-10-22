@@ -36,3 +36,28 @@
  *
  * @author Sean Keys
  */
+
+
+#define OFFSET	0 // number of ticks to adjust by, this is just for testing
+
+/* temp *safety semaphore, to keep me from chasing my tail, just in case */
+unsigned char i = 0;
+do {
+	XGSEM = 0x0101;
+	if (i) {
+		__asm__("wai");  /* put the processor to sleep, so we know something bad could have happened if we continue, TODO see if there is a flag for global shutdown */
+	}
+	i++;
+} while (!(XGSEM & 0x01));
+XGSEM = 0x0100;
+
+unsigned char savedRPage = RPAGE;
+RPAGE = RPAGE_TUNE_TWO;
+
+*xgsInStamp = startTime; // this should be the value of TCNT at the time the decoder ISR started
+*xgsEventsToSch = 1;
+XGOutputEvents[0].channelID = outputEventNumber;
+XGOutputEvents[0].delay = outputEventDelayTotalPeriod[outputEventNumber] + OFFSET;
+XGOutputEvents[0].runtime = outputEventPulseWidthsMath[outputEventNumber];
+XGSCHEDULE();
+RPAGE = savedRPage;
