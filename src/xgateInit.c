@@ -56,16 +56,13 @@ void initXgate(){
 	RPAGE = savedRPAGE;
 	PPAGE = savedPPAGE;
 	// Set the XGVBR register to its start address in flash (page 0xE0 after 2K register space)
-	XGVBR = (unsigned short )0x0800; // EO region is divided to ensure vectors end up here visible to xgate
+	XGVBR = (unsigned short)0x0800; // EO region is divided to ensure vectors end up here visible to xgate
 	// Enable XGate and XGate interrupts
 	XGMCTL= (unsigned short)0x8181;
 
 	/* A prescalar of 4 yeilds .1ms resolution and max times of 6.5535ms@16-bit, 429,483.622ms@32-bit */
 	PITMTLD0 = 0x1F; /* 32 prescaler (1 / ((40 MHz) / PRESCALAR)) */
 	PITMTLD1 = 0x1F; /* 32 prescaler  (1 / ((40 MHz) / PRESCALAR)) */
-
-	//PITMTLD0 = 0x03; /* 4 prescaler (1 / ((40 MHz) / PRESCALAR)) */
-	//PITMTLD1 = 0x03; /* 4 prescaler  (1 / ((40 MHz) / PRESCALAR)) */
 
 	PITMUX = 0xC0; /* set chan 0-1 to use PITMTLD0 base and chan 2-3 to use PITMTLD1 */
 	PITLD0 = 0x0000; // set timers running //TEST ONLY
