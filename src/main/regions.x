@@ -206,7 +206,7 @@ SECTIONS
 
   .ppageE0X  :
   {
-    *(.ppageE0X)
+    KEEP (*(.ppageE0X))
   }  > ppageE0X
 
   .ppageE0S  :
@@ -216,7 +216,7 @@ SECTIONS
 
   .ppageE1  :
   {
-    *(.ppageE1)
+    KEEP (*(.ppageE1))
   }  > ppageE1
 
   .ppageE2  :
