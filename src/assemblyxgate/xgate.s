@@ -99,8 +99,8 @@ LDD R2, xgateSchedule
 	LDW R3, R3, #ZERO_OFFSET
 	LDW R5, R5, #ZERO_OFFSET
 	LDD R4, xGSSystemVars
-	STW R3, R4, #ZERO_OFFSET
-	STW R5, R4, #XGS_VARIABLE_TCNTSTARTSTAMP_OFFSET
+	STW R3, R4, #XGS_VARIABLE_METROSTARTTIMESTAMP_OFFSET ; save metronome stamp
+	STW R5, R4, #XGS_VARIABLE_TCNTSTARTSTAMP_OFFSET; sk why does this need to be saved ?
 	;default our countdown to highest possobile value
 	LDD R5, #0xFFFF
 	STW R5, R4, #XGS_VARIABLE_SOONESTCOUNTDOWN_OFFSET
@@ -122,10 +122,12 @@ LDD R2, xgateSchedule
 BRA xgsParameterLoopCheck
 	xgsParameterLoop:
 ;debug code
-LDD R5, xgatePORTPFlip
-JAL R5; jump to xgatePORTPFlip
+;LDD R5, xgatePORTPFlip
+;JAL R5; jump to xgatePORTPFlip
  	; TODO check this new code
  	;Check to see if our PIT timer went off, if it did we need to service it NOW
+;debug
+BRA xgsPIT0Clear ; skip past the optimization that checks to see if your bang loop went off
  	LDD R3, #PITTF
 	LDB R3, R3, #ZERO_OFFSET
 	BITL R3, #0x01
@@ -151,7 +153,7 @@ BEQ xgsPIT0Clear
     xgsPIT0Clear:
 	;diff TCNT against inputEdgeStamp to get elapsed time
 	;LDD R4, TCNT ;load current TCNT
-	LDD R4, xGSScheduleTCNTStartStamp ;load saved TCNT stamp
+	LDD R4, xGSScheduleTCNTStartStamp ;load saved TCNT stamp, sk this should be moved inside the schedule loop below and the live TCNT should be used for the diff
 	LDW R4, R4, #ZERO_OFFSET
 	LDD R5, xGSInputEdgeStamp ;load saved TCNT
 	LDW R5, R5, #ZERO_OFFSET
@@ -166,7 +168,9 @@ BEQ xgsPIT0Clear
 BLS xgsChannelIDOk
 	BRA xgsParameterLoopNext
  	xgsChannelIDOk:
-	;take our delayTime and add our runTime to get "runtimeDelay"
+;debug
+;bra xgsInputEventStampFactorDone ; skip TCNT correct for debug testing
+	;correct againt our decoder ISR TCNT stamp
 	LDW R4, R3, #PARAMETER_DELAY_LOWWORD_OFFSET ;load
 	LDW R7, R3, #PARAMETER_DELAY_HIGHWORD_OFFSET ;load
 	SUB R1, R4, R6 ; subtract time elapsed since inputEdge from parameter low word
@@ -182,32 +186,30 @@ xgsNeedsToBeZero:
 	STW R0, R3, #PARAMETER_DELAY_LOWWORD_OFFSET
 	STW R0, R3, #PARAMETER_DELAY_HIGHWORD_OFFSET
 xgsInputEventStampFactorDone:
+	;take our delayTime and add our runTime to get "runtimeDelay"
 	LDW R4, R3, #PARAMETER_RUNTIME_LOWWORD_OFFSET ;Low Word
 	LDW R1, R3, #PARAMETER_DELAY_LOWWORD_OFFSET
 	ADD R2, R4, R1 ;Add our delays to get runtime low word countdown
 	STW R2, R3, #PARAMETER_RUNTIME_LOWWORD_OFFSET ;save low
 	LDW R2, R3, #PARAMETER_DELAY_HIGHWORD_OFFSET ;High Word
 	ADC R2, R0, R2 ;Add the carry to the high word if any
-	;LDW R4, R3, #PARAMETER_RUNTIME_HIGHWORD_OFFSET
-	;ADD R4, R2, R4 ;TODO a check for 16-range could be added here
-	STW R2, R3, #PARAMETER_RUNTIME_HIGHWORD_OFFSET
-	;STW R4, R3, #PARAMETER_RUNTIME_HIGHWORD_OFFSET ;save high
+	STW R2, R3, #PARAMETER_RUNTIME_HIGHWORD_OFFSET;save final runtime
 	;If our times are long enough to use the metronome we need to factor is current counter value for each countdown
-	LDW R4, R3, #PARAMETER_RUNTIME_HIGHWORD_OFFSET
-	TST R4
+	TST R2
 BEQ xgsFixUpDone ;if our runtime doesnt have a highword value then our delay doesnt either
 	;calculate and apply our metronome offset
 	LDD R1, xGSScheduleMetroStartStamp
 	LDW R1, R1, #ZERO_OFFSET
-	COM R1 ;Diff our Metronome against itself
-	;fix our RunTime
+	COM R1 ;Diff our Metronome stamp against itself we need to know how close to "full" it was since there
+				;is a very small 1 in 16 bits chance it is FFFF
+	;fix our RunTime according to how much we got shorted from 0xFFFF
 	LDW R4, R3, #PARAMETER_RUNTIME_LOWWORD_OFFSET ;Low Word
 	ADD R2, R4, R1 ;Add diff to our parameter countdown(low)
 	STW R2, R3, #PARAMETER_RUNTIME_LOWWORD_OFFSET ;save low
 	LDW R2, R3, #PARAMETER_RUNTIME_HIGHWORD_OFFSET ;High Word
 	ADC R2, R0, R2 ;Add the carry to the high word if any ;TODO a check for 16-range could be added here
 	STW R2, R3, #PARAMETER_RUNTIME_HIGHWORD_OFFSET ;save high
-	;fix our DelayTime
+	;fix our DelayTime, if needed
 	LDW R4, R3, #PARAMETER_DELAY_HIGHWORD_OFFSET
 	TST R4
 BEQ xgsFixUpDone
@@ -241,42 +243,36 @@ BNE XSLoop1Block
 	;If the event is running extent only its runtime
 	LDW R6, R4, #EVENT_STATUS_FLAGS_OFFSET
 BITL R6, #EVENT_FLAG_RUNNING ;if our event is already running just modify the runtime
-BNE xgsExtendRuntime
-;BNE xgsParameterLoopNext
-;BITL R6, #EVENT_FLAG_ARMED
-;BNE xgsDoNotSchedule ;do not attempt to scheudle if this event is already waiting to happen TODO make rescheduleable
-;BITL R6, #EVENT_FLAG_RUNNING
-;BNE xgsDoNotSchedule
+BNE xgsAdjustRuntime
 	;Incase the event was previously scheduled clear all flags
 	LDW R6, R4, #EVENT_STATUS_FLAGS_OFFSET
 	ANDL R6, #EVENT_FLAG_AVAILABLE
 	STW R6, R4, #EVENT_STATUS_FLAGS_OFFSET
 	;Write our delay and set our flags accordingly
-	LDW R6, R5, #PARAMETER_DELAY_LOWWORD_OFFSET;Load high word of parameter
+	LDW R6, R5, #PARAMETER_DELAY_LOWWORD_OFFSET;Load low word of parameter
 	STW R6, R4, #EVENT_DELAY_LOW_WORD_OFFSET
 	LDW R6, R5, #PARAMETER_DELAY_HIGHWORD_OFFSET;Load high word of parameter
 	STW R6, R4, #EVENT_DELAY_HIGH_WORD_OFFSET
  	TST R6
-BNE xgsNotApproachable ;if zero flag event as approachable
+BNE xgsDelayNotApproachable ;if zero flag event as approachable
  	LDW R6, R4, #EVENT_STATUS_FLAGS_OFFSET
  	ORL R6, #EVENT_FLAG_APPROACHABLE
  	STW R6, R4, #EVENT_STATUS_FLAGS_OFFSET
     ;get/save start time stamp so we can diff later on
 	LDD R6, xGSSystemVars
-	;LDD R6, xGSScheduleMetroStartStamp
 	LDW R1, R6, #XGS_VARIABLE_METROSTARTTIMESTAMP_OFFSET
 	STW R1, R4, #EVENT_DELAY_LATENCY_METROSTAMP_OFFSET
     ;see if this events has the soonest countdown if it does set PIT0 check flag and store new countdown
-	;LDD R6, xGSSystemVars
-	LDW R1, R6, #XGS_VARIABLE_SOONESTCOUNTDOWN_OFFSET
-	LDW R2, R5, #PARAMETER_DELAY_LOWWORD_OFFSET
-	CMP R2, R1
-BHI xgsNotApproachable ;if currentEvent(R6) < nextEventTime(R4) update it!
-		STW R2, R6, #XGS_VARIABLE_SOONESTCOUNTDOWN_OFFSET ;save soonest time
+	;disabled there seems to be a bug
+	;LDW R1, R6, #XGS_VARIABLE_SOONESTCOUNTDOWN_OFFSET
+	;LDW R2, R5, #PARAMETER_DELAY_LOWWORD_OFFSET
+	;CMP R2, R1
+;BHI xgsNotApproachable ;if currentEvent(R6) < nextEventTime(R4) update it!
+;		STW R2, R6, #XGS_VARIABLE_SOONESTCOUNTDOWN_OFFSET ;save soonest time
 		;LDW R2, R6, #XGS_VARIABLE_XGS_FLAGS_OFFSET
 		;ORL R2, #XGS_FLAG_CHECKPIT0
 		;STW R2, R6, #XGS_VARIABLE_XGS_FLAGS_OFFSET
- 	xgsNotApproachable:
+ 	xgsDelayNotApproachable:
  	;save delay parameter to proper event
 	LDW R6, R5, #PARAMETER_RUNTIME_HIGHWORD_OFFSET;Load high word of parameter
 	STW R6, R4, #EVENT_RUNTIME_HIGH_WORD_OFFSET
@@ -292,14 +288,12 @@ BNE xgsNotApproachableShutdown ;if zero flag event as approachable
 	xgsNotApproachableShutdown:
 	BRA xgsSaveAllParameters
 
-xgsExtendRuntime:
+xgsAdjustRuntime:
 ;debug
 ;BRA xgsApproachableCheck
 	;clear shutdown approachable flag
 	LDW R6, R4, #EVENT_STATUS_FLAGS_OFFSET
 	ANDL R6, #EVENT_FLAG_APPROACHABLE_SHUTDOWN_XOR
-	;flag event as armed
-	;ORL R6, #EVENT_FLAG_ARMED
 	STW R6, R4, #EVENT_STATUS_FLAGS_OFFSET
     ;get/save start time stamp so we can diff latency later on
 	LDD R6, xGSScheduleMetroStartStamp
@@ -310,18 +304,19 @@ xgsExtendRuntime:
 	STW R6, R4, #EVENT_RUNTIME_LOW_WORD_OFFSET
 	LDW R6, R5, #PARAMETER_RUNTIME_HIGHWORD_OFFSET ;Load high word of parameter
 	STW R6, R4, #EVENT_RUNTIME_HIGH_WORD_OFFSET
-TST R6
+TST R6 ;if the event is already running and we dont need more than a 16-bit runtime we should not need this check
 BNE xgsDoneExtendingRuntime ;if zero flag event as approachable
 	LDW R6, R4, #EVENT_STATUS_FLAGS_OFFSET
 	ORL R6, #EVENT_FLAG_APPROACHABLE_SHUTDOWN
 	STW R6, R4, #EVENT_STATUS_FLAGS_OFFSET
 	;see if this events has the soonest countdown if it does set PIT0 check flag and store new countdown
-	LDD R6, xGSSystemVars
-	LDW R1, R6, #XGS_VARIABLE_SOONESTCOUNTDOWN_OFFSET
-	LDW R2, R5, #PARAMETER_RUNTIME_LOWWORD_OFFSET
-	CMP R2, R1
-BHI xgsDoneExtendingRuntime ;if currentEvent(R6) < nextEventTime(R4) update it!
-		STW R2, R6, #XGS_VARIABLE_SOONESTCOUNTDOWN_OFFSET ;save soonest time
+;disable this optimization
+;	LDD R6, xGSSystemVars
+;	LDW R1, R6, #XGS_VARIABLE_SOONESTCOUNTDOWN_OFFSET
+;	LDW R2, R5, #PARAMETER_RUNTIME_LOWWORD_OFFSET
+;	CMP R2, R1
+;BHI xgsDoneExtendingRuntime ;if currentEvent(R6) < nextEventTime(R4) update it!
+;		STW R2, R6, #XGS_VARIABLE_SOONESTCOUNTDOWN_OFFSET ;save soonest time
 		;LDW R2, R6, #XGS_VARIABLE_XGS_FLAGS_OFFSET
 		;ORL R2, #XGS_FLAG_CHECKPIT0
 		;STW R2, R6, #XGS_VARIABLE_XGS_FLAGS_OFFSET
@@ -364,9 +359,6 @@ BNE xgsParameterLoop
 xgsParameterLoopDone:
 	;see if we have approachable events
 xgsApproachableCheck:
-;clear semaphore
-CSEM #0
-
 ;pull a pin low to mark the end of our thread
 ;LDD R1, #1
 ;LDD R2, #0
@@ -376,7 +368,7 @@ CSEM #0
 
 
 ;for debugging/testing just branch reguardless
-BRA xgatePITBangLoopCall
+BRA xgsDone;
 
 ;TODO fix the optimization below. Right now it doesnt seem to get the lowest count into the down counter causing lates!
 	LDD R5, xGSSystemVars
@@ -418,6 +410,10 @@ xgsUseOurSoonest:
 	;brk
 xgsDoNotSchedule:
 	xgsDone:
+	;clear semaphore
+	CSEM #0
+;for debugging/testing just branch reguardless
+BRA xgatePITBangLoopCall
 	RTS
 xgateScheduleEnd:
 
@@ -447,7 +443,7 @@ xgateScheduleEnd:
 
 xgateMetronome: ; PIT 2 ISR, called by PIT2 interrupt. Decrement out delayCounter.
 ;debug heartbeat code
-LDD R5, xgatePORTBFlip
+;LDD R5, xgatePORTBFlip
 ;JAL R5
     ;TODO save start time stamp
 	LDD R2, xGMStartTime
@@ -463,18 +459,16 @@ LDD R5, xgatePORTBFlip
 	LDL R2, #0x00 ;initialize loop register
 	LDL R7, #FALSE ;initialize our branch to update short test var
 	LDD R3, eventsStructStart ;initialize our structure pointer to start of onEvents array
-	;ADDL R3, #DELAY_HIGH_WORD_OFFSET
 	LDD R4, #NUMBER_OF_EVENT_STRUCTURES ;ld the number of structures we need to loop though
 BRA XMLoop1
 	XMLoop1Block: ; decrement all the high words of our countdown
-		LDW R5, R3, #EVENT_STATUS_FLAGS_OFFSET
+	LDW R5, R3, #EVENT_STATUS_FLAGS_OFFSET
 	;if our event is not armed check the next event
 	BITL R5, #EVENT_FLAG_ARMED
-	BNE XMNoApproachableShutdownSet
+	BEQ XMNoApproachableShutdownSet ;skip to the next event
 	;if our event is running dont bother doing anything with the delay
 	BITL R5, #EVENT_FLAG_RUNNING
 	BNE XMNoApproachableFlag
-		;TODO add skip check for event armed
 		LDW R5, R3, #EVENT_DELAY_HIGH_WORD_OFFSET
 		SUBL R5, #1 ;subtract 1 from our high word delay
 		STW R5, R3, #EVENT_DELAY_HIGH_WORD_OFFSET
@@ -482,8 +476,6 @@ BRA XMLoop1
 		TST R5 ;see if our countdown is zero if it is see if its flagged for action
 		BNE XMNoApproachableFlag ;branch if our channel armed flag is not set
 		LDW R5, R3, #EVENT_STATUS_FLAGS_OFFSET
-		BITL R5, #EVENT_FLAG_ARMED ;see if your ARMED bit is set
-		BEQ XMNoApproachableFlag ;skip setting approachable if our armed flag is not set
 		;set EVENT_FLAG_APPROACHABLE bit
 		ORL	R5, #EVENT_FLAG_APPROACHABLE
 		STW R5, R3, #EVENT_STATUS_FLAGS_OFFSET
@@ -494,7 +486,6 @@ BRA XMLoop1
 		LDL R7, #TRUE ;Flag R7 true if we need to branch to process a near countdown
 		XMNoApproachableFlag:
 		;do the same for our runtime high words
-		;TODO add skip check for event armed
 		LDW R5, R3, #EVENT_RUNTIME_HIGH_WORD_OFFSET
 		SUBL R5, #1 ;subtract 1 from our high word delay
 		STW R5, R3, #EVENT_RUNTIME_HIGH_WORD_OFFSET
@@ -502,8 +493,6 @@ BRA XMLoop1
 		TST R5 ;see if our countdown is zero if it is see if its flagged for action
 		BNE XMNoApproachableShutdownSet ;branch if we are still not approachable
 		LDW R5, R3, #EVENT_STATUS_FLAGS_OFFSET
-		BITL R5, #EVENT_FLAG_ARMED ;see if your RUNNING bit is set TODO revise wording
-		BEQ XMNoApproachableShutdownSet ;skip arming if our flag is not set
 		;set EVENT_FLAG_APPROACHABLE_SHUTDOWN bit
 		ORL	R5, #EVENT_FLAG_APPROACHABLE_SHUTDOWN
 		STW R5, R3, #EVENT_STATUS_FLAGS_OFFSET
@@ -518,12 +507,6 @@ BRA XMLoop1
 	XMLoop1:
 		CMP R4, R2
 		BHI XMLoop1Block  ; if R4 >= R2
-
-;LDD R7, #0
-;LDD R3, eventsStructStart
-;LDW R4, R3, #EVENT_STATUS_FLAGS_OFFSET
-;STW R4, R7, #0
-;brk
 
 ;Debug flip PORTP everytime we overflow
 ;LDD R5, xgatePORTPFlip
