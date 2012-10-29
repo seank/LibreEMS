@@ -174,7 +174,7 @@ DATA = $(patsubst %.c,$(DATADIR)/%.c,$(DATARAW))
 UTILCLASSES = tableLookup.c init.c utils.c globalConstants.c StaticBenchTest.c simpleGPIO.c
 MATHCLASSES = coreVarsGenerator.c derivedVarsGenerator.c fuelAndIgnitionCalcs.c outputScheduler.c decoderInterface.c
 COMCLASSES = flashWrite.c commsCore.c blockDetailsLookup.c
-ISRCLASSES = interrupts.c injectionISRs.c commsISRs.c realtimeISRs.c miscISRs.c xgateVectors.c
+ISRCLASSES = interrupts.c injectionISRs.c commsISRs.c realtimeISRs.c miscISRs.c
 # Combined source code files
 SOURCE = freeEMS.c staticInit.c main.c $(UTILCLASSES) $(MATHCLASSES) $(COMCLASSES) $(ISRCLASSES)
 
@@ -196,7 +196,7 @@ RPMCLASSESRAW = $(RPMSPECIAL) $(RPMEVENTEETH) $(RPMMISSINGTEETH) $(RPMHALLOROPTI
 RPMCLASSES = $(patsubst %.c,$(DECDIR)/%.c,$(RPMCLASSESRAW))
 
 # XGATE stuff here!
-XGASMSRCS = xgate.s
+XGASMSRCS = xgate.s xgateVectors.s
 
 
 # Convert extensions

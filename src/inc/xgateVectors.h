@@ -60,26 +60,6 @@
         INT_CFADDR = (channel_id * 2) & 0xF0;                 \
         INT_CFDATA_ARR[((channel_id * 2) & 0x0F) >> 1] = (cpu_assignment | priority);
 
-typedef struct {
-	unsigned short programCounterValue; /* This data is forced into the XGATE PC register */
-	unsigned short initialVariable; /* This data is forced into the XGATE R1 register */
-} xgateIntVector;
-
-// This statement imports the symbol from the xgate ASM for use in the vector table
-extern void xgateSchedule(); // extern not EXTERN because it is defined outside of C
-extern void xgatePITTurnOff();
-extern void xgatePITTurnOn();
-extern void xgateDelayCounter();
-extern void startXGATECode();
-extern void endXGATECode();
-extern void parameterGuard(); /* counter that gets update when a write to shared RAM begins and again when the write is complete */
-
-EXTERN const xgateIntVector xgateIntVectorTable[121];
-
-
-// Xgate control value
-#define XGATE_ERROR_HANDLER 0x0000 /* TODO Create the XGATE error handling thread in asm. */
-
 
 #else
         /* let us know if we are being untidy with headers */
