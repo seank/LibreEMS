@@ -95,7 +95,7 @@ LDD R2, xgateSchedule
 ;LDD R5, xgatePORTPFlip
 ;JAL R5; jump to xgatePORTPFlip
 	LDD R3, PITCNT1 ;load current metronome value
-	LDD R5, TCNT;load current TCNT value
+	LDD R5, TC0 ;load current TC0 value to factor decoder latency
 	LDW R3, R3, #ZERO_OFFSET
 	LDW R5, R5, #ZERO_OFFSET
 	LDD R4, xGSSystemVars
