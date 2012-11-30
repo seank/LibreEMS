@@ -38,7 +38,7 @@
  */
 
 
-#define OFFSET	0 // number of ticks to adjust by, this is just for testing
+#define OFFSET	0x1EUL // number of ticks to adjust by, this is just for testing
 
 /* temp *safety semaphore, to keep me from chasing my tail, just in case */
 unsigned char i = 0;
@@ -53,11 +53,17 @@ XGSEM = 0x0100;
 
 unsigned char savedRPage = RPAGE;
 RPAGE = RPAGE_TUNE_TWO;
-
-*xgsInStamp = startTime; // this should be the value of TCNT at the time the decoder ISR started
+*xgsInStamp = timeStamp.timeShorts[1]; // this should be the value of TC0 at the time the decoder ISR started, Fred feel free to correct me.
 *xgsEventsToSch = 1;
 XGOutputEvents[0].channelID = outputEventNumber;
-XGOutputEvents[0].delay = outputEventDelayTotalPeriod[outputEventNumber] + OFFSET;
+//ATOMIC_START();
+if(outputEventDelayTotalPeriod[outputEventNumber] > OFFSET){
+	outputEventDelayTotalPeriod[outputEventNumber] -= OFFSET;
+}
+XGOutputEvents[0].delay = outputEventDelayTotalPeriod[outputEventNumber] - OFFSET;
 XGOutputEvents[0].runtime = outputEventPulseWidthsMath[outputEventNumber];
+//ATOMIC_END();
 XGSCHEDULE();
 RPAGE = savedRPage;
+
+
