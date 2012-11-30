@@ -63,8 +63,8 @@
 .global parameterDelayH5
 .global parameterDelay5
 .global parameterRuntime5
- 
- 
+
+
 /* Flag Masks */ 
 .equ	SW_ISR_ZERO_CFLAG_MASK, 0x0100
 .equ	PIT0_CFLAG_MASK, 0x0001
@@ -79,6 +79,7 @@
 /* Registers */
 .equ	SW_ISR_FLAG_REG, 0x0398 /* XGATE software interrupt register 16-bit */
 .equ	TCNT,            0x0044 /* Timer counter 16 bit (0x0044 TCNT (hi), 0x0045 TCNT (lo)) */
+.equ	TC0,             0x0050 /* 16 bit (0x0050 TC0 (hi), 0x0051 TC0 (lo)) */
 
 /* PIT Counter Registers */
 .equ   PITLD0, 0x0348	/* PIT Load Register 0, time to start counting from when reaching zero (0x0348 PITLD0 (hi), 0x0349 PITLD0 (lo)) */
@@ -101,7 +102,8 @@
 .equ	PORTBA, 0x0000	  /* PORT-BA register(without a mutex writing to this is unsafe) */
 .equ	PORTA, 0x0000	  /* PORTB register(without a mutex writing to this is unsafe) */  
 .equ	PORTB, 0x0001	  /* PORT-B register */
-.equ	PORTC, 0x0004	  /* PORT-C register(144+ versions only)
+.equ	PORTC, 0x0004	  /* PORT-C register(144+ versions only) */
+.equ	PORTD, 0x0005	  /* PORT-D register(144+ versions only) */
 .equ	PORTT, 0x0240	  /* PORT-T register */
 
 /* General Defines */
@@ -257,77 +259,79 @@
 .equ EVENT_11_REGISTER_ADDRESS, PORTC
 .equ EVENT_11_REGISTER_MASK, 0x08 /* fourth pin on port C */
 
-.equ EVENT_12_REGISTER_ADDRESS, PORTB
-.equ EVENT_12_REGISTER_MASK, 0x10 /* fifth pin on port B */
+.equ EVENT_12_REGISTER_ADDRESS, PORTC
+.equ EVENT_12_REGISTER_MASK, 0x10 /* fifth pin on port C */
 
-.equ EVENT_13_REGISTER_ADDRESS, PORTB
-.equ EVENT_13_REGISTER_MASK, 0x20 /* sixth pin on port B */
+.equ EVENT_13_REGISTER_ADDRESS, PORTC
+.equ EVENT_13_REGISTER_MASK, 0x20 /* sixth pin on port C */
 
-.equ EVENT_14_REGISTER_ADDRESS, PORTB
-.equ EVENT_14_REGISTER_MASK, 0x40 /* seventh pin on port B */
+.equ EVENT_14_REGISTER_ADDRESS, PORTC
+.equ EVENT_14_REGISTER_MASK, 0x40 /* seventh pin on port C */
 
-.equ EVENT_15_REGISTER_ADDRESS, PORTB
-.equ EVENT_15_REGISTER_MASK, 0x80 /* eighth pin on port B */
+.equ EVENT_15_REGISTER_ADDRESS, PORTC
+.equ EVENT_15_REGISTER_MASK, 0x80 /* eighth pin on port C */
 
-.equ EVENT_16_REGISTER_ADDRESS, PORTB
-.equ EVENT_16_REGISTER_MASK, 0x01 /* first pin on port B */
+.equ EVENT_16_REGISTER_ADDRESS, PORTD
+.equ EVENT_16_REGISTER_MASK, 0x01 /* first pin on port D */
 
-.equ EVENT_17_REGISTER_ADDRESS, PORTB
-.equ EVENT_17_REGISTER_MASK, 0x02 /* second pin on port B */
+.equ EVENT_17_REGISTER_ADDRESS, PORTD
+.equ EVENT_17_REGISTER_MASK, 0x02 /* second pin on port D */
 
-.equ EVENT_18_REGISTER_ADDRESS, PORTB
-.equ EVENT_18_REGISTER_MASK, 0x04 /* third pin on port B */
+.equ EVENT_18_REGISTER_ADDRESS, PORTD
+.equ EVENT_18_REGISTER_MASK, 0x04 /* third pin on port D */
 
-.equ EVENT_19_REGISTER_ADDRESS, PORTB
-.equ EVENT_19_REGISTER_MASK, 0x08 /* fourth pin on port B */
+.equ EVENT_19_REGISTER_ADDRESS, PORTD
+.equ EVENT_19_REGISTER_MASK, 0x08 /* fourth pin on port D */
 
-.equ EVENT_20_REGISTER_ADDRESS, PORTB
-.equ EVENT_20_REGISTER_MASK, 0x10 /* fifth pin on port B */
+.equ EVENT_20_REGISTER_ADDRESS, PORTD
+.equ EVENT_20_REGISTER_MASK, 0x10 /* fifth pin on port D */
 
-.equ EVENT_21_REGISTER_ADDRESS, PORTB
-.equ EVENT_21_REGISTER_MASK, 0x20 /* sixth pin on port B */
+.equ EVENT_21_REGISTER_ADDRESS, PORTD
+.equ EVENT_21_REGISTER_MASK, 0x20 /* sixth pin on port D */
 
-.equ EVENT_22_REGISTER_ADDRESS, PORTB
-.equ EVENT_22_REGISTER_MASK, 0x40 /* seventh pin on port B */
+.equ EVENT_22_REGISTER_ADDRESS, PORTD
+.equ EVENT_22_REGISTER_MASK, 0x40 /* seventh pin on port D */
 
-.equ EVENT_23_REGISTER_ADDRESS, PORTB
-.equ EVENT_23_REGISTER_MASK, 0x80 /* eighth pin on port B */
+.equ EVENT_23_REGISTER_ADDRESS, PORTD
+.equ EVENT_23_REGISTER_MASK, 0x80 /* eighth pin on port D */
 
-.equ EVENT_24_REGISTER_ADDRESS, PORTB
-.equ EVENT_24_REGISTER_MASK, 0x01 /* first pin on port B */
+;The rest of these really should just have a *null address, for now anyway
 
-.equ EVENT_25_REGISTER_ADDRESS, PORTB
-.equ EVENT_25_REGISTER_MASK, 0x02 /* second pin on port B */
+.equ EVENT_24_REGISTER_ADDRESS, PORTD
+.equ EVENT_24_REGISTER_MASK, 0x01 /* first pin on port D */
 
-.equ EVENT_26_REGISTER_ADDRESS, PORTB
-.equ EVENT_26_REGISTER_MASK, 0x04 /* third pin on port B */
+.equ EVENT_25_REGISTER_ADDRESS, PORTD
+.equ EVENT_25_REGISTER_MASK, 0x02 /* second pin on port D */
 
-.equ EVENT_27_REGISTER_ADDRESS, PORTB
-.equ EVENT_27_REGISTER_MASK, 0x08 /* fourth pin on port B */
+.equ EVENT_26_REGISTER_ADDRESS, PORTD
+.equ EVENT_26_REGISTER_MASK, 0x04 /* third pin on port D */
 
-.equ EVENT_28_REGISTER_ADDRESS, PORTB
-.equ EVENT_28_REGISTER_MASK, 0x10 /* fifth pin on port B */
+.equ EVENT_27_REGISTER_ADDRESS, PORTD
+.equ EVENT_27_REGISTER_MASK, 0x08 /* fourth pin on port D */
 
-.equ EVENT_29_REGISTER_ADDRESS, PORTB
-.equ EVENT_29_REGISTER_MASK, 0x20 /* sixth pin on port B */
+.equ EVENT_28_REGISTER_ADDRESS, PORTD
+.equ EVENT_28_REGISTER_MASK, 0x10 /* fifth pin on port D */
 
-.equ EVENT_30_REGISTER_ADDRESS, PORTB
-.equ EVENT_30_REGISTER_MASK, 0x40 /* seventh pin on port B */
+.equ EVENT_29_REGISTER_ADDRESS, PORTD
+.equ EVENT_29_REGISTER_MASK, 0x20 /* sixth pin on port D */
 
-.equ EVENT_31_REGISTER_ADDRESS, PORTB
-.equ EVENT_31_REGISTER_MASK, 0x80 /* eighth pin on port B */
+.equ EVENT_30_REGISTER_ADDRESS, PORTD
+.equ EVENT_30_REGISTER_MASK, 0x40 /* seventh pin on port D */
 
-.equ EVENT_32_REGISTER_ADDRESS, PORTB
-.equ EVENT_32_REGISTER_MASK, 0x01 /* first pin on port B */
+.equ EVENT_31_REGISTER_ADDRESS, PORTD
+.equ EVENT_31_REGISTER_MASK, 0x80 /* eighth pin on port D */
 
-.equ EVENT_33_REGISTER_ADDRESS, PORTB
-.equ EVENT_33_REGISTER_MASK, 0x02 /* second pin on port B */
+.equ EVENT_32_REGISTER_ADDRESS, PORTD
+.equ EVENT_32_REGISTER_MASK, 0x01 /* first pin on port D */
 
-.equ EVENT_34_REGISTER_ADDRESS, PORTB
-.equ EVENT_34_REGISTER_MASK, 0x04 /* third pin on port B */
+.equ EVENT_33_REGISTER_ADDRESS, PORTD
+.equ EVENT_33_REGISTER_MASK, 0x02 /* second pin on port D */
 
-.equ EVENT_35_REGISTER_ADDRESS, PORTB
-.equ EVENT_35_REGISTER_MASK, 0x80 /* fourth pin on port B */
+.equ EVENT_34_REGISTER_ADDRESS, PORTD
+.equ EVENT_34_REGISTER_MASK, 0x04 /* third pin on port D */
+
+.equ EVENT_35_REGISTER_ADDRESS, PORTD
+.equ EVENT_35_REGISTER_MASK, 0x80 /* fourth pin on port D */
 
 /*-----------------------------------------END CONFIG----------------------------------------*/ 
 
