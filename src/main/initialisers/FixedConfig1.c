@@ -127,7 +127,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		schedulingConfigurationBits: {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1}, // See below two lines
 		decoderEngineOffset:               ANGLE(0.00), // Decoder has a true zero zero mechanically hard coded
 		numberOfConfiguredOutputEvents:             16, // First half ignition, second half injection
-		numberOfInjectionsPerEngineCycle:            2  // Full sync semi-sequential
+		numberOfInjectionsPerEngineCycle:            1  // Full sync semi-sequential
 
 #elif CONFIG == SNOTROCKET_ID // http://forum.diyefi.org/viewtopic.php?f=3&t=1263 Sim's 2.1 Volvo, carbed with CNP using LS1 coils.
 		anglesOfTDC: {ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540)}, // 1,2,3,4: Firing order: 1-3-4-2 set up in loom
@@ -264,8 +264,13 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 			reenableThreshold: KPA(100)  // Re enable when boost gone all together (force driver to lift)
 		},
 		cutsEnabled:{
+#if CONFIG == SEANKR1_ID
+			InjectionRPM: 0, // Never disable fuel while in piggy-back mode
+			InjOverBoost: 0,
+#else
 			InjectionRPM: 1,
 			IgnitionRPM:  1,
+#endif
 			InjOverBoost: 1,
 			IgnOverBoost: 1,
 			Spare0: 1,
@@ -314,8 +319,13 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 #endif
 			[1] = {
 				variable: &CoreVars0.CHT,
+#if	CONFIG == SEANKR1_ID	// At 250HP per liter she needs to stay cool
+				upperValue: DEGREES_C(80),
+				lowerValue: DEGREES_C(70),
+#else
 				upperValue: DEGREES_C(100),
 				lowerValue: DEGREES_C(90),
+#endif
 				port: (unsigned char*)&PORTK,
 				mask: BIT4,
 				flags: 0
