@@ -38,6 +38,7 @@
 
 #define XGATETESTS_C
 EXTERN void sleepMicro(unsigned short) FPAGE_FE;
+EXTERN void generateCoreVars(void) LOOKUPF;
 
 /* gcc is one of the few compilers that supports nested functions in C ! */
 
@@ -49,6 +50,7 @@ static unsigned long delay2 = 10000;
 static unsigned long sleep = 10;
 static unsigned short numRuns = 0;
 static unsigned char once = 1;
+static unsigned char debug = 0;
 
 /**
  * This test will schedule the first eight channel in sequential fashion. Incrementing after each channel has been
@@ -59,7 +61,7 @@ void incrementalTests() {
 		numRuns++;
 		unsigned char savedRPage = RPAGE;
 		RPAGE = RPAGE_TUNE_TWO;
-		*xgsInStamp = TCNT;
+		*xgsInStamp = TC0;
 		*xgsEventsToSch = 1;
 		if (testCH == 0) {
 			XGOutputEvents[0].channelID = testCH;
@@ -115,7 +117,7 @@ void firstLastDiffTest() {
 		PORTB = 0;
 		unsigned char savedRPage = RPAGE;
 		RPAGE = RPAGE_TUNE_TWO;
-		*xgsInStamp = TCNT;
+		*xgsInStamp = TC0;
 		*xgsEventsToSch = 2;
 		XGOutputEvents[0].channelID = 0;
 		XGOutputEvents[0].delay = 2500;
@@ -145,7 +147,7 @@ void singleTest() {
 		PORTB = 0;
 		unsigned char savedRPage = RPAGE;
 		RPAGE = RPAGE_TUNE_TWO;
-		*xgsInStamp = TCNT;
+		*xgsInStamp = TC0;
 		*xgsEventsToSch = 2;
 		XGOutputEvents[0].channelID = testCH;
 		XGOutputEvents[0].delay = 2500;
@@ -170,7 +172,7 @@ void delayShiftDiffTest() {
 	if (Clocks.millisToTenths % 2 == 0) {
 		unsigned char savedRPage = RPAGE;
 		RPAGE = RPAGE_TUNE_TWO;
-		*xgsInStamp = TCNT;
+		*xgsInStamp = TC0;
 		*xgsEventsToSch = 1;
 		if (testCH == 0) {
 			XGOutputEvents[0].channelID = testCH;
@@ -236,7 +238,7 @@ void scheduleLatencyTest() {
 		PORTB = 0xFF;
 		PORTB = 0xFF;
 		PORTB = 0;
-		*xgsInStamp = TCNT;
+		*xgsInStamp = TC0;
 		*xgsEventsToSch = 6;
 		delay = 2500;
 		runtime = 2500;
@@ -266,55 +268,55 @@ void scheduleLatencyTest() {
 /**
  * This test will allow you to observe how log it takes to schedule 1-6 events
  */
-void competingInterruptsTest() {
-	if (Clocks.millisToTenths % 10 == 0) {
-		unsigned int i = 0;
-
-		do {
-			XGSEM = 0x0101;
-			if (i) {
-				PORTA = 0xFF;
-			}
-			i++;
-		} while (!(XGSEM & 0x01));
-		XGSEM = 0x0100;
-
-		PORTB |= 0x80;
-		unsigned char savedRPage = RPAGE;
-		RPAGE = RPAGE_TUNE_TWO;
-		*xgsInStamp = TCNT;
-		*xgsEventsToSch = 6;
-		//*(unsigned short*)(eventFlags1 - 0x8000) = (unsigned short)0;
-		//*(unsigned short*)(eventFlags1 - 0x8000) = (unsigned short)0;
-		delay++;
-		//runtime++;
-		XGOutputEvents[0].channelID = testCH;
-		XGOutputEvents[0].delay = delay;
-		XGOutputEvents[0].runtime = runtime;
-		XGOutputEvents[1].channelID = testCH + 1;
-		XGOutputEvents[1].delay = delay + 200;
-		XGOutputEvents[1].runtime = runtime;
-		XGOutputEvents[2].channelID = testCH + 2;
-		XGOutputEvents[2].delay = delay + 3 + numRuns;
-		XGOutputEvents[2].runtime = runtime;
-		XGOutputEvents[3].channelID = testCH + 3;
-		XGOutputEvents[3].delay = delay + numRuns;
-		XGOutputEvents[3].runtime = runtime + 4;
-		XGOutputEvents[4].channelID = testCH + 4;
-		XGOutputEvents[4].delay = 0;
-		XGOutputEvents[4].runtime = 2500;
-		XGOutputEvents[5].channelID = testCH + 35;
-		XGOutputEvents[5].delay = delay + 5 + numRuns;
-		XGOutputEvents[5].runtime = runtime;
-		XGSCHEDULE();
-		RPAGE = savedRPage;
-		PORTB &= 0x7F;
-	}
-	if (runtime > 10500) {
-		runtime = 250;
-	}
-	numRuns++;
-}
+//void competingInterruptsTest() {
+//	if (Clocks.millisToTenths % 10 == 0) {
+//		unsigned int i = 0;
+//
+//		do {
+//			XGSEM = 0x0101;
+//			if (i) {
+//				PORTA = 0xFF;
+//			}
+//			i++;
+//		} while (!(XGSEM & 0x01));
+//		XGSEM = 0x0100;
+//
+//		PORTB |= 0x80;
+//		unsigned char savedRPage = RPAGE;
+//		RPAGE = RPAGE_TUNE_TWO;
+//		*xgsInStamp = TC0;
+//		*xgsEventsToSch = 6;
+//		//*(unsigned short*)(eventFlags1 - 0x8000) = (unsigned short)0;
+//		//*(unsigned short*)(eventFlags1 - 0x8000) = (unsigned short)0;
+//		delay++;
+//		//runtime++;
+//		XGOutputEvents[0].channelID = testCH;
+//		XGOutputEvents[0].delay = delay;
+//		XGOutputEvents[0].runtime = runtime;
+//		XGOutputEvents[1].channelID = testCH + 1;
+//		XGOutputEvents[1].delay = delay + 200;
+//		XGOutputEvents[1].runtime = runtime;
+//		XGOutputEvents[2].channelID = testCH + 2;
+//		XGOutputEvents[2].delay = delay + 3 + numRuns;
+//		XGOutputEvents[2].runtime = runtime;
+//		XGOutputEvents[3].channelID = testCH + 3;
+//		XGOutputEvents[3].delay = delay + numRuns;
+//		XGOutputEvents[3].runtime = runtime + 4;
+//		XGOutputEvents[4].channelID = testCH + 4;
+//		XGOutputEvents[4].delay = 0;
+//		XGOutputEvents[4].runtime = 2500;
+//		XGOutputEvents[5].channelID = testCH + 35;
+//		XGOutputEvents[5].delay = delay + 5 + numRuns;
+//		XGOutputEvents[5].runtime = runtime;
+//		XGSCHEDULE();
+//		RPAGE = savedRPage;
+//		PORTB &= 0x7F;
+//	}
+//	if (runtime > 10500) {
+//		runtime = 250;
+//	}
+//	numRuns++;
+//}
 
 /**
  *
@@ -328,7 +330,7 @@ void metronomeOverlapTests() {
 	if (Clocks.millisToTenths % 10 == 0) {
 		unsigned char savedRPage = RPAGE;
 		RPAGE = RPAGE_TUNE_TWO;
-		*xgsInStamp = TCNT;
+		*xgsInStamp = TC0;
 		*xgsEventsToSch = 1;
 		if (Clocks.millisToTenths % 100 == 0) {
 
@@ -399,14 +401,14 @@ void metronomeTests() {
 		if(numRuns % 10 == 0) {
 		unsigned char savedRPage = RPAGE;
 		RPAGE = RPAGE_TUNE_TWO;
-		*xgsInStamp = TCNT;
+		*xgsInStamp = TC0;
 		*xgsEventsToSch = 1;
 		PORTB |= (1 << testCH);
 		sleepMicro(20);
 		PORTB &= ~(1 << testCH);
 		if (testCH == 0) {
 			XGOutputEvents[0].channelID = testCH;
-			XGOutputEvents[0].delay = 0xFFFF;
+			XGOutputEvents[0].delay = 0xFFFAUL + debug++;
 			XGOutputEvents[0].runtime = runtime;
 		} else if (testCH == 1) {
 			XGOutputEvents[0].channelID = testCH;
@@ -448,6 +450,76 @@ void metronomeTests() {
 	}
 	return;
 }
+
+//void schdulerTests() {
+//	if (Clocks.millisToTenths % 100 == 0) {
+//		++numRuns;
+//		if(numRuns % 10 == 0) {
+//ATOMIC_START();
+//		unsigned long potentialDelay = 0x0FFF;
+//	//	outputEventInputEventNumbers[numRuns] = mappedEvent;
+//		outputEventDelayFinalPeriod[testCH] = (unsigned short)potentialDelay;
+//		outputEventPulseWidthsMath[testCH] = 0x0FFF;
+//		outputEventExtendNumberOfRepeats[testCH] = 0;
+//		outputEventDelayTotalPeriod[testCH] = potentialDelay; // No async accesses occur
+//		unsigned short edgeTimeStamp = TC0;    /* Save the edge time stamp */
+//		LongTime timeStamp;
+//		/* Install the low word */
+//		timeStamp.timeShorts[1] = edgeTimeStamp;
+//		/* Find out what our timer value means and put it in the high word */
+////		if(TFLGOF && !(edgeTimeStamp & 0x8000)){ /* see 10.3.5 paragraph 4 of 68hc11 ref manual for details */
+////			timeStamp.timeShorts[0] = timerExtensionClock + 1;
+////		}else{
+////			timeStamp.timeShorts[0] = timerExtensionClock;
+////		}
+//		//unsigned long thisEventTimeStamp = timeStamp.timeLong;
+//		schedulePortTPin(testCH, timeStamp);
+//ATOMIC_END();
+//	testCH++;
+//	if(testCH == fixedConfigs1.schedulingSettings.numberOfConfiguredOutputEvents) testCH = 0;
+//	}
+//}
+//}
+
+void stagedInjectionTests() {
+#define TIME_DIVISOR	50UL //6000 rpm
+	if (Clocks.millisToTenths % TIME_DIVISOR == 0) {
+		ATOMIC_START();
+		*ticksPerDegree = (unsigned short)((ticks_per_degree_multiplier * (1250UL * TIME_DIVISOR) ) / (720UL * ANGLE_FACTOR));
+		//CoreVars->DRPM = #define ticks_per_degree_multiplier (10 * ANGLE_FACTOR) // FIX <<< shouldn't be done like this.
+		generateCoreVars();
+		//CoreVars->RPM = RPM(6000); //these need to match TIME_DIVISOR or your scope results wont
+		unsigned char outputEventNumber = 0;
+		outputEventDelayTotalPeriod[outputEventNumber] = 200;
+		outputEventPulseWidthsMath[outputEventNumber] = runtime + DerivedVars->IDT;
+		unsigned short edgeTimeStamp = TC0;
+		LongTime timeStamp;
+		/* Install the low word */
+		timeStamp.timeShorts[1] = edgeTimeStamp;
+		/* Find out what our timer value means and put it in the high word */
+		if (TFLGOF && !(edgeTimeStamp & 0x8000)) { /* see 10.3.5 paragraph 4 of 68hc11 ref manual for details */
+			timeStamp.timeShorts[0] = timerExtensionClock + 1;
+		} else {
+			timeStamp.timeShorts[0] = timerExtensionClock;
+		}
+		schedulePortTPin(outputEventNumber, timeStamp);
+		/* roll back and fwd */
+		if(once){
+			runtime += 30;
+		}else {
+			runtime -= 30;
+		}
+		if(runtime > 34000) {
+			once = 0;
+		}
+		if(runtime < 5000){
+			once = 1;
+		}
+		ATOMIC_END();
+	}
+}
 //incrementalTests();
-metronomeTests();
+//metronomeTests();
 //metronomeOverlapTests();
+//schdulerTests();
+stagedInjectionTests();
