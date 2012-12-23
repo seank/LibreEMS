@@ -45,37 +45,69 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 	engineSettings:{
 #if CONFIG == TRUCK_ID
 		perCylinderVolume:  CYLINDER_VOLUME(500),
+	    cylinderCount:		4,
+	    strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(550), // RX7 "550" which em_knaps had tested at 650cc
+		secondaryInjectorFlow: CC_PER_MINUTE(0),
 #elif CONFIG == PRESTO_ID
 		perCylinderVolume:  CYLINDER_VOLUME(400),
+		cylinderCount:		4,
+		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(213),
+		secondaryInjectorFlow: CC_PER_MINUTE(0),
 #elif CONFIG == SEANKLT1_ID
 		perCylinderVolume:  CYLINDER_VOLUME(727),
+		cylinderCount:		8,
+		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(525),
+		secondaryInjectorFlow: CC_PER_MINUTE(0),
 #elif CONFIG == SEANKR1
 		perCylinderVolume:  CYLINDER_VOLUME(250),
+		cylinderCount:		4,
+		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(230), // http://www.witchhunter.com/flowdatapix/bcdh210.jpg
+		secondaryInjectorFlow: CC_PER_MINUTE(190),
 #elif CONFIG == SLATER_ID
 		perCylinderVolume:  CYLINDER_VOLUME(324),
+		cylinderCount:		4,
+		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(320),
+		secondaryInjectorFlow: CC_PER_MINUTE(0),
 #elif CONFIG == PETERJSERIES_ID
 		perCylinderVolume:  CYLINDER_VOLUME(585),
+		cylinderCount:		6,
+		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(320),
+		secondaryInjectorFlow: CC_PER_MINUTE(0),
 #elif CONFIG == DEUCECOUPE_ID
 		perCylinderVolume:  CYLINDER_VOLUME(522),
+		cylinderCount:		6,
+		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(235),
-#elif CONFIG == DEUCES10_ID
+		secondaryInjectorFlow: CC_PER_MINUTE(0),
+		#elif CONFIG == DEUCES10_ID
 		perCylinderVolume:  CYLINDER_VOLUME(548),
+		cylinderCount:          4,
+		strokesPerCycle:        4,
 		injectorFlow:       CC_PER_MINUTE(235),
 #elif CONFIG == SCAVENGER_ID
 		perCylinderVolume:  CYLINDER_VOLUME(399.25),
 		injectorFlow:       CC_PER_MINUTE(540),
 #else
 		perCylinderVolume:  CYLINDER_VOLUME(500),
+		cylinderCount:		4,
+		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(550),
+		secondaryInjectorFlow: CC_PER_MINUTE(0),
 #endif
+
+#if CONFIG == SEANKR1
+		stoichiometricAFR:  stoichiometricAFRE85,
+		densityOfFuelAtSTP: densityOfE85
+#else
 		stoichiometricAFR:  stoichiometricAFRPetrol,
 		densityOfFuelAtSTP: densityOfPetrol
+#endif
 	},
 	serialSettings:{
 		baudDivisor:        SCI_BAUD_DIVISOR(115200) // 21.7013889 (22) http://duckduckgo.com/?q=40000000+%2F+%2816*115200%29
@@ -122,9 +154,9 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		numberOfInjectionsPerEngineCycle:            2  // Semi-sequential, for now.
 
 #elif CONFIG == SEANKLT1_ID // http://forum.diyefi.org/viewtopic.php?f=55&t=1146
-		anglesOfTDC: {ANGLE(0), ANGLE(90), ANGLE(180), ANGLE(270), ANGLE(360), ANGLE(450), ANGLE(540), ANGLE(630), ANGLE(0), ANGLE(90), ANGLE(180), ANGLE(270), ANGLE(360), ANGLE(450), ANGLE(540), ANGLE(630)},
-		outputEventPinNumbers:       {0,0,0,0,0,0,0,0,2,3,4,5,2,3,4,5}, // LTCC e-dizzy, semi-sequential injection 1/6, 8/5, 4/7, 3/2, and repeat
-		schedulingConfigurationBits: {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1}, // See below two lines
+		anglesOfTDC: {ANGLE(0)},
+		outputEventPinNumbers:       {0}, // LTCC e-dizzy, semi-sequential injection 1/6, 8/5, 4/7, 3/2, and repeat
+		schedulingConfigurationBits: {1}, // See below two lines
 		decoderEngineOffset:               ANGLE(0.00), // Decoder has a true zero zero mechanically hard coded
 		numberOfConfiguredOutputEvents:             16, // First half ignition, second half injection
 		numberOfInjectionsPerEngineCycle:            1  // Full sync semi-sequential
@@ -340,7 +372,6 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 			"the forum this message WILL be visible to all and sundry, so don't "
 			"be putting too many personal details, bank account numbers, "
 			"passwords, PIN numbers, license plates, national insurance numbers, "
-			"IRD numbers, social security numbers, phone numbers, email addresses,"
 			" love stories and other private information in this field. In fact it"
 			" is probably best if you kee"
 };
