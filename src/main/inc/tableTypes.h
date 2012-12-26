@@ -49,6 +49,11 @@ typedef struct {
 	unsigned short Values[TWODTABLEUS_LENGTH];
 } twoDTableUS;
 
+/// This block used for various curves
+typedef struct {
+	unsigned short Axis[TWODTABLEUS_LENGTH];
+	unsigned long Values[TWODTABLEUS_LENGTH];
+} twoDTableUL;
 
 #define MAINTABLE_RPM_LENGTH       24 ///< How many cells on the X axis
 #define MAINTABLE_LOAD_LENGTH      19 ///< How many cells on the Y axis
