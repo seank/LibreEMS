@@ -49,6 +49,7 @@
 #endif
 
 EXTERN unsigned short safeAdd(unsigned short, unsigned short);
+EXTERN unsigned short safeSubtract(unsigned short, unsigned short);
 EXTERN unsigned short safeTrim(unsigned short, signed short);
 EXTERN unsigned short safeScale(unsigned short, unsigned short, unsigned short);
 

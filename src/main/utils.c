@@ -57,6 +57,22 @@ unsigned short safeAdd(unsigned short addend1, unsigned short addend2){
 }
 
 
+/** @brief Subtract two unsigned shorts safely
+ *
+ * This will either return zero or the difference of the two arguments.
+ *
+ * @param minuend
+ * @param subtrahend
+ */
+unsigned short safeSubtract(unsigned short minuend, unsigned short subtrahend){
+	if(subtrahend > minuend){
+		return 0;
+	}else{
+		return minuend - subtrahend;
+	}
+}
+
+
 /** @brief Add signed short to an unsigned short safely
  *
  * This will either return short max, zero, or the sum of the two arguments.
