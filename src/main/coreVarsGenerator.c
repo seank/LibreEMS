@@ -155,7 +155,7 @@ void generateCoreVars(){
 	// Not actually used, feed raw values for now TODO migrate these to a SpecialVars struct or similar not included in default datalog
 	CoreVars->EGO2 = ADCBuffers->EGO2;
 	CoreVars->IAP = ADCBuffers->IAP;
-	CoreVars->MAF = MAFTransferTable[ADCBuffers->MAF];
+	CoreVars->MAF = ADCBuffers->MAF;
 
 //	CoreVars->DRPM = localDRPM;
 //	CoreVars->DDRPM = localDDRPM;

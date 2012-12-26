@@ -83,8 +83,10 @@
 #define FUEL_DENSITY(DENSITY)         (unsigned long)ROUND((DENSITY) * (double)FUEL_DENSITY_FACTOR)
 #define PW_MS(PW_MILLISECONDS)        (unsigned long)ROUND((PW_MILLISECONDS) * (double)PW_TICK_FACTOR)
 #define PERCENT(PERCENTAGE)           (unsigned long)ROUND((PERCENTAGE) * (double)PERCENT_FACTOR)
+#define ADC_VOLTS(ADC_VOLTAGE)		   (unsigned short)ROUND((ADC_VOLTAGE * (double)(1024/5)))
 #define ACCEL_TIME_TOL(PERCENTAGE)    (unsigned long)((100/(100 + (double)PERCENTAGE)) * 1000) // This code is getting changed a lot, hence literals
 #define DECEL_TIME_TOL(PERCENTAGE)    (unsigned long)(((100 + (double)PERCENTAGE)/100) * 1000) // This code is getting changed a lot, hence literals
+#define	 GRAMS_PER_SECOND			   (unsigned short)ROUND(               );
 
 // One-off configuration stuff
 #define SCI_BAUD_DIVISOR(BAUD)        (unsigned long)ROUND(40000000 / ((double)(BAUD) * 16)) // 40MHz / (16*115.2kHz) TODO pull 40MHz out of clock rate stuff
@@ -98,8 +100,10 @@
 #define PC(PERCENTAGE)                PERCENT(PERCENTAGE)    // Shortcut for table use, same as above
 #define C(TEMPERATURE)                DEGREES_C(TEMPERATURE) // Shortcut for table use, same as below
 #define V(VOLTAGE)                    VOLTS(VOLTAGE)         // Shortcut for table use, same as above
+#define AV(ADC_VOLTAGE)				   ADC_VOLTS(ADC_VOLTAGE) // Shortcut for table use, same as above
 #define W(PERCENTAGE)                 (unsigned long)ROUND(((PERCENTAGE) / (double)WARM_UP_LIMIT) * 65536)
 #define T(PW_MILLISECONDS)            PW_MS(PW_MILLISECONDS) // Shortcut for table use, same as above
+#define	 GS(MASS)					   GRAMS_PER_SECOND(MASS) // Shortcut for table use, same as above
 
 // Convenience wrappers for various non-native units
 #define CC_PER_MINUTE_85(FLOW_RATE)   CC_PER_MINUTE((FLOW_RATE) * (100 / 85.0))

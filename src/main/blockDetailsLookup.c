@@ -418,8 +418,14 @@ unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* detai
 #endif
 
 	/* TablesC small tables */
-		// TODO add data chunks from TablesC when some are put in
-
+	case MAFVersusVoltageTableLocationID:
+		details->size = sizeof(twoDTableUL);
+		details->RAMPage = RPAGE_TUNE_ONE;
+		details->FlashPage = TUNETABLES_PPAGE;
+		details->RAMAddress = (void*) &TablesC.SmallTablesC.MAFVersusVoltageTable;
+		details->FlashAddress = MAFVersusVoltageTableLocation;
+		details->parent = SmallTablesCLocationID;
+		break;
 	/* TablesD small tables */
 		// TODO add data chunks from TablesD when some are put in
 

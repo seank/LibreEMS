@@ -121,6 +121,12 @@ CASSERT(VOLTS(65.535) == SHORTMAX, VOLTAGE)        // Centre == max
 CASSERT(VOLTS(65.5345000001) == SHORTMAX, VOLTAGE) // Lowest to round up
 CASSERT(VOLTS(65.5354999999) == SHORTMAX, VOLTAGE) // Highest to round down
 
+//TODO complete
+//CASSERT(ADC_VOLTS(5.03) > ADC_MAX_VALUE, ADC_VOLTAGE)         // Overflow gets caught
+//CASSERT(ADC_VOLTS(5.02) == ADC_MAX_VALUE, ADC_VOLTAGE)         // Centre == max
+//CASSERT(ADC_VOLTS(5.0250000001) == ADC_MAX_VALUE, ADC_VOLTAGE) // Lowest to round up
+//CASSERT(ADC_VOLTS(5.0249999999) == ADC_MAX_VALUE, ADC_VOLTAGE) // Highest to round down
+
 CASSERT(LAMBDA(2.0) > SHORTMAX, LAMBDA)          // Overflow gets caught
 CASSERT(LAMBDA(1.999969482) == SHORTMAX, LAMBDA) // Centre == max
 CASSERT(LAMBDA(1.999954224) == SHORTMAX, LAMBDA) // Lowest to round up

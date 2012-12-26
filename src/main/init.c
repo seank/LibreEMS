@@ -347,7 +347,7 @@ void initTunableAddresses(){
 	perCylinderFuelTrims2Location = (void*)&SmallTablesBFlash2.perCylinderFuelTrims;
 
 	/* TablesC */
-	// TODO
+	MAFVersusVoltageTableLocation             = (void*)&SmallTablesCFlash2.MAFVersusVoltageTable;
 
 	/* TablesD */
 	// TODO

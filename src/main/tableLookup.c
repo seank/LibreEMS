@@ -227,6 +227,46 @@ unsigned short lookupTwoDTableUS(twoDTableUS * Table, unsigned short Value){
 	return lowLookupValue + (((signed long)((signed long)highLookupValue - lowLookupValue) * (Value - lowAxisValue))/ (highAxisValue - lowAxisValue));
 }
 
+/** @brief Two D table read function
+ *
+ * Looks up a value from a two D table using interpolation.
+ *
+ * @param Table is a pointer to the table to read from.
+ * @param Value is the position value used to lookup the return value.
+ *
+ * @return the interpolated value for the position specified
+ */
+unsigned long lookupTwoDTableUL(twoDTableUL * Table, unsigned short Value, unsigned char numValues){
+
+	/* Find the bounding axis indices, axis values and lookup values */
+	unsigned char lowIndex = 0;
+	unsigned char highIndex = numValues - 1;
+	/* If never set in the loop, low value will equal high value and will be on the edge of the map */
+	unsigned long lowAxisValue = Table->Axis[0];
+	unsigned long highAxisValue = Table->Axis[highIndex];
+	unsigned long lowLookupValue = Table->Values[0];
+	unsigned long highLookupValue = Table->Values[highIndex];
+
+	unsigned char Index;
+	for(Index=0;Index<16;Index++){
+		if(Table->Axis[Index] < Value){
+			lowIndex = Index;
+			lowAxisValue = Table->Axis[Index];
+			lowLookupValue = Table->Values[Index];
+		}else if(Table->Axis[Index] > Value){
+			highIndex = Index;
+			highAxisValue = Table->Axis[Index];
+			highLookupValue = Table->Values[Index];
+			break;
+		}else if(Table->Axis[Index] == Value){
+			return Table->Values[Index]; // If right on, just return the value
+		}
+	}
+
+
+	/* Interpolate and return the value */
+	return lowLookupValue + (((signed long)((signed long)highLookupValue - lowLookupValue) * (Value - lowAxisValue))/ (highAxisValue - lowAxisValue));
+}
 
 /** @brief Validate a main table
  *

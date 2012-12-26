@@ -44,6 +44,7 @@
 // Densities of various common fuels in grams per litre
 #define densityOfOctane FUEL_DENSITY(703)
 #define densityOfPetrol FUEL_DENSITY(720)
+#define densityOfE85	 FUEL_DENSITY(770)
 
 // Stoichiometric AFRs for various common fuels. Generated with http://www.diyefi.org/calculators.htm#stoich
 #define stoichiometricAFRMethane  STOICH_AFR(17.245)
@@ -129,6 +130,7 @@
 
 // Voltage based small table default data
 #define ARRAY_OF_16_VOLTAGES      {  V(6.0),   V(7.2),   V(8.4),   V(9.0),   V(9.6),  V(10.2),  V(10.8),  V(11.4),  V(12.0),  V(12.6),  V(13.2),  V(13.8),  V(14.4),  V(17.8),  V(21.0),  V(24.5)}
+#define ARRAY_OF_16_ADCVOLTAGES   { AV(0.23),  AV(0.42),  AV(0.62),  AV(0.93),  AV(1.20), AV(1.5), AV(1.8), AV(2.1), AV(2.4), AV(2.7), AV(3.0), AV(3.5), AV(4.0), AV(4.25), AV(4.5), AV(5.0)}
 #define ARRAY_OF_16_DEADTIMES     { T(2.91),  T(2.30),  T(1.86),  T(1.70),  T(1.58),  T(1.47),  T(1.39),  T(1.30),  T(1.23),  T(1.15),  T(1.10),  T(1.04),  T(0.99),  T(0.76),  T(0.57),  T(0.40)}
 #define ARRAY_OF_16_DWELLS        {T(14.55), T(11.50),  T(9.30),  T(8.50),  T(7.90),  T(7.35),  T(6.95),  T(6.50),  T(6.15),  T(5.75),  T(5.48),  T(5.20),  T(4.95),  T(3.80),  T(2.85),  T(2.00)}
 
@@ -145,6 +147,8 @@
 // TODO YAGNI currently unused space fillers
 #define ARRAY_OF_16_TIMES         {     0,  4096,  8192, 12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960, 45056, 49152, 53248, 57344, 61440}
 
+// Grams per second based MAF table data
+#define ARRAY_OF_16_GS	           {     0,  4096,  8192, 12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960, 45056, 49152, 53248, 57344, 61440}
 
 #else
     /* let us know if we are being untidy with headers */

@@ -63,6 +63,10 @@ void generateDerivedVars(){
 	}
 
 
+	/* lookup flow based on MAF */
+	if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF)
+		// TODO add MAF math here to calculate KPA
+		DerivedVars->AirFlow = (unsigned short)lookupTwoDTableUL((twoDTableUL*)&TablesC.SmallTablesC.MAFVersusVoltageTable, CoreVars->MAF, TWODTABLEUS_LENGTH);
 	/* Look up target Lambda with RPM and Load */
 	DerivedVars->Lambda = lookupMainTable(CoreVars->RPM, DerivedVars->LoadMain, LambdaTableLocationID);
 

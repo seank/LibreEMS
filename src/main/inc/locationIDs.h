@@ -77,6 +77,8 @@
 #define dwellVersusRPMTable2LocationID                 0x010D
 #define blendVersusRPMTableLocationID                  0x010E
 #define blendVersusRPMTable2LocationID                 0x010F
+#define MAFVersusVoltageTableLocationID                0x011F
+
 
 #ifdef BLOCK_DETAILS_LOOKUP_C // only for here, external stuff should use the flags field for determining what to do/not do.
 #define TwoDTableUS_SmallTableFullBlocks_Border        0x3000
