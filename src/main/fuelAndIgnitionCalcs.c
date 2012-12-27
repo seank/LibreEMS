@@ -63,10 +63,11 @@ void calculateFuelAndIgnition(){
 		/* Look up Airflow with RPM and TPS */
 		DerivedVars->AirFlow = lookupMainTable(CoreVars->RPM, CoreVars->TPS, AirflowTableLocationID); /* Tuned air flow without density information */
 	}else if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF){
-		DerivedVars->AirFlow = CoreVars->MAF; /* Just fix temperature at appropriate level to provide correct Lambda */
+		//DerivedVars->AirFlow = CoreVars->MAF; /* Just fix temperature at appropriate level to provide correct Lambda */
 		/// @todo TODO figure out what the correct "temperature" is to make MAF work correctly!
 		airInletTemp = DEGREES_C(20); // Room temperature?
 	}else if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_SD_AN_BLEND){
+		// I suspect more than one value could have been used to calibrate the MAF. The most common seem to be 0c and 20c
 		/* Look up VE with RPM and MAP */
 		DerivedVars->VEMain = lookupMainTable(CoreVars->RPM, CoreVars->MAP, VETableMainLocationID);
 		/* This won't overflow until 512kPa or about 60psi of boost with 128% VE. */
