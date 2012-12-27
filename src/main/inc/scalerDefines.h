@@ -61,10 +61,12 @@
 #define CYLINDER_VOLUME_LIMIT  2000  ///< Cylinder volume, in cc, can be anything less than this
 #define INJECTOR_FLOW_LIMIT    3840  ///< Injector flow, in cc/min can be anything less than this
 #define WARM_UP_LIMIT           400  ///< Warm up enrichment percentage, can be anything less than this
+#define CYLINDER_FLOW_FACTOR  10000  ///< Scaling factor for MAF fueling
 
 // Convenience values for convenience wrappers
 #define TEMPERATURE_C_TO_K_OFFSET  273.15 ///< Offset for human degrees Celsius configuration items
 #define FUEL_DENSITY_UNIT_FACTOR  1000    ///< Part of the original speed density mathematics, still in use
+#define GRAMS_PER_CC	0.0012041 		   //< The weight of air at STP at a volume of one cubic centimeter
 
 
 // All scaler macros!
@@ -86,10 +88,14 @@
 #define ADC_VOLTS(ADC_VOLTAGE)		   (unsigned short)ROUND((ADC_VOLTAGE * (double)(1024/5)))
 #define ACCEL_TIME_TOL(PERCENTAGE)    (unsigned long)((100/(100 + (double)PERCENTAGE)) * 1000) // This code is getting changed a lot, hence literals
 #define DECEL_TIME_TOL(PERCENTAGE)    (unsigned long)(((100 + (double)PERCENTAGE)/100) * 1000) // This code is getting changed a lot, hence literals
-#define	 GRAMS_PER_SECOND			   (unsigned short)ROUND(               );
 
 // One-off configuration stuff
 #define SCI_BAUD_DIVISOR(BAUD)        (unsigned long)ROUND(40000000 / ((double)(BAUD) * 16)) // 40MHz / (16*115.2kHz) TODO pull 40MHz out of clock rate stuff
+
+// Convenience wrappers for various non-native units
+#define CC_PER_MINUTE_85(FLOW_RATE)   CC_PER_MINUTE((FLOW_RATE) * (100 / 85.0))
+#define DEGREES_C(TEMPERATURE)        DEGREES_K((TEMPERATURE) + TEMPERATURE_C_TO_K_OFFSET)
+#define GRAMS_PER_SECOND(G_S)         (unsigned long)ROUND(((G_S * 60) / (double)GRAMS_PER_CC / (double)CYLINDER_VOLUME_LIMIT) * 65536) // G/S to cc/min
 
 // For table data
 #define IT(TIMING_BTDC)               (unsigned long)ROUND((TIMING_BTDC) * (double)IGNITION_TIMING_FACTOR)
@@ -104,11 +110,6 @@
 #define W(PERCENTAGE)                 (unsigned long)ROUND(((PERCENTAGE) / (double)WARM_UP_LIMIT) * 65536)
 #define T(PW_MILLISECONDS)            PW_MS(PW_MILLISECONDS) // Shortcut for table use, same as above
 #define	 GS(MASS)					   GRAMS_PER_SECOND(MASS) // Shortcut for table use, same as above
-
-// Convenience wrappers for various non-native units
-#define CC_PER_MINUTE_85(FLOW_RATE)   CC_PER_MINUTE((FLOW_RATE) * (100 / 85.0))
-#define DEGREES_C(TEMPERATURE)        DEGREES_K((TEMPERATURE) + TEMPERATURE_C_TO_K_OFFSET)
-
 
 #else
     /* let us know if we are being untidy with headers */
