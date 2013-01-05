@@ -224,13 +224,13 @@ unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* detai
 		details->RAMAddress = (void*)&TablesB;
 		details->FlashAddress = SmallTablesBFlashLocation;
 		break;
-#ifdef ALL_CONFIG
 	case SmallTablesCLocationID:
 		details->RAMPage = RPAGE_TUNE_ONE;
 		details->FlashPage = TUNETABLES_PPAGE;
 		details->RAMAddress = (void*)&TablesC;
 		details->FlashAddress = SmallTablesCFlashLocation;
 		break;
+#ifdef ALL_CONFIG
 	case SmallTablesDLocationID:
 		details->RAMPage = RPAGE_TUNE_ONE;
 		details->FlashPage = TUNETABLES_PPAGE;
