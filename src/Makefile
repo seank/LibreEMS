@@ -191,7 +191,7 @@ RPMMISSINGTEETH = MissingTeeth-TestFile.c MissingTeeth-Cam-24minus1.c MissingTee
 RPMHALLOROPTICAL = HallOrOptical-Distributor-4of64.c HallOrOptical-Distributor-4of69.c
 RPMVRDISTRIBUTOR = 
 # Specific purpose per engine stuff here
-RPMSPECIFICENGINE1 = MitsiAndMazda-CAS-4and1.c GM-LT1-CAS-360and8.c JSeries-12CrankWith6-2Cam.c
+RPMSPECIFICENGINE1 = MitsiAndMazda-CAS-4and1.c GM-LT1-CAS-360and8.c JSeries-12CrankWith6-2Cam.c Nissan-CAS-360and4.c
 # Insert your file above and get coding!
 RPMCLASSESRAW = $(RPMSPECIAL) $(RPMEVENTEETH) $(RPMMISSINGTEETH) $(RPMHALLOROPTICAL) $(RPMVRDISTRIBUTOR) $(RPMSPECIFICENGINE1)
 RPMCLASSES = $(patsubst %.c,$(DECDIR)/%.c,$(RPMCLASSESRAW))
@@ -276,6 +276,7 @@ HallOrOptical-Distributor-4of69: $(S19DIR)/$(LABEL)-HallOrOptical-Distributor-4o
 MitsiAndMazda-CAS-4and1: $(S19DIR)/$(LABEL)-MitsiAndMazda-CAS-4and1.s19
 GM-LT1-CAS-360and8: $(S19DIR)/$(LABEL)-GM-LT1-CAS-360and8.s19 
 JSeries-12CrankWith6-2Cam: $(S19DIR)/$(LABEL)-JSeries-12CrankWith6-2Cam.s19
+Nissan-CAS-360and4: $(S19DIR)/$(LABEL)-Nissan-CAS-360and4.s19 
 
 
 
