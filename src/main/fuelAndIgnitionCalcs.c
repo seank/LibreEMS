@@ -65,6 +65,7 @@ void calculateFuelAndIgnition(){
 	}else if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF){
 		//DerivedVars->AirFlow = CoreVars->MAF; /* Just fix temperature at appropriate level to provide correct Lambda */
 		/// @todo TODO figure out what the correct "temperature" is to make MAF work correctly!
+		DerivedVars->AirFlow = CoreVars->MAP;
 		airInletTemp = DEGREES_C(20); // Room temperature?
 	}else if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_SD_AN_BLEND){
 		// I suspect more than one value could have been used to calibrate the MAF. The most common seem to be 0c and 20c
@@ -85,7 +86,6 @@ void calculateFuelAndIgnition(){
 	}else{ /* Default to no fuel delivery and error */
 		DerivedVars->AirFlow = 0;
 	}
-
 
 	/* This won't overflow until well past 125C inlet, 1.5 Lambda and fuel as dense as water */
 	DerivedVars->densityAndFuel = (((unsigned long)((unsigned long)airInletTemp * DerivedVars->Lambda) / LAMBDA(1.0)) * fixedConfigs1.engineSettings.densityOfFuelAtSTP) / FUEL_DENSITY(FUEL_DENSITY_UNIT_FACTOR);

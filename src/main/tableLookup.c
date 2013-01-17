@@ -263,7 +263,6 @@ unsigned long lookupTwoDTableUL(twoDTableUL * Table, unsigned short Value, unsig
 		}
 	}
 
-
 	/* Interpolate and return the value */
 	return lowLookupValue + (((signed long)((signed long)highLookupValue - lowLookupValue) * (Value - lowAxisValue))/ (highAxisValue - lowAxisValue));
 }

@@ -67,10 +67,10 @@ void generateDerivedVars(){
 	//if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF){
 		// Back calculate KPA using a MAF sensor. Air Flow is in CC/min, looked up from a 2d table based on the signal from the MAF sensor.
 		unsigned long collectiveFlow = lookupTwoDTableUL((twoDTableUL*)&TablesC.SmallTablesC.MAFVersusVoltageTable, CoreVars->MAF, TWODTABLEUS_LENGTH);
-		unsigned long cylFill = ((collectiveFlow / fixedConfigs1.engineSettings.cylinderCount) / (CoreVars->RPM) / (fixedConfigs1.engineSettings.strokesPerCycle / 2));
-		//DerivedVars->AirFlow = ((cylFill * CYLINDER_FLOW_FACTOR ) / fixedConfigs1.engineSettings.perCylinderVolume);
-		// just log for now
-		KeyUserDebugs.zsp3 = ((cylFill * CYLINDER_FLOW_FACTOR ) / fixedConfigs1.engineSettings.perCylinderVolume);
+		unsigned long cylFill = ((collectiveFlow / fixedConfigs1.engineSettings.cylinderCount) / ((CoreVars->RPM / RPM_FACTOR)
+									/ (fixedConfigs1.engineSettings.strokesPerCycle / 2)));
+		DerivedVars->MAF = (cylFill * CYLINDER_FLOW_FACTOR) / fixedConfigs1.engineSettings.perCylinderVolume;
+		KeyUserDebugs.zsp4 = DerivedVars->MAF;
 	//}
 
 	/* Look up injector dead time with battery voltage */

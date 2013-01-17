@@ -112,7 +112,6 @@ EXTERN void* engineTempEnrichmentTablePercent2Location;
 EXTERN void* dwellVersusRPMTableLocation;
 EXTERN void* dwellVersusRPMTable2Location;
 EXTERN void* blendVersusRPMTableLocation;
-EXTERN void* MAFVersusVoltageTableLocation;
 EXTERN void* blendVersusRPMTable2Location;
 
 /* Small chunks of TablesB here */
@@ -122,6 +121,7 @@ EXTERN void* perCylinderFuelTrimsLocation;
 EXTERN void* perCylinderFuelTrims2Location;
 
 /* Small chunks of TablesC here */
+EXTERN void* MAFVersusVoltageTableLocation;
 
 /* Small chunks of TablesD here */
 

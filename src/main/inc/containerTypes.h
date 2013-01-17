@@ -119,6 +119,7 @@ typedef struct {
 
 	unsigned short Advance;        ///< Ignition advance (scaled degrees / ANGLE_FACTOR = degrees)
 	unsigned short Dwell;          ///< Dwell period, divide by PW_TICK_FACTOR for milli seconds
+	unsigned short MAF;            ///< Temp location for back calculated KPA
 } DerivedVar;
 
 

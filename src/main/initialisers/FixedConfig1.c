@@ -61,7 +61,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(525),
 		secondaryInjectorFlow: CC_PER_MINUTE(0),
-#elif CONFIG == SEANKR1
+#elif CONFIG == SEANKR1_ID
 		perCylinderVolume:  CYLINDER_VOLUME(250),
 		cylinderCount:		4,
 		strokesPerCycle:	4,
@@ -101,7 +101,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		secondaryInjectorFlow: CC_PER_MINUTE(0),
 #endif
 
-#if CONFIG == SEANKR1
+#if CONFIG == SEANKR1_ID
 		stoichiometricAFR:  stoichiometricAFRE85,
 		densityOfFuelAtSTP: densityOfE85
 #else

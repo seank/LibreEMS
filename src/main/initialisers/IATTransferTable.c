@@ -53,7 +53,7 @@ const volatile unsigned short IATTransferTable[1024] LOOKUPD = {
 #elif CONFIG == SEANKLT1_ID
 #include "../data/thermistors/Bosch.h"
 #elif CONFIG == SEANKR1_ID
-#include "../data/thermistors/Denso-2k7Bias.h"
+#include "../data/thermistors/Denso-2k4Bias.h"
 #elif CONFIG == SNOTROCKET_ID
 #include "../data/thermistors/GM-2k4Bias.h"
 #elif CONFIG == SLATER_ID
