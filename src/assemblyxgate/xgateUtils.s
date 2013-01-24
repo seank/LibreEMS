@@ -29,6 +29,8 @@
 include "assemblyxgate/xgate.inc"
 .global xgatePORTPFlip
 .global xgatePORTBFlip
+.global xgatePORTBMaskOn
+.global xgatePORTBMaskOff
 
 xgatePORTPFlip: ;Flip bit 7 at PORTP
 	LDD R2, #PORTP ;load port-p address
@@ -44,8 +46,20 @@ xgatePORTBFlip: ;Flip all bits at PORTB
 	LDD R2, #PORTB ;load port-b address
 	LDB R1, R2, #ZERO_OFFSET ;load data(1 byte) at port-p address to R1
 	COM R3, R1 ;flip the bits
-;	ANDL R1, #0x7F
-;	ANDL R3, #0x80
-;	OR R1, R3, R1
+	STB R3, R2, #0x00 ;write the byte to port-p address
+	JAL R5 ;return
+
+xgatePORTBMaskOn: ;Apply 8-bit mask to port-b preloaded into R4 via OR
+	LDW R2, #PORTB ;load port-b address
+	LDB R1, R2, #ZERO_OFFSET ;load data(1 byte) at port-p address to R1
+	OR  R3, R4, R1
+	STB R3, R2, #0x00 ;write the byte to port-p address
+	JAL R5 ;return
+
+xgatePORTBMaskOff: ;Apply 8-bit mask to port-b preloaded into R4 via AND
+	LDW R2, #PORTB ;load port-b address
+	LDB R1, R2, #ZERO_OFFSET ;load data(1 byte) at port-p address to R1
+	COM R4, R4 ;flip the bits
+	AND R3, R4, R1
 	STB R3, R2, #0x00 ;write the byte to port-p address
 	JAL R5 ;return

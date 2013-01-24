@@ -92,8 +92,10 @@ LDD R2, xgateSchedule
 	;LDD R2, #2
 	;STB R2, R1, #0;
 ;debug code
-;LDD R5, xgatePORTPFlip
-;JAL R5; jump to xgatePORTPFlip
+;LDW R4, EVENT_0_REGISTER_MASK
+;LDW R5, xgatePORTBMaskOn
+;JAL R5
+;end debug code
 	LDD R3, PITCNT1 ;load current metronome value
 	LDD R5, TC0 ;load current TC0 value to factor decoder latency
 	LDW R3, R3, #ZERO_OFFSET
@@ -412,6 +414,10 @@ xgsDoNotSchedule:
 	xgsDone:
 	;clear semaphore
 	CSEM #0
+;debug code
+;LDW R4, EVENT_0_REGISTER_MASK
+;LDW R5, xgatePORTBMaskOff
+;JAL R5
 ;for debugging/testing just branch reguardless
 BRA xgatePITBangLoopCall
 	RTS
