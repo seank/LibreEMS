@@ -95,7 +95,8 @@
 // Convenience wrappers for various non-native units
 #define CC_PER_MINUTE_85(FLOW_RATE)   CC_PER_MINUTE((FLOW_RATE) * (100 / 85.0))
 #define DEGREES_C(TEMPERATURE)        DEGREES_K((TEMPERATURE) + TEMPERATURE_C_TO_K_OFFSET)
-#define GRAMS_PER_SECOND(G_S)         (unsigned long)ROUND(((((G_S * 60) / (double)GRAMS_PER_CC) / (double)CYLINDER_VOLUME_LIMIT) * 65536)) // G/S to cc/min
+//#define GRAMS_PER_SECOND(G_S)         (unsigned long)ROUND(((((G_S * 60) / (double)GRAMS_PER_CC) / (double)CYLINDER_VOLUME_LIMIT) * 65536)) // G/S to cc/min
+#define GRAMS_PER_SECOND(G_S)         (unsigned short)((unsigned long)ROUND(((((G_S * 60) / (double)GRAMS_PER_CC) / (double)CYLINDER_VOLUME_LIMIT) * 65536)) >> 16) // G/S to cc/min 16-bit version
 
 // For table data
 #define IT(TIMING_BTDC)               (unsigned long)ROUND((TIMING_BTDC) * (double)IGNITION_TIMING_FACTOR)
