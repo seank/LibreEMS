@@ -205,11 +205,10 @@ const volatile SmallTables2 SmallTablesBFlashV TUNETABLESDV2 = {
 
 const volatile SmallTables3 SmallTablesCFlashV TUNETABLESDV3 = {
 		MAFVersusVoltageTable: {
-			Axis: ARRAY_OF_16_ADCVOLTAGES,
-			Values: ARRAY_OF_16_GS,
+			Axis: ARRAY_OF_32_ADCVOLTAGES,
+			Values: ARRAY_OF_32_GS,
 		},
 		filler: {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

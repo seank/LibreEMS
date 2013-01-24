@@ -136,7 +136,7 @@
 
 // Make sure people know what they're getting themselves in for
 #ifdef XGATE
-#warning "XGATE is currently not recommended, nor thoroughly tested! Use at your own risk and without support! goo.gl/LCOMR" // Remove this line to build. See http://forum.diyefi.org/viewtopic.php?f=8&t=1700
+//#warning "XGATE is currently not recommended, nor thoroughly tested! Use at your own risk and without support! goo.gl/LCOMR" // Remove this line to build. See http://forum.diyefi.org/viewtopic.php?f=8&t=1700
 #define BUILD_CONFIG PRELIM_CONFIG "-XGATE"
 
 #else

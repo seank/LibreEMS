@@ -419,7 +419,7 @@ unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* detai
 
 	/* TablesC small tables */
 	case MAFVersusVoltageTableLocationID:
-		details->size = sizeof(twoDTableUL);
+		details->size = sizeof(twoDTableUSMAF);
 		details->RAMPage = RPAGE_TUNE_ONE;
 		details->FlashPage = TUNETABLES_PPAGE;
 		details->RAMAddress = (void*) &TablesC.SmallTablesC.MAFVersusVoltageTable;

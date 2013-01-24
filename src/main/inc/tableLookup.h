@@ -50,6 +50,7 @@
 
 
 EXTERN unsigned short lookupTwoDTableUS(twoDTableUS *, unsigned short) TEXT;
+EXTERN unsigned short lookupTwoDTableUSV(twoDTableUSMAF *, unsigned short, unsigned char) TEXT;
 EXTERN unsigned long lookupTwoDTableUL(twoDTableUL *, unsigned short, unsigned char) TEXT;
 EXTERN unsigned short lookupMainTable(unsigned short, unsigned short, unsigned short) TEXT;
 

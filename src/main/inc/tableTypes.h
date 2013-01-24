@@ -49,6 +49,13 @@ typedef struct {
 	unsigned short Values[TWODTABLEUS_LENGTH];
 } twoDTableUS;
 
+#define TWODTABLEUS_MAF_LENGTH	32
+/// This block used for 2d MAF
+typedef struct {
+	unsigned short Axis[TWODTABLEUS_MAF_LENGTH];
+	unsigned short Values[TWODTABLEUS_MAF_LENGTH];
+} twoDTableUSMAF;
+
 /// This block used for various curves
 typedef struct {
 	unsigned short Axis[TWODTABLEUS_LENGTH];

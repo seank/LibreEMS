@@ -112,10 +112,10 @@ typedef struct {
 } SmallTables2;
 
 
-#define SMALL_TABLES_3_FILLER_SIZE (flashSectorSize - (sizeof(twoDTableUL) * 1)) // Update this if adding a table!
+#define SMALL_TABLES_3_FILLER_SIZE (flashSectorSize - (sizeof(twoDTableUSMAF))) // Update this if adding a table!
 /** @copydoc SmallTables1 */
 typedef struct {
-	twoDTableUL MAFVersusVoltageTable;			  ///< MAF table location
+	twoDTableUSMAF MAFVersusVoltageTable;			  ///< MAF table location
 	unsigned char filler[SMALL_TABLES_3_FILLER_SIZE]; ///< Padding data.
 } SmallTables3;
 

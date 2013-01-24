@@ -149,8 +149,8 @@
 // Grams per second based MAF table data //TODO move to table data dir
 #define ARRAY_OF_16_ADCVOLTAGES   { AV(1.37),  AV(1.78),   AV(1.91),  AV(2.03),  AV(2.19),   AV(2.35),   AV(2.47),   AV(2.61),    AV(2.79),   AV(2.96),   AV(3.23),   AV(3.50),     AV(3.76),    AV(4.01),     AV(4.5),    AV(5.0)}
 #define ARRAY_OF_16_GS	           { GS(0), GS(1.096), GS(3.1495), GS(5.203), GS(8.918), GS(12.633), GS(17.744), GS(22.855), GS(32.8765), GS(42.898), GS(67.256), GS(91.614), GS(128.3455), GS(165.077), GS(230.000), GS(280.00)}
-//#define ARRAY_OF_16_GS	           { GS(300.1025), GS(300.1025), GS(300.1025), GS(300.1025), GS(300.1025), GS(300.1025), GS(300.1025), GS(300.1025), GS(300.1025), GS(300.1025 * 2), GS(300.1025 * 2), GS(300.1025 * 2), GS(300.1025 * 2), GS(300.1025 * 2), GS(300.000), GS(300.00)}
-//#define ARRAY_OF_16_GS	           {    0xFFFFFFFF, 0xEEEEEEEE, 0xDDDDDDDD, 0xCCCCCCCC, 0xBBBBBBBB, 0xAAAAAAAA, sizeof(twoDTableUL), GS(22.855), GS(32.8765), GS(42.898), GS(67.256), GS(91.614), GS(128.3455), GS(165.077), GS(230.000), GS(280.00)}
+#define ARRAY_OF_32_ADCVOLTAGES   { AV(1.37),  AV(1.45),  AV(1.58),  AV(1.66),   AV(1.78),  AV(1.845),   AV(1.91),  AV(1.97),  AV(2.03),  AV(2.11),  AV(2.19),   AV(2.27),   AV(2.35),   AV(2.41),   AV(2.47),   AV(2.54),   AV(2.61),   AV(2.70),    AV(2.79),  AV(2.87),   AV(2.96),   AV(3.10),   AV(3.23),   AV(3.37),   AV(3.50),    AV(3.66),    AV(3.76),    AV(3.89),    AV(4.01),    AV(4.25),    AV(4.50),   AV(5.00)}
+#define ARRAY_OF_32_GS	           { GS(0.00), GS(0.548), GS(0.667), GS(0.754),  GS(1.096),  GS(2.123), GS(3.1495), GS(4.176), GS(5.203), GS(7.060), GS(8.918), GS(10.767), GS(12.633), GS(15.189), GS(17.744), GS(20.428), GS(22.855), GS(27.938), GS(32.876), GS(37.949), GS(42.898), GS(55.444), GS(67.256), GS(79.435), GS(91.614), GS(109.672), GS(128.345), GS(146.711), GS(165.077), GS(197.538), GS(230.000), GS(280.00)}
 
 
 #else
