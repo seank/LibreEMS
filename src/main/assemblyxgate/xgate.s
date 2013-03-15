@@ -1232,9 +1232,9 @@ eventsStructStart:
 	eventFlags9: /* a var that contains possobile flags pertaining to this channel*/
     	.word 0
 	eventRegisterAddress9: ;The target register we wish to bang
-    	.word EVENT_8_REGISTER_ADDRESS
+    	.word EVENT_9_REGISTER_ADDRESS
     eventRegisterMask9: ;The mask to apply to the target register when we bang
-    	.word EVENT_8_REGISTER_MASK
+    	.word EVENT_9_REGISTER_MASK
     eventXGSTicks9: ;hold the amount of time that it took to schedule this event
     	.word 0
     eventDelayLatencyMetroStamp9: ;once an event is flagged as APPROACHABLE we need a metronome stamp to calc latency
