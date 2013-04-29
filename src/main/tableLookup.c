@@ -249,7 +249,7 @@ unsigned short lookupTwoDTableUSV(twoDTableUSMAF * Table, unsigned short Value, 
 	unsigned short highLookupValue = Table->Values[highIndex];
 
 	unsigned char Index;
-	for(Index=0;Index<16;Index++){
+	for(Index=0;Index<length;Index++){
 		if(Table->Axis[Index] < Value){
 			lowIndex = Index;
 			lowAxisValue = Table->Axis[Index];
