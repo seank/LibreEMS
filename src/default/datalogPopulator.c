@@ -14,12 +14,12 @@ void populateCustomDatalog(){
 
 	//KeyUserDebugs.zsp3 = Counters.pinScheduledToGoHigh;
 	//KeyUserDebugs.zsp4 = Counters.pinScheduledAlready;
-	KeyUserDebugs.zsp5 = Counters.pinScheduledToSelfSchedule;
-	KeyUserDebugs.zsp6 = Counters.pinScheduledAgainToStayOn;
-	KeyUserDebugs.zsp7 = Counters.pinScheduledToToggleError;
-	KeyUserDebugs.zsp8 = Counters.pinScheduledToDoNothing;
-	KeyUserDebugs.zsp9 = Counters.pinScheduledFromCold;
-	KeyUserDebugs.zsp10 = Counters.pinScheduledWithTimerExtension;
+	//KeyUserDebugs.zsp5 = Counters.pinScheduledToSelfSchedule;
+	//KeyUserDebugs.zsp6 = Counters.pinScheduledAgainToStayOn;
+	//KeyUserDebugs.zsp7 = Counters.pinScheduledToToggleError;
+	//KeyUserDebugs.zsp8 = Counters.pinScheduledToDoNothing;
+	//KeyUserDebugs.zsp9 = Counters.pinScheduledFromCold;
+	//KeyUserDebugs.zsp10 = Counters.pinScheduledWithTimerExtension;
 
 //	// First two schedules contents:
 //	KeyUserDebugs.zsp3 = outputEventPulseWidthsMath[0];
