@@ -107,6 +107,31 @@ void incrementalTests() {
 	return;
 }
 
+void wiringTest() {
+	if (Clocks.millisToTenths % 100 == 0) {
+		unsigned char savedRPage = RPAGE;
+		RPAGE = RPAGE_TUNE_TWO;
+		*xgsInStamp = TC0;
+		*xgsEventsToSch = 1;
+		XGOutputEvents[0].channelID = testCH;
+		XGOutputEvents[0].delay = delay;
+		XGOutputEvents[0].runtime = 0x2FFF;
+		XGSCHEDULE();
+		RPAGE = savedRPage;
+		numRuns++;
+		if (numRuns == 10) {
+			++testCH;
+			if (testCH > 11) {
+				testCH = 0;
+			}
+			numRuns = 0;
+		}
+	}
+
+	return;
+}
+
+
 /**
  * This test will allow you to measure the latency difference between your first and last event
  */
@@ -518,8 +543,9 @@ void stagedInjectionTests() {
 		ATOMIC_END();
 	}
 }
+wiringTest();
 //incrementalTests();
 //metronomeTests();
 //metronomeOverlapTests();
 //schdulerTests();
-stagedInjectionTests();
+//stagedInjectionTests();
