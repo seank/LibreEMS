@@ -58,21 +58,25 @@ void generateDerivedVars(){
 	}else if(fixedConfigs2.algorithmSettings.loadType == LOAD_AAP){ /* Use AAP corrected MAP as load */
 		DerivedVars->LoadMain = ((unsigned long)CoreVars->MAP * CoreVars->AAP) / KPA(100);
 		// TODO add maf calc load option here
-	}else{ /* Default to MAP, but throw error */
-		DerivedVars->LoadMain = CoreVars->MAP;
-	}
-
-
-	/* lookup flow based on MAF */
-	//if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF){
+	}else if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF){
 		// Back calculate KPA using a MAF sensor. Air Flow is in CC/min, looked up from a 2d table based on the signal from the MAF sensor.
 		unsigned long collectiveFlow = lookupTwoDTableUSV((twoDTableUSMAF*)&TablesC.SmallTablesC.MAFVersusVoltageTable, CoreVars->MAF, TWODTABLEUS_MAF_LENGTH);
 		collectiveFlow <<= 16;
 		unsigned long cylFill = ((collectiveFlow / fixedConfigs1.engineSettings.cylinderCount) / ((CoreVars->RPM / RPM_FACTOR)
 									/ (fixedConfigs1.engineSettings.strokesPerCycle / 2)));
-		DerivedVars->MAF = (cylFill * CYLINDER_FLOW_FACTOR) / fixedConfigs1.engineSettings.perCylinderVolume;
-		KeyUserDebugs.zsp4 = DerivedVars->MAF;
-	//}
+		KeyUserDebugs.zsp9 = (cylFill * CYLINDER_FLOW_FACTOR) / fixedConfigs1.engineSettings.perCylinderVolume; //Calculated KPA
+		KeyUserDebugs.zsp5 = lookupTwoDTableUSV((twoDTableUSMAF*)&TablesC.SmallTablesC.MAFVersusVoltageTable, CoreVars->MAF, TWODTABLEUS_MAF_LENGTH);
+		DerivedVars->LoadMain = CoreVars->MAP; // Keep looking up LoadMain via MAP for other uses IE ignition timing
+	}else{ /* Default to MAP, but throw error */
+		DerivedVars->LoadMain = CoreVars->MAP;
+	}
+
+	/* Look up target Lambda with RPM and Load */
+#if CONFIG == SEANKR1_ID //FIXME temp hack until a real lambda table is built
+	DerivedVars->Lambda = LR(0.80); //From what I read E85 makes best power in the low .8s
+#else
+	DerivedVars->Lambda = lookupMainTable(CoreVars->RPM, DerivedVars->LoadMain, LambdaTableLocationID);
+#endif
 
 	/* Look up injector dead time with battery voltage */
 	DerivedVars->IDT = lookupTwoDTableUS((twoDTableUS*)&TablesA.SmallTablesA.injectorDeadTimeTable, CoreVars->BRV);
