@@ -59,16 +59,22 @@ void generateDerivedVars(){
 		DerivedVars->LoadMain = ((unsigned long)CoreVars->MAP * CoreVars->AAP) / KPA(100);
 		// TODO add maf calc load option here
 	}else if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF){
-		// Back calculate KPA using a MAF sensor. Air Flow is in CC/min, looked up from a 2d table based on the signal from the MAF sensor.
+		//For now keep Load based on MAP for other uses, during the fuel calc algorithmType
+		//will catch the MAF mode and use its reading
+		DerivedVars->LoadMain = CoreVars->MAP;
+	}else{ /* Default to MAP, but throw error */
+		DerivedVars->LoadMain = CoreVars->MAP;
+		/* If anyone is listening, let them know something is wrong */
+		sendErrorIfClear(LOAD_NOT_CONFIGURED_CODE); // or maybe queue it?
+	}
+	// Back calculate KPA using a MAF sensor. Air Flow is in CC/min, looked up from a 2d table based on the signal from the MAF sensor.
+	if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF){
 		unsigned long collectiveFlow = lookupTwoDTableUSV((twoDTableUSMAF*)&TablesC.SmallTablesC.MAFVersusVoltageTable, CoreVars->MAF, TWODTABLEUS_MAF_LENGTH);
 		collectiveFlow <<= 16;
 		unsigned long cylFill = ((collectiveFlow / fixedConfigs1.engineSettings.cylinderCount) / ((CoreVars->RPM / RPM_FACTOR)
-									/ (fixedConfigs1.engineSettings.strokesPerCycle / 2)));
+							/ (fixedConfigs1.engineSettings.strokesPerCycle / 2)));
 		KeyUserDebugs.zsp9 = (cylFill * CYLINDER_FLOW_FACTOR) / fixedConfigs1.engineSettings.perCylinderVolume; //Calculated KPA
 		KeyUserDebugs.zsp5 = lookupTwoDTableUSV((twoDTableUSMAF*)&TablesC.SmallTablesC.MAFVersusVoltageTable, CoreVars->MAF, TWODTABLEUS_MAF_LENGTH);
-		DerivedVars->LoadMain = CoreVars->MAP; // Keep looking up LoadMain via MAP for other uses IE ignition timing
-	}else{ /* Default to MAP, but throw error */
-		DerivedVars->LoadMain = CoreVars->MAP;
 	}
 
 	/* Look up target Lambda with RPM and Load */
