@@ -226,11 +226,12 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		numberOfInjectionsPerEngineCycle:            2  // Semi-sequential, for now.
 
 #elif CONFIG == SEANKR1_ID // Firing order 1-2-3-4
-		anglesOfTDC: {ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540), ANGLE(45), ANGLE(90), ANGLE(145), ANGLE(270), ANGLE(315), ANGLE(450), ANGLE(495), ANGLE(630)},
-		outputEventPinNumbers:       {0,1,2,3,5,4,4,4,4,4,4,4}, // COP/CNP ignition only
-		schedulingConfigurationBits: {0,0,0,0,1,1,1,1,1,1,1,1}, // First 4 ign, 8 fuel
+		//anglesOfTDC: {ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540), ANGLE(45), ANGLE(90), ANGLE(145), ANGLE(270), ANGLE(315), ANGLE(450), ANGLE(495), ANGLE(630)},
+		anglesOfTDC: {ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540), ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540), ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540)},
+		outputEventPinNumbers:       {0,1,2,3,5,4,4,4}, // COP/CNP ignition only
+		schedulingConfigurationBits: {0,0,0,0,1,1,1,1}, // First 4 ign, 8 fuel
 		decoderEngineOffset:           ANGLE(0.00), //
-		numberOfConfiguredOutputEvents:          12, // 4 coils 8 injectors
+		numberOfConfiguredOutputEvents:          8, // 4 coils 8 injectors
 		numberOfInjectionsPerEngineCycle:        1  // pin 5 of port-t will be our only fuel reference
 
 #else // Nothing scheduled by default, no sensible default for all possible vehicle setups.
@@ -296,13 +297,8 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 			reenableThreshold: KPA(100)  // Re enable when boost gone all together (force driver to lift)
 		},
 		cutsEnabled:{
-#if CONFIG == SEANKR1_ID
-			InjectionRPM: 0, // Never disable fuel while in piggy-back mode
-			InjOverBoost: 0,
-#else
 			InjectionRPM: 1,
 			IgnitionRPM:  1,
-#endif
 			InjOverBoost: 1,
 			IgnOverBoost: 1,
 			Spare0: 1,
