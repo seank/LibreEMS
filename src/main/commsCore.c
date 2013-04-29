@@ -63,6 +63,7 @@
 unsigned short populateBasicDatalog(){
 	/// @todo TODO setup proper sequence and clock with some sort of differential measurement log to log. insert in front of actual data because these are part of the log itself.
 
+//	KeyUserDebugs.zsp10 = Counters.pinScheduledWithTimerExtension;
 	KeyUserDebugs.coreStatusA = coreStatusA;
 	KeyUserDebugs.clockIn8thsOfAMilli = Clocks.realTimeClockMain;
 	KeyUserDebugs.clockInMilliSeconds = Clocks.realTimeClockMillis;
