@@ -65,7 +65,8 @@ void calculateFuelAndIgnition(){
 	}else if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF){
 		//DerivedVars->AirFlow = CoreVars->MAF; /* Just fix temperature at appropriate level to provide correct Lambda */
 		/// @todo TODO figure out what the correct "temperature" is to make MAF work correctly!
-		DerivedVars->AirFlow = DerivedVars->MAF;
+		DerivedVars->AirFlow = KeyUserDebugs.zsp9;
+		KeyUserDebugs.zsp7 = ((unsigned long)CoreVars->MAP * DerivedVars->VEMain) / VE(100);
 		airInletTemp = DEGREES_C(20); // Room temperature?
 	}else if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_SD_AN_BLEND){
 		// I suspect more than one value could have been used to calibrate the MAF. The most common seem to be 0c and 20c
