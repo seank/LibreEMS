@@ -145,6 +145,7 @@ const volatile fixedConfig2 fixedConfigs2 FIXEDCONF2 = {
 		loadType:      LOAD_MAP,
 #if CONFIG == SEANKR1_ID
 		algorithmType: ALGO_MAF,
+		//algorithmType: ALGO_SPEED_DENSITY,
 #else
 		algorithmType: ALGO_SPEED_DENSITY,
 #endif
