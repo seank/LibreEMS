@@ -111,12 +111,18 @@ void generateCoreVars(){
 	//atomic end
 
 	// Calculate RPM and delta RPM and delta delta RPM from data recorded
-	if(*ticksPerDegree != 0){
+	if(*ticksPerDegree  != 0){
 		CoreVars->RPM = (unsigned short)(degreeTicksPerMinute / *ticksPerDegree);
+		if(RPMWeighted){
+			RPMWeighted = (RPMWeighted + CoreVars->RPM) / 2;
+		}else{
+			RPMWeighted = CoreVars->RPM;
+		}
 	}else{
 		CoreVars->RPM = 0;
+		RPMWeighted = 0;
 	}
-
+	KeyUserDebugs.zsp8 = (unsigned short)RPMWeighted;
 	CoreVars->DRPM = *ticksPerDegree;
 //	unsigned short localDRPM = 0;
 //	unsigned short localDDRPM = 0;

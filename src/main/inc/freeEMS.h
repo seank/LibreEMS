@@ -110,7 +110,7 @@
 /* GLOBAL Variables */
 // TODO change any of these that need it to volatile!!!
 
-
+EXTERN unsigned long RPMWeighted;  //Temp place for RPM averaging, needed for MAF at low RPM
 // temporary test vars
 EXTERN unsigned char portHDebounce;
 

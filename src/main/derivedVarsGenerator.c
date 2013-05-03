@@ -71,7 +71,7 @@ void generateDerivedVars(){
 	if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF){
 		unsigned long collectiveFlow = lookupTwoDTableUSV((twoDTableUSMAF*)&TablesC.SmallTablesC.MAFVersusVoltageTable, CoreVars->MAF, TWODTABLEUS_MAF_LENGTH);
 		collectiveFlow <<= 16;
-		unsigned long cylFill = ((collectiveFlow / fixedConfigs1.engineSettings.cylinderCount) / ((CoreVars->RPM / RPM_FACTOR)
+		unsigned long cylFill = ((collectiveFlow / fixedConfigs1.engineSettings.cylinderCount) / ((RPMWeighted / RPM_FACTOR)
 							/ (fixedConfigs1.engineSettings.strokesPerCycle / 2)));
 		KeyUserDebugs.zsp9 = (cylFill * CYLINDER_FLOW_FACTOR) / fixedConfigs1.engineSettings.perCylinderVolume; //Calculated KPA
 		KeyUserDebugs.zsp5 = lookupTwoDTableUSV((twoDTableUSMAF*)&TablesC.SmallTablesC.MAFVersusVoltageTable, CoreVars->MAF, TWODTABLEUS_MAF_LENGTH);
