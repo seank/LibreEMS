@@ -64,9 +64,8 @@ void generateDerivedVars(){
 		DerivedVars->LoadMain = CoreVars->MAP;
 	}else{ /* Default to MAP, but throw error */
 		DerivedVars->LoadMain = CoreVars->MAP;
-		/* If anyone is listening, let them know something is wrong */
-		sendErrorIfClear(LOAD_NOT_CONFIGURED_CODE); // or maybe queue it?
 	}
+
 	// Back calculate KPA using a MAF sensor. Air Flow is in CC/min, looked up from a 2d table based on the signal from the MAF sensor.
 	if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF){
 		unsigned long collectiveFlow = lookupTwoDTableUSV((twoDTableUSMAF*)&TablesC.SmallTablesC.MAFVersusVoltageTable, CoreVars->MAF, TWODTABLEUS_MAF_LENGTH);

@@ -94,15 +94,19 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 		}
 	}
 #ifdef XGATE
-//TODO add priming code to xgate outputs
-//	unsigned char ouputChannel;
-//	for(ouputChannel = 0; ouputChannel< NUMBER_OF_OUTPUT_CHANNELS; ouputChannel++){
-//		if(activeFuelChannels[ouputChannel] < MAX_NUMBER_OF_OUTPUT_EVENTS){
-//			outputEventPulseWidthsMath[activeFuelChannels[ouputChannel]] = primingPulseWidth;
-//			outputEventDelayFinalPeriod[activeFuelChannels[ouputChannel]] = SHORTHALF;
-//			schedulePortTPin(activeFuelChannels[ouputChannel], timeStamp);
-//		}
-//	}
+	//Not an optimal way to schedule these IMO, but it should work fine.
+	unsigned char outputEventNumber;
+	for(outputEventNumber = 0; outputEventNumber < fixedConfigs1.schedulingSettings.numberOfConfiguredOutputEvents; outputEventNumber++){
+		if(fixedConfigs1.schedulingSettings.schedulingConfigurationBits[outputEventNumber] == 1){
+			*xgsEventsToSch = 1;
+			*xgsInStamp = timeStamp.timeShorts[1];
+			XGOutputEvents[0].channelID = outputEventNumber;
+			XGOutputEvents[0].delay = outputEventDelayTotalPeriod[outputEventNumber];
+			XGOutputEvents[0].runtime = primingPulseWidth;
+			XGSCHEDULE();
+			sleep(1);
+		}
+	}
 #endif
 	// Run forever repeating.
 	while(TRUE){
