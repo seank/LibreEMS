@@ -85,26 +85,31 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 	}else{
 		timeStamp.timeShorts[0] = timerExtensionClock;
 	}
-	unsigned char outputPin;
-	for(outputPin = 0; outputPin< NUMBER_OF_OUTPUT_PINS; outputPin++){
-		if(activeFuelChannels[outputPin] < MAX_NUMBER_OF_OUTPUT_EVENTS){
-			outputEventPulseWidthsMath[activeFuelChannels[outputPin]] = primingPulseWidth;
-			outputEventDelayFinalPeriod[activeFuelChannels[outputPin]] = SHORTHALF;
-			schedulePortTPin(activeFuelChannels[outputPin], timeStamp);
-		}
-	}
+
 #ifdef XGATE
 	//Not an optimal way to schedule these IMO, but it should work fine.
+	unsigned char savedRPage = RPAGE;
+	RPAGE = RPAGE_TUNE_TWO;
 	unsigned char outputEventNumber;
 	for(outputEventNumber = 0; outputEventNumber < fixedConfigs1.schedulingSettings.numberOfConfiguredOutputEvents; outputEventNumber++){
 		if(fixedConfigs1.schedulingSettings.schedulingConfigurationBits[outputEventNumber] == 1){
 			*xgsEventsToSch = 1;
 			*xgsInStamp = timeStamp.timeShorts[1];
 			XGOutputEvents[0].channelID = outputEventNumber;
-			XGOutputEvents[0].delay = outputEventDelayTotalPeriod[outputEventNumber];
+			XGOutputEvents[0].delay = 0x200; //you can actually adjust this so all the injectors get primed at the same time.
 			XGOutputEvents[0].runtime = primingPulseWidth;
 			XGSCHEDULE();
 			sleep(1);
+		}
+	}
+	RPAGE = savedRPage;
+#else
+	unsigned char outputPin;
+	for (outputPin = 0; outputPin < NUMBER_OF_OUTPUT_PINS; outputPin++) {
+		if (activeFuelChannels[outputPin] < MAX_NUMBER_OF_OUTPUT_EVENTS) {
+			outputEventPulseWidthsMath[activeFuelChannels[outputPin]] =	primingPulseWidth;
+			outputEventDelayFinalPeriod[activeFuelChannels[outputPin]] = SHORTHALF;
+			schedulePortTPin(activeFuelChannels[outputPin], timeStamp);
 		}
 	}
 #endif
