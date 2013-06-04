@@ -122,7 +122,7 @@ void generateCoreVars(){
 		CoreVars->RPM = 0;
 		RPMWeighted = 0;
 	}
-	KeyUserDebugs.zsp8 = (unsigned short)RPMWeighted;
+//	KeyUserDebugs.zsp8 = (unsigned short)RPMWeighted;
 	CoreVars->DRPM = *ticksPerDegree;
 //	unsigned short localDRPM = 0;
 //	unsigned short localDDRPM = 0;

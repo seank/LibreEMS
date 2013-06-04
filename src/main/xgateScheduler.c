@@ -85,7 +85,7 @@ unsigned short newPrimaryPulsewidth;
 *xgsInStamp = timeStamp.timeShorts[1]; // This should be the value of TC0 at the time the decoder ISR started.
 /* check our duty-cycle, make sure it's that of a fuel channel */
 if(dutyCycle > STAGED_INJECTION_THRESHOLD && CONFIG == SEANKR1_ID && fixedConfigs1.schedulingSettings.schedulingConfigurationBits[outputEventNumber]){
-	KeyUserDebugs.zsp6 = dutyCycle;
+	//KeyUserDebugs.zsp6 = dutyCycle;
 	/* this formula pushes any *extra PW onto the second corresponding injector */
 	calculatedPW -= DerivedVars->IDT; /* remove any section of the PW that is not part of the fuel calc */
 	newPrimaryPulsewidth = (unsigned short)((tickPerEngineCycle * STAGED_INJECTION_THRESHOLD ) / FLOW_SCALE_FACTOR);
@@ -112,13 +112,13 @@ if(dutyCycle > STAGED_INJECTION_THRESHOLD && CONFIG == SEANKR1_ID && fixedConfig
 	XGOutputEvents[1].delay = outputEventDelayTotalPeriod[outputEventNumber];
 	XGOutputEvents[1].runtime = secondaryPulsewidthToUseForThisChannel;
 	secondaryDutyCycle = (CoreVars->RPM * (secondaryPulsewidthToUseForThisChannel * 10UL) / INVERSE_TICK_VALUE) / 2400UL; //in percent for engines running in sequential mode
-	KeyUserDebugs.zsp4 = secondaryDutyCycle;
+	//KeyUserDebugs.zsp4 = secondaryDutyCycle;
 	/* if we cant deliver the required fuel, don't deliver anything */
 	if(SECONDARY_MAX_DUTY_CYCLE > secondaryDutyCycle){
 		XGSCHEDULE();
 	} else {
-		KeyUserDebugs.zsp6 = 0;
-		KeyUserDebugs.zsp4 = 0;
+	//	KeyUserDebugs.zsp6 = 0;
+	//	KeyUserDebugs.zsp4 = 0;
 	}
 } else{
 	/* single injector or igntion */
@@ -132,8 +132,8 @@ if(dutyCycle > STAGED_INJECTION_THRESHOLD && CONFIG == SEANKR1_ID && fixedConfig
 		XGOutputEvents[0].runtime = calculatedPW;
 		XGSCHEDULE();
 	} else {
-		KeyUserDebugs.zsp6 = 0xFFFF;
-		KeyUserDebugs.zsp4 = 0xFFFF;
+	//	KeyUserDebugs.zsp6 = 0xFFFF;
+	//	KeyUserDebugs.zsp4 = 0xFFFF;
 	}
 }
 
