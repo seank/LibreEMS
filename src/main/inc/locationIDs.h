@@ -87,8 +87,6 @@
 /// TODO @todo Claim some RAM back for XGATE use?
 /* TablesB */
 /* TablesC */
-#define MAFVersusVoltageTableLocationID                0x010E
-
 /* TablesD */
 
 /* Tunable blocks */
