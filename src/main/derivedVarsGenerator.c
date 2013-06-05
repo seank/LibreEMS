@@ -73,7 +73,7 @@ void generateDerivedVars(){
 		unsigned long cylFill = ((collectiveFlow / fixedConfigs1.engineSettings.cylinderCount) / ((RPMWeighted / RPM_FACTOR)
 							/ (fixedConfigs1.engineSettings.strokesPerCycle / 2)));
 		KeyUserDebugs.zsp9 = (cylFill * CYLINDER_FLOW_FACTOR) / fixedConfigs1.engineSettings.perCylinderVolume; //Calculated KPA
-		KeyUserDebugs.zsp8 = lookupTwoDTableUSV((twoDTableUSMAF*)&TablesC.SmallTablesC.MAFVersusVoltageTable, CoreVars->MAF, TWODTABLEUS_MAF_LENGTH);
+		//KeyUserDebugs.zsp8 = lookupTwoDTableUSV((twoDTableUSMAF*)&TablesC.SmallTablesC.MAFVersusVoltageTable, CoreVars->MAF, TWODTABLEUS_MAF_LENGTH);
 	}
 
 	/* Look up target Lambda with RPM and Load */
