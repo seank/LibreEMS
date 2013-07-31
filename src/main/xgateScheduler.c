@@ -41,31 +41,41 @@
 #include "inc/utils.h"
 #include "inc/interrupts.h"
 
-#define OFFSET	0x1EUL // number of ticks to adjust by, this is just for testing
+/* debug flags */
+#define PRIMARY_DC_EXCEEDED		0x01
+#define SECONDARY_DC_EXCEEDED	0x02
+#define XGATE_SCHEDULER_OUTRUN 0x04
 
+/* debug macros */
+#define SET_DEBUG_FLAG(VARIABLE, BIT)		(KeyUserDebugs.VARIABLE |= BIT)
+#define UNSET_DEBUG_FLAG(VARIABLE, BIT)		(KeyUserDebugs.VARIABLE &= ~(BIT))
+
+/* testing values */
+#define OFFSET	0x1EUL
 
 /* temp *safety semaphore, to keep me from chasing my tail while testing, just in case */
 unsigned char i = 0;
 do {
 	XGSEM = 0x0101;
 	if (i) {
-
-		//__asm__("wai");  /* put the processor to sleep, so we know something bad could have happened if we continue, TODO see if there is a flag for global shutdown */
+		SET_DEBUG_FLAG(zsp8, XGATE_SCHEDULER_OUTRUN);
 	}
 	i++;
 } while (!(XGSEM & 0x01));
 XGSEM = 0x0100;
+UNSET_DEBUG_FLAG(zsp8, XGATE_SCHEDULER_OUTRUN);
 
 unsigned char savedRPage = RPAGE;
 RPAGE = RPAGE_TUNE_TWO;
 
 /* The following #if block contains code that performs staged injection based on duty-cycle parameters that you set below.
- * This code has been bench-tested but not throughly run though the ringer. There are *limitations to ranges and percentages.
- * As always, test with YOUR parameters BEFORE ever running any engine with it. -SK */
+ * This code has been bench-tested, run on a street-bike engine but not throughly run though the ringer. There are *limitations
+ * to ranges and percentages. As always, test with YOUR parameters BEFORE ever running any engine with it. -SK */
 #if (CONFIG == SEANKR1_ID) || (CONFIG == SEANKLT1_ID)
 
-/* staged config settings */
-/* max duty cycle takes a bit of thought in some situations(high RPM) IE dont forget you need *enough dead-time to cover injector dead-time */
+/* staged config settings -
+ * max duty cycle takes a bit of thought in some situations(high RPM) IE don't forget you need *enough dead-time to cover
+ * injector dead-time or you may experience flutter. */
 #define STAGED_INJECTION_THRESHOLD	8500UL /* duty cycle in 0.01 percent to start staging injection */
 #define SECONDARY_MAX_DUTY_CYCLE	8500UL /* max duty cycle allowed on the second set before cutting all fuel */
 #define STAGED_RPM_THRESHOLD		5000  /* keep this reasonable since variables may over flow at really slow speeds */
@@ -75,12 +85,9 @@ RPAGE = RPAGE_TUNE_TWO;
 /* factors */
 #define FLOW_SCALE_FACTOR			10000UL /* .01 % */
 #define DEGRESS_PERCYCLE_FACTOR		72UL	/* 720/10 */
-#define FLOW_DIFFERENCE				(((PRIMARY_INJECTOR_FLOW * FLOW_SCALE_FACTOR) / (SECONDARY_INJECTOR_FLOW) * PRIMARY_INJECTOR_FLOW) / FLOW_SCALE_FACTOR) /* difference of flow in % */
-#define INVERSE_TICK_VALUE			125UL /* inverse of .8 */
-
-/* debug flags */
-#define PRIMARY_DC_EXCEEDED		0x01
-#define SECONDARY_DC_EXCEEDED	0x02
+#define FLOW_DIFFERENCE				(((PRIMARY_INJECTOR_FLOW * FLOW_SCALE_FACTOR) / (SECONDARY_INJECTOR_FLOW) \
+										* PRIMARY_INJECTOR_FLOW) / FLOW_SCALE_FACTOR) /* difference of flow in % */
+#define INVERSE_TICK_VALUE			125UL /* inverse of .8 x 10 */
 
 unsigned short calculatedPW = outputEventPulseWidthsMath[outputEventNumber];
 //unsigned short dutyCycle = (CoreVars->RPM * (calculatedPW * 10UL) / INVERSE_TICK_VALUE) / 2400UL; //in percent for engines running in sequential mode
