@@ -212,9 +212,8 @@
 /*-----------------------------------------CONFIG-------------------------------------------/* 
  	/* Constants */
 ;.equ NUMBER_OF_EVENT_STRUCTURES, 0x24 /* number of events we have defined in memory */
-;.equ NUMBER_OF_EVENT_STRUCTURES, 0x10 /* number of events we have defined in memory */
-;.equ NUMBER_OF_EVENT_STRUCTURES, 0x08 /* number of events we have defined in memory */
-.equ NUMBER_OF_EVENT_STRUCTURES, 0x0C /* number of events we have defined in memory, R1 has 12 */
+;.equ NUMBER_OF_EVENT_STRUCTURES, 0x0C /* number of events we are using, R1 has 12 */
+.equ  NUMBER_OF_EVENT_STRUCTURES, 0x18 /* Since we can now control what channels we want in c-config, make this match MAX_NUMBER_OF_OUTPUT_EVENTS */
 .equ EVENT_STRUCTURE_SIZE, 0x16 /* 22 bytes or 11 words*/
 .equ MAX_NUMBER_OF_PARAMETERS, 0x06 /* 6 parameters can be loaded by the scheduler in one shot */
 .equ PARAMETER_STRUCTURE_SIZE, 0x0C /* 12 bytes or 6 words */

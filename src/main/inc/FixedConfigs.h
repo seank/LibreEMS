@@ -141,6 +141,7 @@ typedef struct {
 	unsigned short anglesOfTDC[MAX_NUMBER_OF_OUTPUT_EVENTS];                ///< The effective TDC angle of the event in question.
 	unsigned char outputEventPinNumbers[MAX_NUMBER_OF_OUTPUT_EVENTS];       ///< Which of the 6 pins should be associated with this event
 	unsigned char schedulingConfigurationBits[MAX_NUMBER_OF_OUTPUT_EVENTS]; ///< 0 = ignition, 1 = injection
+	unsigned char xgateOutputChannel[MAX_NUMBER_OF_OUTPUT_EVENTS];          ///< The corresponding xgate channel you want to tie this to
 	unsigned short decoderEngineOffset;
 	/**<
 	 * Add decoderEngineOffset to code degrees to find 0/TDC for cyl/output 1

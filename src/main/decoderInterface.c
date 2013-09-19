@@ -95,74 +95,79 @@ void resetToNonRunningState(unsigned char uniqueLossID){
  */
 void schedulePortTPin(unsigned char outputEventNumber, LongTime timeStamp){
 	unsigned char pin = fixedConfigs1.schedulingSettings.outputEventPinNumbers[outputEventNumber];
-	unsigned short postReferenceEventDelay = 0;
-	if(skipEventFlags & (1UL << outputEventNumber)){
-		postReferenceEventDelay = decoderMaxCodeTime;
-		skipEventFlags &= ~(1UL << outputEventNumber); // Clear the flag
-	}else{
-		postReferenceEventDelay = outputEventDelayFinalPeriod[outputEventNumber];
-	}
-	// determine the long and short start times
-	unsigned short startTime = timeStamp.timeShorts[1] + postReferenceEventDelay;
-	// remove this temporarily too, no need for it without the later conditional code
-	unsigned long startTimeLong = timeStamp.timeLong + postReferenceEventDelay;
+	/* If the pin number is greater than the number of physical pins then this is an xgate only channel */
+#define NUMBER_OF_OUTPUT_PINS 6 // FIXME duplicated in main.c
+	if (pin < NUMBER_OF_OUTPUT_PINS) {
+		unsigned short postReferenceEventDelay = 0;
+		if (skipEventFlags & (1UL << outputEventNumber)) {
+			postReferenceEventDelay = decoderMaxCodeTime;
+			skipEventFlags &= ~(1UL << outputEventNumber); // Clear the flag
+		} else {
+			postReferenceEventDelay = outputEventDelayFinalPeriod[outputEventNumber];
+		}
+		// determine the long and short start times
+		unsigned short startTime = timeStamp.timeShorts[1] + postReferenceEventDelay;
+		// remove this temporarily too, no need for it without the later conditional code
+		unsigned long startTimeLong = timeStamp.timeLong + postReferenceEventDelay;
 
-	/// @todo TODO Make this more understandable as right now it is difficult to grok.
-	// determine whether or not to reschedule or self schedule assuming pin is currently scheduled
-	unsigned long diff = (injectorMainEndTimes[pin] + injectorSwitchOffCodeTime) - startTimeLong;
+		/// @todo TODO Make this more understandable as right now it is difficult to grok.
+		// determine whether or not to reschedule or self schedule assuming pin is currently scheduled
+		unsigned long diff = (injectorMainEndTimes[pin] + injectorSwitchOffCodeTime) - startTimeLong;
 #define newStartIsAfterOutputEndTimeAndCanSelfSet (diff > LONGHALF)
-// http://forum.diyefi.org/viewtopic.php?f=8&t=57&p=861#p861
+		// http://forum.diyefi.org/viewtopic.php?f=8&t=57&p=861#p861
 
-/*
-	fresh code again, five states, 6 possible behaviours:
+		/*
+		 fresh code again, five states, 6 possible behaviours:
 
-	not enabled - sched!!! always
-	enabled and low, ready to turn on - if too close, do nothing, or if far enough away, resched
-	enabled and high, ready to turn off - if too close, resched to turn on, if far enough away, self sched
-*/
+		 not enabled - sched!!! always
+		 enabled and low, ready to turn on - if too close, do nothing, or if far enough away, resched
+		 enabled and high, ready to turn off - if too close, resched to turn on, if far enough away, self sched
+		 */
 
-	// Is it enabled and about to do *something*?
-	if(TIE & injectorMainOnMasks[pin]){
-		// If configured to do something specific
-		if(*injectorMainControlRegisters[pin] & injectorMainActiveMasks[pin]){
-			// If that something is go high
-			if(*injectorMainControlRegisters[pin] & injectorMainGoHighMasks[pin]){
-				// GO HIGH SHOULD DO NOTHING CEPT COUNTER
-				// if too close, do nothing, or if far enough away, resched
-				// for now just always do nothing as it's going to fire, and whatever configured got it close enough...
-				Counters.pinScheduledAlready++;
-			}else{ // Otherwise it's go low
-				// if too close, resched to turn, ie, stay on... , if far enough away, self sched
-				if(newStartIsAfterOutputEndTimeAndCanSelfSet){
-					// self sched
-					injectorMainStartOffsetHolding[pin] = startTime - *injectorMainTimeRegisters[pin];
-					outputEventPulseWidthsHolding[pin] = outputEventPulseWidthsMath[outputEventNumber];
-					outputEventExtendNumberOfRepeatsHolding[pin] = outputEventExtendNumberOfRepeats[outputEventNumber];
-					outputEventExtendRepeatPeriodHolding[pin] = outputEventExtendRepeatPeriod[outputEventNumber];
-					outputEventDelayFinalPeriodHolding[pin] = outputEventDelayFinalPeriod[outputEventNumber];
-					selfSetTimer |= injectorMainOnMasks[pin]; // setup a bit to let the timer interrupt know to set its own new start from a var
-					Counters.pinScheduledToSelfSchedule++;
-				}else{
-					SCHEDULE_ONE_ECT_OUTPUT();
-					Counters.pinScheduledAgainToStayOn++;
+		// Is it enabled and about to do *something*?
+		if (TIE & injectorMainOnMasks[pin]) {
+			// If configured to do something specific
+			if (*injectorMainControlRegisters[pin] & injectorMainActiveMasks[pin]) {
+				// If that something is go high
+				if (*injectorMainControlRegisters[pin] & injectorMainGoHighMasks[pin]) {
+					// GO HIGH SHOULD DO NOTHING CEPT COUNTER
+					// if too close, do nothing, or if far enough away, resched
+					// for now just always do nothing as it's going to fire, and whatever configured got it close enough...
+					Counters.pinScheduledAlready++;
+				} else { // Otherwise it's go low
+						 // if too close, resched to turn, ie, stay on... , if far enough away, self sched
+					if (newStartIsAfterOutputEndTimeAndCanSelfSet) {
+						// self sched
+						injectorMainStartOffsetHolding[pin] = startTime - *injectorMainTimeRegisters[pin];
+						outputEventPulseWidthsHolding[pin] = outputEventPulseWidthsMath[outputEventNumber];
+						outputEventExtendNumberOfRepeatsHolding[pin] = outputEventExtendNumberOfRepeats[outputEventNumber];
+						outputEventExtendRepeatPeriodHolding[pin] = outputEventExtendRepeatPeriod[outputEventNumber];
+						outputEventDelayFinalPeriodHolding[pin] = outputEventDelayFinalPeriod[outputEventNumber];
+						selfSetTimer |= injectorMainOnMasks[pin]; // setup a bit to let the timer interrupt know to set its own new start from a var
+						Counters.pinScheduledToSelfSchedule++;
+					} else {
+						SCHEDULE_ONE_ECT_OUTPUT();
+						Counters.pinScheduledAgainToStayOn++;
+					}
+				}
+			} else { // Configured to do nothing, or toggle
+				if (*injectorMainControlRegisters[pin] & injectorMainGoHighMasks[pin]) {
+					// TOGGLE SHOULD EARN SOME SORT OF ERROR CONDITION/COUNTER
+					Counters.pinScheduledToToggleError++;
+				} else {
+					// DO NOTHING SHOULD DO THE SAME AS GO HIGH
+					// ie, do nothing
+					// if too close, do nothing, or if far enough away, resched
+					// for now just always do nothing as it's going to fire, and whatever configured got it close enough...
+					Counters.pinScheduledToDoNothing++;
 				}
 			}
-		}else{ // Configured to do nothing, or toggle
-			if(*injectorMainControlRegisters[pin] & injectorMainGoHighMasks[pin]){
-				// TOGGLE SHOULD EARN SOME SORT OF ERROR CONDITION/COUNTER
-				Counters.pinScheduledToToggleError++;
-			}else{
-				// DO NOTHING SHOULD DO THE SAME AS GO HIGH
-				// ie, do nothing
-				// if too close, do nothing, or if far enough away, resched
-				// for now just always do nothing as it's going to fire, and whatever configured got it close enough...
-				Counters.pinScheduledToDoNothing++;
-			}
+		} else { // not enabled, schedule as normal
+			SCHEDULE_ONE_ECT_OUTPUT();
+			Counters.pinScheduledFromCold++;
 		}
-	}else{ // not enabled, schedule as normal
-		SCHEDULE_ONE_ECT_OUTPUT();
-		Counters.pinScheduledFromCold++;
 	}
+
 
 #ifdef XGATE // This has to be here because the timing of the ECT stuff is critical and it must run first.
 #include "xgateScheduler.c"

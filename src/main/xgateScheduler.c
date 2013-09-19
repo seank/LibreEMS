@@ -44,7 +44,7 @@
 /* debug flags */
 #define PRIMARY_DC_EXCEEDED		0x01
 #define SECONDARY_DC_EXCEEDED	0x02
-#define XGATE_SCHEDULER_OUTRUN 0x04
+#define XGATE_SCHEDULER_OUTRUN  0x04
 
 /* debug macros */
 #define SET_DEBUG_FLAG(VARIABLE, BIT)		(KeyUserDebugs.VARIABLE |= BIT)
@@ -52,6 +52,10 @@
 
 /* testing values */
 #define OFFSET	0x1EUL
+
+unsigned char xgateOutputChannel = fixedConfigs1.schedulingSettings.xgateOutputChannel[outputEventNumber];
+
+if(xgateOutputChannel != 0xFF){
 
 /* temp *safety semaphore, to keep me from chasing my tail while testing, just in case */
 unsigned char i = 0;
@@ -89,6 +93,8 @@ RPAGE = RPAGE_TUNE_TWO;
 										* PRIMARY_INJECTOR_FLOW) / FLOW_SCALE_FACTOR) /* difference of flow in % */
 #define INVERSE_TICK_VALUE			125UL /* inverse of .8 x 10 */
 
+
+static unsigned char numOfEventsSinceStartOfStaging = 0; //debug var for staged injection
 unsigned short calculatedPW = outputEventPulseWidthsMath[outputEventNumber];
 //unsigned short dutyCycle = (CoreVars->RPM * (calculatedPW * 10UL) / INVERSE_TICK_VALUE) / 2400UL; //in percent for engines running in sequential mode
 unsigned short dutyCycle = ((CoreVars->RPM / 2) * (calculatedPW * 5UL) / INVERSE_TICK_VALUE) / 600UL; //in percent for engines running in sequential mode
@@ -121,11 +127,11 @@ if(fixedConfigs1.schedulingSettings.schedulingConfigurationBits[outputEventNumbe
 		//	}
 		/* schedule two events for XGS to schedule */
 		*xgsEventsToSch = 2;
-		XGOutputEvents[0].channelID = outputEventNumber;
+		XGOutputEvents[0].channelID = xgateOutputChannel;
 		XGOutputEvents[0].delay = outputEventDelayTotalPeriod[outputEventNumber];
 		XGOutputEvents[0].runtime = newPrimaryPulsewidth;
 		/* set second injection PW */
-		XGOutputEvents[1].channelID = outputEventNumber + SECONDARY_INJECTOR_OFFSET;
+		XGOutputEvents[1].channelID = xgateOutputChannel + SECONDARY_INJECTOR_OFFSET;
 		XGOutputEvents[1].delay = outputEventDelayTotalPeriod[outputEventNumber];
 		XGOutputEvents[1].runtime = secondaryPulsewidthToUseForThisChannel;
 		secondaryDutyCycle = ((CoreVars->RPM / 2) * (calculatedPW * 5UL) / INVERSE_TICK_VALUE) / 600UL; //in percent for engines running in sequential mode
@@ -142,7 +148,7 @@ if(fixedConfigs1.schedulingSettings.schedulingConfigurationBits[outputEventNumbe
 		/* single injector event */
 		numOfEventsSinceStartOfStaging = 0;
 		*xgsEventsToSch = 1;
-		XGOutputEvents[0].channelID = outputEventNumber;
+		XGOutputEvents[0].channelID = xgateOutputChannel;
 		XGOutputEvents[0].delay = outputEventDelayTotalPeriod[outputEventNumber];
 		XGOutputEvents[0].runtime = calculatedPW;
 		XGSCHEDULE();
@@ -151,7 +157,7 @@ if(fixedConfigs1.schedulingSettings.schedulingConfigurationBits[outputEventNumbe
 } else {
 	/* Just schedule as normal */
 	*xgsEventsToSch = 1;
-	XGOutputEvents[0].channelID = outputEventNumber;
+	XGOutputEvents[0].channelID = xgateOutputChannel;
 	XGOutputEvents[0].delay = outputEventDelayTotalPeriod[outputEventNumber];
 	XGOutputEvents[0].runtime = outputEventPulseWidthsMath[outputEventNumber];
 	XGSCHEDULE();
@@ -161,7 +167,7 @@ if(fixedConfigs1.schedulingSettings.schedulingConfigurationBits[outputEventNumbe
 /* Business as usual */
 *xgsInStamp = timeStamp.timeShorts[1]; // This should be the value of TC0 at the time the decoder ISR started.
 *xgsEventsToSch = 1;
-XGOutputEvents[0].channelID = outputEventNumber;
+XGOutputEvents[0].channelID = xgateOutputChannel;
 XGOutputEvents[0].delay = outputEventDelayTotalPeriod[outputEventNumber];
 XGOutputEvents[0].runtime = outputEventPulseWidthsMath[outputEventNumber];
 XGSCHEDULE();
@@ -169,3 +175,4 @@ XGSCHEDULE();
 
 RPAGE = savedRPage;
 
+}
