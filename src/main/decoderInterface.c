@@ -40,9 +40,6 @@
 #include "inc/decoderInterface.h"
 
 
-static unsigned char numOfEventsSinceStartOfStaging = 0; //debug var for staged injection
-
-
 /** @brief Reset key state
  *
  * Reset all important variables to their non-running state.
