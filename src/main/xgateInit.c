@@ -52,6 +52,10 @@ void initXgate(){
 	//TODO set RAM protection
 	// we can't use the symbols for the memcpy part because the symbols need to contain xgate relevant values
 	memcpy(START_OF_RAM_WINDOW, START_OF_FLASH_WINDOW, XGATE_RAM_ALLOCATION_SIZE);
+	/* TODO again test symbol offset linker feature that I added over a year ago so the code below can be used
+	 * Also if those symbols can be used we can then map xg-channels to physical pins outside asm code vs having
+	 * them hardcoded in the xgate sources
+	 */
 	//memcpy(startXGATECode, START_OF_FLASH_WINDOW, XGATE_RAM_ALLOCATION_SIZE);
 	RPAGE = savedRPAGE;
 	PPAGE = savedPPAGE;
