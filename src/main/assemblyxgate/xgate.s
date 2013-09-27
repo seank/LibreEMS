@@ -1030,7 +1030,7 @@ xGRegisters:
 ****************************************************************************************
 ;  Event Structures
 ****************************************************************************************
-/* array of ON event structures */
+/* array of event structures */
 eventsStructStart:
 	eventChannelID0: /* a const that contains this events ENUM ID */
     	.word 0
