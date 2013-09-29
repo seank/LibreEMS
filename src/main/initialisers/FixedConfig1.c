@@ -154,12 +154,13 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		numberOfInjectionsPerEngineCycle:            2  // Semi-sequential, for now.
 
 #elif CONFIG == SEANKLT1_ID // http://forum.diyefi.org/viewtopic.php?f=55&t=1146
-		anglesOfTDC: {ANGLE(0)},
-		outputEventPinNumbers:       {0}, // LTCC e-dizzy, semi-sequential injection 1/6, 8/5, 4/7, 3/2, and repeat
-		schedulingConfigurationBits: {1}, // See below two lines
+		anglesOfTDC: {ANGLE(0), ANGLE(90), ANGLE(180), ANGLE(270), ANGLE(360), ANGLE(450), ANGLE(540), ANGLE(630), ANGLE(0), ANGLE(90), ANGLE(180), ANGLE(270), ANGLE(360), ANGLE(450), ANGLE(540), ANGLE(630)},
+		outputEventPinNumbers:       {0,0,0,0,0,0,0,0,2,3,4,5,2,3,4,5}, // LTCC e-dizzy, semi-sequential injection 1/6, 8/5, 4/7, 3/2, and repeat
+		schedulingConfigurationBits: {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1}, // See below two lines
+		xgateOutputChannel: {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0,1,2,3,4,5,6,7}, // Disable xgate driven outputs
 		decoderEngineOffset:               ANGLE(0.00), // Decoder has a true zero zero mechanically hard coded
 		numberOfConfiguredOutputEvents:             16, // First half ignition, second half injection
-		numberOfInjectionsPerEngineCycle:            1  // Full sync semi-sequential
+		numberOfInjectionsPerEngineCycle:            1  // Full sync fully-sequential
 
 #elif CONFIG == SNOTROCKET_ID // http://forum.diyefi.org/viewtopic.php?f=3&t=1263 Sim's 2.1 Volvo, carbed with CNP using LS1 coils.
 		anglesOfTDC: {ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540)}, // 1,2,3,4: Firing order: 1-3-4-2 set up in loom
@@ -231,7 +232,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		schedulingConfigurationBits:    {0,0,0,0,1,1,1,1}, // First 4 ign, 4 fuel
 		decoderEngineOffset:                  ANGLE(0.00), //
 		numberOfConfiguredOutputEvents:                 8, // 4 coils 8 injectors, the last 4 are driven by the staged function for now
-		xgateOutputChannel: {0xFF,0xFF,0xFF,0xFF,0,1,2,3}, // Use XGATE on fuel only for grins mirror the first ign pin
+		xgateOutputChannel:             {0,1,2,3,4,5,6,7}, // Use XGATE on fuel only for grins mirror the ign pins
 		numberOfInjectionsPerEngineCycle:               1  // COP/Seq accept nothing less :)
 
 #else // Nothing scheduled by default, no sensible default for all possible vehicle setups.
@@ -240,7 +241,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		schedulingConfigurationBits:            {}, // All ignition by guarantee of C, configured explicitly for real setups.
 		decoderEngineOffset:              ANGLE(0), // Start with zero, work your way to the correct value
 		numberOfConfiguredOutputEvents:          0, // This disables scheduling completely, should match the first, second and third arrays
-		xgateOutputChannel:					    {0xFF}, // Disable xgate driven outputs
+		xgateOutputChannel:					    {}, // Disable xgate driven outputs
 		numberOfInjectionsPerEngineCycle:        1  // 720 degree decoders with one injection per cycle
 #endif
 	},
