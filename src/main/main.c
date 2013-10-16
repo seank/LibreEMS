@@ -95,7 +95,7 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 		if(fixedConfigs1.schedulingSettings.schedulingConfigurationBits[outputEventNumber] == 1){
 			*xgsEventsToSch = 1;
 			*xgsInStamp = timeStamp.timeShorts[1];
-			XGOutputEvents[0].channelID = outputEventNumber;
+			XGOutputEvents[0].channelID = fixedConfigs1.schedulingSettings.xgateOutputChannel[outputEventNumber];
 			XGOutputEvents[0].delay = 0x200; //you can actually adjust this so all the injectors get primed at the same time.
 			XGOutputEvents[0].runtime = primingPulseWidth;
 			XGSCHEDULE();
