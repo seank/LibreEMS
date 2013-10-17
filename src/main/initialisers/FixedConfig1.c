@@ -65,8 +65,8 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		perCylinderVolume:  CYLINDER_VOLUME(250),
 		cylinderCount:		4,
 		strokesPerCycle:	4,
-		injectorFlow:       CC_PER_MINUTE(230), // http://www.witchhunter.com/flowdatapix/bcdh210.jpg
-		secondaryInjectorFlow: CC_PER_MINUTE(190),
+		injectorFlow:       CC_PER_MINUTE(425), // http://witchhunter.com/flowdatapix/d3920.jpg
+		secondaryInjectorFlow: CC_PER_MINUTE(230), // http://witchhunter.com/flowdatapix/bcdh210.jpg
 #elif CONFIG == SLATER_ID
 		perCylinderVolume:  CYLINDER_VOLUME(324),
 		cylinderCount:		4,
