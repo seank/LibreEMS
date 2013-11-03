@@ -226,13 +226,13 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		numberOfConfiguredOutputEvents:              8, // See two lines above
 		numberOfInjectionsPerEngineCycle:            2  // Semi-sequential, for now.
 
-#elif CONFIG == SEANKR1_ID // Firing order 1-2-3-4
+#elif CONFIG == SEANKR1_ID // Firing order 1-2-3-4 COP/CNP
 		anglesOfTDC: {ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540), ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540), ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540)},
-		outputEventPinNumbers: {0,1,2,3,4,0xFF,0xFF,0xFF}, // COP/CNP
+		outputEventPinNumbers: {0,1,2,3,4,0xFF,0xFF,0xFF}, // Only use timer channels for ignition
 		schedulingConfigurationBits:    {0,0,0,0,1,1,1,1}, // First 4 ign, 4 fuel
 		decoderEngineOffset:                  ANGLE(0.00), //
-		numberOfConfiguredOutputEvents:                 8, // 4 coils 8 injectors, the last 4 are driven by the staged function for now
-		xgateOutputChannel:             {0,1,2,3,4,5,6,7}, // Use XGATE on fuel only for grins mirror the ign pins and one fuel pin
+		numberOfConfiguredOutputEvents:                 8, // 4 coils 8 injectors, the last 4 injectors are driven by the staged function for now
+		xgateOutputChannel:             {0xFF,0xFF,0xFF,0xFF,0,1,2,3}, // Use XGATE on fuel only
 		numberOfInjectionsPerEngineCycle:               1  // COP/Seq accept nothing less :)
 
 #else // Nothing scheduled by default, no sensible default for all possible vehicle setups.

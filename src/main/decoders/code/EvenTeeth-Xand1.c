@@ -40,7 +40,14 @@
 
 void decoderInitPreliminary(){
 	//  Set PT0 and PT1 to only capture on rising
+#if CONFIG == SEANKR1_ID
+	TCTL4 = 0x09;  //  0000 0101 Capture rising edges on LM1815 crank and falling on MAXIM cam
+				  // TODO put inverter on LM1815 chip CFG board or review the notes provided by
+				  // Avnet/Maxim FAE
+#else
 	TCTL4 = 0x05;  //  0000 0101 Capture rising edges only on PT0&1
+#endif
+
 }
 
 void perDecoderReset(){} // Nothing special to reset for this code
