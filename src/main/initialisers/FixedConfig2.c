@@ -239,8 +239,8 @@ const volatile fixedConfig2 fixedConfigs2 FIXEDCONF2 = {
 		accelerationInputEventTimeTolerance: ACCEL_TIME_TOL(100),
 		decelerationInputEventTimeTolerance: DECEL_TIME_TOL(100),
 #elif CONFIG == SEANKR1_ID
-		accelerationInputEventTimeTolerance: ACCEL_TIME_TOL(135),
-		decelerationInputEventTimeTolerance: DECEL_TIME_TOL(135),
+		accelerationInputEventTimeTolerance: ACCEL_TIME_TOL(145),
+		decelerationInputEventTimeTolerance: DECEL_TIME_TOL(145),
 #else
 		accelerationInputEventTimeTolerance: ACCEL_TIME_TOL(50),
 		decelerationInputEventTimeTolerance: DECEL_TIME_TOL(50),
