@@ -232,7 +232,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		schedulingConfigurationBits:    {0,0,0,0,1,1,1,1}, // First 4 ign, 4 fuel
 		decoderEngineOffset:                  ANGLE(0.00), //
 		numberOfConfiguredOutputEvents:                 8, // 4 coils 8 injectors, the last 4 injectors are driven by the staged function for now
-		xgateOutputChannel:             {0xFF,0xFF,0xFF,0xFF,0,1,2,3}, // Use XGATE on fuel only
+		xgateOutputChannel: {0xFF,0xFF,0xFF,0xFF,0,1,2,3}, // Use XGATE on fuel only
 		numberOfInjectionsPerEngineCycle:               1  // COP/Seq accept nothing less :)
 
 #else // Nothing scheduled by default, no sensible default for all possible vehicle setups.
