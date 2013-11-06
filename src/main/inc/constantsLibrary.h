@@ -103,6 +103,11 @@
 #define GM2BarMax                KPA(200.0)     /* Pressure read at highest ADC reading */
 #define GM2BarRange              (GM2BarMax - GM2BarMin)
 
+/* GM 2bar found on Cyclone Turbo V6 and probably other cars too. TODO These numbers are probably not that accurate... */
+#define YamahaDensoMin           KPA( 10.5)     /* Pressure read at lowest ADC reading */
+#define YamahaDensoMax           KPA(180.0)     /* Pressure read at highest ADC reading */
+#define YamahaDensoRange         (YamahaDensoMax - YamahaDensoMin)
+
 /* www.freescale.com/files/sensors/doc/data_sheet/MPX4100A.pdf */
 #define MPX4100AMin              KPA( 14.0)     /* Pressure read at lowest ADC reading */
 #define MPX4100AMax              KPA(107.5)     /* Pressure read at highest ADC reading */
