@@ -127,7 +127,10 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		numberConfigured:   1
 	},
 	schedulingSettings:{
-// Sadly, FreeEMS car numero uno is gone, RIP Volvo! http://forum.diyefi.org/viewtopic.php?f=55&t=1068
+
+/* XGATE outputs should not be used for ignition control. There can be up to ~15uS of jitter which can translate to
+* a few degrees of movement in a high RPM engine. However, worst case fuel accuracy is about 1.5% and that is with
+* a 1mS fuel pulse. If you use them for ignition control your engine may appear to run fine, but again this is a bad idea. */
 
 #if CONFIG == TRUCK_ID // Fred's Ford Courier http://forum.diyefi.org/viewtopic.php?f=55&t=1069
 		anglesOfTDC: {ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540), ANGLE(0), ANGLE(180), ANGLE(360), ANGLE(540)},
