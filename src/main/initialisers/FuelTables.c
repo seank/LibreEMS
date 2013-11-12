@@ -75,7 +75,7 @@ const volatile mainTable VETableMainFlashV FUELTABLESD = {
 #elif CONFIG == SEANKLT1_ID
 #include "../data/tables/axis/SeansLT1-RPM.h"
 #elif CONFIG == SEANKR1_ID
-#include "../data/tables/axis/SeansR1-RPM.h"
+#include "../data/tables/axis/SeansR1-RPM-24.h"
 #elif CONFIG == SLATER_ID
 #include "../data/tables/axis/Slater-RPM.h"
 #elif CONFIG == PETERJSERIES_ID
@@ -182,6 +182,9 @@ const volatile mainTable LambdaTableFlashV FUELTABLESD = {
 #elif CONFIG == DEUCES10_ID
 	RPMLength:  13,
 	LoadLength: 10,
+#elif CONFIG == SEANKR1_ID
+	RPMLength:  16,
+	LoadLength: 15,
 #else
 	RPMLength:  16,
 	LoadLength: 16,
@@ -198,7 +201,7 @@ const volatile mainTable LambdaTableFlashV FUELTABLESD = {
 #elif CONFIG == DEUCES10_ID
 #include "../data/tables/axis/Deuces3100-RPM.h"
 #elif CONFIG == SEANKR1_ID
-#include "../data/tables/axis/SeansR1-RPM.h"
+#include "../data/tables/axis/SeansR1-RPM-16.h"
 #else
 #include "../data/tables/axis/FredsTruck-RPM.h"
 #endif
@@ -227,6 +230,8 @@ const volatile mainTable LambdaTableFlashV FUELTABLESD = {
 #include "../data/tables/lambda/SlaterLambda.h"
 #elif CONFIG == DEUCES10_ID
 #include "../data/tables/lambda/DeucesS10Lambda.h"
+#elif CONFIG == DEUCES10_ID
+#include "../data/tables/lambda/SeansR1-E85Lambda.h"
 #else
 #include "../data/tables/lambda/GenericLambda.h" // Reasonable starting point
 #endif

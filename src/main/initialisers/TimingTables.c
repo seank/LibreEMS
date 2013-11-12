@@ -82,7 +82,7 @@ const volatile mainTable IgnitionAdvanceTableMainFlashV TIMETABLESD = {
 #elif CONFIG == SEANKLT1_ID
 #include "../data/tables/axis/SeansLT1-RPM.h"
 #elif CONFIG == SEANKR1_ID
-#include "../data/tables/axis/SeansR1-RPM.h"
+#include "../data/tables/axis/SeansR1-RPM-24.h"
 #elif CONFIG == SNOTROCKET_ID
 #include "../data/tables/axis/SimsVolvo-RPM.h"
 #elif CONFIG == SLATER_ID
