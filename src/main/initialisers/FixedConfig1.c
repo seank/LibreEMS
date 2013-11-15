@@ -67,6 +67,9 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(425), // http://witchhunter.com/flowdatapix/d3920.jpg
 		secondaryInjectorFlow: CC_PER_MINUTE(230), // http://witchhunter.com/flowdatapix/bcdh210.jpg
+		injectionStrategey: STAGED_EXTENSION,
+		maxPrimaryDC:		DUTYCYCLE(85.00),
+		maxSecondaryDC:		DUTYCYCLE(85.00),
 #elif CONFIG == SLATER_ID
 		perCylinderVolume:  CYLINDER_VOLUME(324),
 		cylinderCount:		4,
@@ -99,8 +102,10 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(550),
 		secondaryInjectorFlow: CC_PER_MINUTE(0),
+		injectionStrategey: PLAIN_INJECTION,
+		maxPrimaryDC:		DUTYCYCLE(85.00),
+		maxSecondaryDC:		DUTYCYCLE(85.00),
 #endif
-
 #if CONFIG == SEANKR1_ID
 		stoichiometricAFR:  stoichiometricAFRE85,
 		densityOfFuelAtSTP: densityOfE85

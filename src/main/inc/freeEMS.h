@@ -255,6 +255,9 @@ EXTERN unsigned char currentTimeRPage;
 
 /* Output variables (init not required) TODO ditch this in favour of the real vars in the calcs function and struct */
 extern unsigned short masterPulseWidth;
+extern unsigned short masterPulseWidthSecondary;
+extern unsigned short flowDifference;
+
 EXTERN unsigned long bootFuelConst;  /* constant derived from configurable constants */
 EXTERN unsigned short TPSADCRange;   /* The ADC range used to generate TPS percentage */
 
@@ -279,6 +282,9 @@ EXTERN unsigned char coreStatusA;	/* Each bit represents the state of some core 
 #define CLEAR_CALC_FUEL_IGN   NBIT2 /* 10 Fuel and ignition don't require calculation */
 #define CLEAR_FORCE_READING   NBIT3 /* 11 Clear flag to force ADC sampling at low rpm/stall */
 #define CLEAR_BENCH_TEST_ON   NBIT4
+
+#define PLAIN_INJECTION       0
+#define STAGED_EXTENSION      1
 
 //TODO make this volatile?
 /* ECT IC extension variable (init not required, don't care where it is, only differences between figures) */

@@ -122,7 +122,7 @@ TAGNAME = $(OUTDIR)/gitTagName.txt
 
 # Program prefixes, for the main cpu and for the xgate coprocessor
 PREFIX = m68hc11-
-XGPREFIX = mc9xgate-
+XGPREFIX = xgate-
 
 # All of the tools
 CP = cp
@@ -173,7 +173,7 @@ DATA = $(patsubst %.c,$(DATADIR)/%.c,$(DATARAW))
 
 # Source code files
 UTILCLASSES = tableLookup.c init.c utils.c globalConstants.c StaticBenchTest.c simpleGPIO.c
-MATHCLASSES = coreVarsGenerator.c derivedVarsGenerator.c fuelAndIgnitionCalcs.c outputScheduler.c decoderInterface.c
+MATHCLASSES = coreVarsGenerator.c derivedVarsGenerator.c fuelAndIgnitionCalcs.c outputScheduler.c decoderInterface.c stagedInjectionCalcs.c
 COMCLASSES = flashWrite.c commsCore.c blockDetailsLookup.c
 ISRCLASSES = interrupts.c injectionISRs.c commsISRs.c realtimeISRs.c miscISRs.c xgateVectors.c
 # Combined source code files
@@ -197,7 +197,7 @@ RPMCLASSESRAW = $(RPMSPECIAL) $(RPMEVENTEETH) $(RPMMISSINGTEETH) $(RPMHALLOROPTI
 RPMCLASSES = $(patsubst %.c,$(DECDIR)/%.c,$(RPMCLASSESRAW))
 
 # XGATE stuff here!
-XGASMSRCS = xgate.s
+XGASMSRCS = xgate.s xgateUtils.s
 
 
 # Convert extensions
@@ -292,8 +292,15 @@ EvenTeeth-Distributor-4of6and1: $(S19DIR)/$(LABEL)-EvenTeeth-Distributor-4of6and
 
 # http://www.gnu.org/software/m68hc11/m68hc11_gcc.html shows code size with different options used
 # include debug info, optimise , 16 bit ints, hcs12 platform
-GCCOPTS1 = -Wall -Werror -Winline -O -m68hcs12 -mshort -ffunction-sections
-GCCOPTS2 = -fomit-frame-pointer -msoft-reg-count=8 -mauto-incdec -fsigned-char
+#<<<<<<< Updated upstream:src/main/Makefile
+#GCCOPTS1 = -Wall -Werror -Winline -O -m68hcs12 -mshort -ffunction-sections
+#GCCOPTS2 = -fomit-frame-pointer -msoft-reg-count=8 -mauto-incdec -fsigned-char
+#=======
+GCCOPTS1 = -Wall -Werror -Winline -O -m9s12x -mshort -ffunction-sections
+GCCOPTS2 = -fomit-frame-pointer -msoft-reg-count=8 -mauto-incdec -fsigned-char -Wa,-mm9s12x
+#GCCOPTS1 = -g0 -Wall -Werror -Winline -O -m68hcs12 -mshort -ffunction-sections -idirafter custom -idirafter default
+#GCCOPTS2 = -fomit-frame-pointer -msoft-reg-count=8 -mauto-incdec -fsigned-char
+#>>>>>>> Stashed changes:src/Makefile
 GCCOPTS = $(GCCOPTS1) $(GCCOPTS2) $(CLIBUILD) $(CLIFLAGSARG) -D FIRMWARE_VERSION=\"$(FIRMWARE_VERSION)\" -D FIRMWARE_BUILD_DATE=\"$(BUILD_DATE)\" -D OPERATING_SYSTEM=\"$(OS)\"
 # -ffunction-sections option splits out the functions such that the garbage collection can get
 # them on a per section basis. I'm not sure, but this could be harmful to paged code so may

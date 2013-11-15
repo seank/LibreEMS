@@ -308,6 +308,7 @@ const unsigned char decoderName[] = BASE_FILE_NAME;
 EXTERN unsigned char outputEventInputEventNumbers[MAX_NUMBER_OF_OUTPUT_EVENTS];     // 0xFF (disabled) by default, populated to actual input event numbers by the scheduler
 
 EXTERN unsigned short outputEventPulseWidthsMath[MAX_NUMBER_OF_OUTPUT_EVENTS];
+EXTERN unsigned short outputEventPulseWidthsMathSecondary[MAX_NUMBER_OF_OUTPUT_EVENTS];
 EXTERN unsigned char  outputEventExtendNumberOfRepeats[MAX_NUMBER_OF_OUTPUT_EVENTS];
 EXTERN unsigned short outputEventExtendRepeatPeriod[MAX_NUMBER_OF_OUTPUT_EVENTS];
 EXTERN unsigned short outputEventDelayFinalPeriod[MAX_NUMBER_OF_OUTPUT_EVENTS];

@@ -85,9 +85,10 @@
 #define FUEL_DENSITY(DENSITY)         (unsigned long)ROUND((DENSITY) * (double)FUEL_DENSITY_FACTOR)
 #define PW_MS(PW_MILLISECONDS)        (unsigned long)ROUND((PW_MILLISECONDS) * (double)PW_TICK_FACTOR)
 #define PERCENT(PERCENTAGE)           (unsigned long)ROUND((PERCENTAGE) * (double)PERCENT_FACTOR)
-#define ADC_VOLTS(ADC_VOLTAGE)		   (unsigned short)ROUND((ADC_VOLTAGE * (double)(1024/5)))
+#define ADC_VOLTS(ADC_VOLTAGE)        (unsigned short)ROUND((ADC_VOLTAGE * (double)(1024/5)))
 #define ACCEL_TIME_TOL(PERCENTAGE)    (unsigned long)((100/(100 + (double)PERCENTAGE)) * 1000) // This code is getting changed a lot, hence literals
 #define DECEL_TIME_TOL(PERCENTAGE)    (unsigned long)(((100 + (double)PERCENTAGE)/100) * 1000) // This code is getting changed a lot, hence literals
+#define DUTYCYCLE(PERCENTAGE)         (unsigned short)ROUND((double)PERCENTAGE * 100)
 
 // One-off configuration stuff
 #define SCI_BAUD_DIVISOR(BAUD)        (unsigned long)ROUND(40000000 / ((double)(BAUD) * 16)) // 40MHz / (16*115.2kHz) TODO pull 40MHz out of clock rate stuff

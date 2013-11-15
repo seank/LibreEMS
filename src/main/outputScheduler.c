@@ -124,9 +124,12 @@ void scheduleOutputs(){
 		}else{
 			// Default to ignition
 			unsigned short pulsewidthToUseForThisChannel = DerivedVars->Dwell;
+			/* default to firing a single channel */
+			unsigned short pulsewidthToUseForThisChannelSecondary = 0;
 			unsigned short endOfPulseTimingToUseForThisChannel = DerivedVars->Advance;
 			if(fixedConfigs1.schedulingSettings.schedulingConfigurationBits[ignitionEvent]){ //
 				pulsewidthToUseForThisChannel = masterPulseWidth;
+				pulsewidthToUseForThisChannelSecondary = masterPulseWidthSecondary;
 				endOfPulseTimingToUseForThisChannel = 0; // Fixed flat timing for fueling for the time being
 			} // Else we're doing ignition! Leave the defaults in place.
 
@@ -222,6 +225,7 @@ void scheduleOutputs(){
 							outputEventInputEventNumbers[ignitionEvent] = mappedEvent;
 							outputEventDelayFinalPeriod[ignitionEvent] = (unsigned short)potentialDelay;
 							outputEventPulseWidthsMath[ignitionEvent] = pulsewidthToUseForThisChannel;
+							outputEventPulseWidthsMathSecondary[ignitionEvent] = pulsewidthToUseForThisChannelSecondary;
 							outputEventExtendNumberOfRepeats[ignitionEvent] = 0;
 							ATOMIC_END(); /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
 							outputEventDelayTotalPeriod[ignitionEvent] = potentialDelay; // No async accesses occur
@@ -254,6 +258,7 @@ void scheduleOutputs(){
 							// if not, decrease repeat size in some optimal way and provide new left over to work with that, and same number of divs/its
 							// Always use dwell as requested
 							outputEventPulseWidthsMath[ignitionEvent] = pulsewidthToUseForThisChannel;
+							outputEventPulseWidthsMathSecondary[ignitionEvent] = pulsewidthToUseForThisChannelSecondary;
 							ATOMIC_END(); /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
 							outputEventDelayTotalPeriod[ignitionEvent] = potentialDelay; // No async accesses occur
 							Counters.timerStretchedToSchedule++;

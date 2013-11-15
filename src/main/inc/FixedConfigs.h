@@ -118,6 +118,9 @@ typedef struct {
 	unsigned short secondaryInjectorFlow;	///< Same measurement as injectorFlow */
 	unsigned short stoichiometricAFR;  ///< 34 for hydrogen, all others less, figure is 14.7 * 1024, divide by 1024 to get AFR */
 	unsigned short densityOfFuelAtSTP; ///< 703gm/litre for Octane. 32 * fuel density = number, divide by 32 for the real figure */
+	unsigned short maxPrimaryDC;       ///< Max injector duty-cycle allowed >///
+	unsigned short maxSecondaryDC;     ///< Max injector duty-cycle allowed >///
+	unsigned char  injectionStrategey; ///< How you strategize your injections ie plain, staged etc >///
 } engineSetting;
 
 

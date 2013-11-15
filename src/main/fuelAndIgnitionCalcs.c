@@ -41,6 +41,7 @@
 #include "inc/locationIDs.h"
 #include "inc/tableLookup.h"
 #include "inc/fuelAndIgnitionCalcs.h"
+#include "inc/stagedInjectionCalcs.h"
 
 
 /**
@@ -146,6 +147,54 @@ void calculateFuelAndIgnition(){
 	/* "Calculate" the nominal total pulse width before per channel corrections */
 	masterPulseWidth = safeAdd((DerivedVars->EffectivePW / fixedConfigs1.schedulingSettings.numberOfInjectionsPerEngineCycle), DerivedVars->IDT); // div by number of injections per cycle, configured above
 	// but requires to know how big a cycle is, 1/4 1, 1/2, etc
+
+#define RECIPROCAL_TICK_VALUE			125UL /* reciprocal of .8 x 10 */
+	/* TODO think about calculating DC with ticksperdegree instead */
+	unsigned short dutyCycle = ((CoreVars->RPM / 2) * (masterPulseWidth * 5UL) / RECIPROCAL_TICK_VALUE) / 600UL *
+							   fixedConfigs1.schedulingSettings.numberOfInjectionsPerEngineCycle;
+	KeyUserDebugs.zsp7 = dutyCycle; //TODO add this to the log stream, its been years and still no *official DC in the log, pathetic
+	/* Check Duty Cycle */
+	if(dutyCycle > fixedConfigs1.engineSettings.maxPrimaryDC){
+		if(fixedConfigs1.engineSettings.injectionStrategey == STAGED_EXTENSION){
+			splitFuelPulseWidth(dutyCycle);
+			unsigned short dutyCycleSecondary = ((CoreVars->RPM / 2) * (masterPulseWidth * 5UL) / RECIPROCAL_TICK_VALUE) / 600UL *
+										   	    fixedConfigs1.schedulingSettings.numberOfInjectionsPerEngineCycle;
+			if(dutyCycleSecondary > fixedConfigs1.engineSettings.maxSecondaryDC){
+				/* cut fuel all together */
+				masterPulseWidth = 0;
+				masterPulseWidthSecondary = 0;
+			}
+		}else{ /* cut fuel all together */
+			masterPulseWidth = 0;
+			masterPulseWidthSecondary = 0;
+		}
+	}
+
+//	//Test calcs for staged calcs TODO this is why much of this code-base needs to be refactored its hard to test pieces
+//#define TIME_DIVISOR	10UL //12000 rpm
+//#define ticks_per_degree_multiplier (10 * ANGLE_FACTOR) // FIX <<< shouldn't be done like this.
+//extern unsigned short *ticksPerDegree;
+//*ticksPerDegree = (unsigned short)((ticks_per_degree_multiplier * (1250UL * TIME_DIVISOR) ) / (720UL * ANGLE_FACTOR));
+//extern	void generateCoreVars();
+//extern  void generateDerivedVars();
+//	masterPulseWidth =  *ticksPerDegree;
+//	masterPulseWidth = 12500; // 100%dc
+//	generateCoreVars();
+//	generateDerivedVars();
+//	DerivedVars->IDT = 2500;
+//	DerivedVars->EffectivePW = masterPulseWidth - DerivedVars->IDT;
+//	//CoreVars->DRPM = 20000;
+//	//CoreVars->RPM = 20000;
+//
+//	dutyCycle = ((CoreVars->RPM / 2) * (masterPulseWidth * 5UL) / RECIPROCAL_TICK_VALUE) / 600UL *
+//								   fixedConfigs1.schedulingSettings.numberOfInjectionsPerEngineCycle;
+//	splitFuelPulseWidth(dutyCycle);
+//
+//	KeyUserDebugs.zsp6 = masterPulseWidth;   //Yields 10587
+//	KeyUserDebugs.zsp7 = masterPulseWidthSecondary; //Yields 6034
+//	KeyUserDebugs.zsp8 = dutyCycle; //Yields 10035
+//	KeyUserDebugs.zsp9 = flowDifference; //Yields 18478
+////End Test Calcs
 
 	// Note, conversions to address and then pointer are necessary to avoid error on direct cast
 	// Cuts and limiters TODO move these to their own special place?

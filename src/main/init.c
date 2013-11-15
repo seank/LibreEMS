@@ -658,7 +658,9 @@ void initConfiguration(){
 	 *nstant = ((139371764 /  4096) * 16384) / 15053;
 	 * http://duckduckgo.com/?q=%28%28139371764++%2F+4096%29+*+16384%29+%2F+15053 */
 	bootFuelConst = ((unsigned long)(masterFuelConstant / fixedConfigs1.engineSettings.injectorFlow) * fixedConfigs1.engineSettings.perCylinderVolume) / fixedConfigs1.engineSettings.stoichiometricAFR;
-
+	/* The flow difference between injector set A and B */
+#define FLOW_SCALE_FACTOR			10000UL /* .01 % */
+	flowDifference =  (fixedConfigs1.engineSettings.injectorFlow * FLOW_SCALE_FACTOR) / fixedConfigs1.engineSettings.secondaryInjectorFlow;
 	/* The ADC range used to generate TPS percentage */
 	TPSADCRange = fixedConfigs2.sensorRanges.TPSMaximumADC - fixedConfigs2.sensorRanges.TPSMinimumADC;
 }

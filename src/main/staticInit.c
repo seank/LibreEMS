@@ -41,7 +41,10 @@
 
 
 // Values for testing
+//TODO SK each cylinder needs it's own set of master/secondary times for fuel trim
 unsigned short masterPulseWidth = 10;
+unsigned short masterPulseWidthSecondary = 20;
+unsigned short flowDifference = 0;
 
 	/* Setup the pointers to the registers for fueling use, this does NOT work if done in global.c, I still don't know why. */
 //	injectorMainTimeRegisters[0] = TC2_ADDR;
