@@ -61,6 +61,9 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(525),
 		secondaryInjectorFlow: CC_PER_MINUTE(0),
+		injectionStrategey: PLAIN_INJECTION,
+		maxPrimaryDC:		DUTYCYCLE(85.00),
+		maxSecondaryDC:		DUTYCYCLE(85.00),
 #elif CONFIG == SEANKR1_ID
 		perCylinderVolume:  CYLINDER_VOLUME(250),
 		cylinderCount:		4,
