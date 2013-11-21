@@ -154,10 +154,10 @@ void calculateFuelAndIgnition(){
 							   fixedConfigs1.schedulingSettings.numberOfInjectionsPerEngineCycle;
 	KeyUserDebugs.zsp7 = dutyCycle; //TODO add this to the log stream, its been years and still no *official DC in the log, pathetic
 	/* Check Duty Cycle */
-	if(dutyCycle > fixedConfigs1.engineSettings.maxPrimaryDC){
-		if(fixedConfigs1.engineSettings.injectionStrategey == STAGED_EXTENSION){
+	if(dutyCycle > fixedConfigs1.engineSettings.maxPrimaryDC && CoreVars->RPM > (2500 * 2)){
+		if(fixedConfigs1.engineSettings.injectionStrategy == STAGED_EXTENSION){
 			splitFuelPulseWidth(dutyCycle);
-			unsigned short dutyCycleSecondary = ((CoreVars->RPM / 2) * (masterPulseWidth * 5UL) / RECIPROCAL_TICK_VALUE) / 600UL *
+			unsigned short dutyCycleSecondary = ((CoreVars->RPM / 2) * (masterPulseWidthSecondary * 5UL) / RECIPROCAL_TICK_VALUE) / 600UL *
 										   	    fixedConfigs1.schedulingSettings.numberOfInjectionsPerEngineCycle;
 			if(dutyCycleSecondary > fixedConfigs1.engineSettings.maxSecondaryDC){
 				/* cut fuel all together */

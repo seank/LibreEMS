@@ -120,7 +120,7 @@ typedef struct {
 	unsigned short densityOfFuelAtSTP; ///< 703gm/litre for Octane. 32 * fuel density = number, divide by 32 for the real figure */
 	unsigned short maxPrimaryDC;       ///< Max injector duty-cycle allowed >///
 	unsigned short maxSecondaryDC;     ///< Max injector duty-cycle allowed >///
-	unsigned char  injectionStrategey; ///< How you strategize your injections ie plain, staged etc >///
+	unsigned char  injectionStrategy; ///< How you strategize your injections ie plain, staged etc >///
 } engineSetting;
 
 

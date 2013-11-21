@@ -61,7 +61,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(525),
 		secondaryInjectorFlow: CC_PER_MINUTE(0),
-		injectionStrategey: PLAIN_INJECTION,
+		injectionStrategy: PLAIN_INJECTION,
 		maxPrimaryDC:		DUTYCYCLE(85.00),
 		maxSecondaryDC:		DUTYCYCLE(85.00),
 #elif CONFIG == SEANKR1_ID
@@ -70,7 +70,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(425), // http://witchhunter.com/flowdatapix/d3920.jpg
 		secondaryInjectorFlow: CC_PER_MINUTE(230), // http://witchhunter.com/flowdatapix/bcdh210.jpg
-		injectionStrategey: STAGED_EXTENSION,
+		injectionStrategy: STAGED_EXTENSION,
 		maxPrimaryDC:		DUTYCYCLE(85.00),
 		maxSecondaryDC:		DUTYCYCLE(85.00),
 #elif CONFIG == SLATER_ID
@@ -105,7 +105,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(550),
 		secondaryInjectorFlow: CC_PER_MINUTE(0),
-		injectionStrategey: PLAIN_INJECTION,
+		injectionStrategy: PLAIN_INJECTION,
 		maxPrimaryDC:		DUTYCYCLE(85.00),
 		maxSecondaryDC:		DUTYCYCLE(85.00),
 #endif
