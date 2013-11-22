@@ -144,7 +144,8 @@
 
 // Scheduling stuff used in configuration and scheduler
 #define MAX_NUMBER_OF_OUTPUT_EVENTS 24
-#define ECT_OUTPUT_CHANNELS  6    /* How many ECT output channels the code should support */
+#define ECT_OUTPUT_CHANNELS          6    /* How many ECT output channels the code should support */
+#define MAX_NUMBER_OF_CYLINDERS     12    /* How many cylinders/chambers we support */
 
 /* The TX and RX buffers are slightly larger than 2k because the RX buffer */
 /* needs to also receive a header, checksum and attributes for the data    */

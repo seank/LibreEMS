@@ -169,9 +169,10 @@ const volatile SmallTables2 SmallTablesBFlashV TUNETABLESDV2 = {
 			datalogLongStreamSourceAddressFirst:  (void*)&PORTS_BA, // Port B and A combined with...
 			datalogLongStreamSourceAddressSecond: (void*)&ATD0DR4,  // ...MAP for default
 		},
-		perCylinderFuelTrims: {32768, 32768, 32768, 32768, 32768, 32768}, // TODO YAGNI unused, format could change
-		filler: {0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		perCylinderFuelTrims: {32768, 32768, 32768, 32768, 32768, 32768,
+			                   32768, 32768, 32768, 32768, 32768, 32768,}, // TODO YAGNI unused, format could change
+		filler: {
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

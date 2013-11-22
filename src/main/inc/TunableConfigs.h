@@ -103,11 +103,11 @@ typedef struct {
 } SmallTables1;
 
 
-#define SMALL_TABLES_2_FILLER_SIZE (flashSectorSize - (sizeof(loggingSetting) + 12)) // Update this if adding another table/struct!
+#define SMALL_TABLES_2_FILLER_SIZE (flashSectorSize - (sizeof(loggingSetting) + 24)) // Update this if adding another table/struct!
 /** @copydoc SmallTables1 */
 typedef struct {
 	loggingSetting loggingSettings;                          ///< @copydoc loggingSetting
-	unsigned short perCylinderFuelTrims[ECT_OUTPUT_CHANNELS]; ///< Trims for injection, from 0% to 200% of base.
+	unsigned short perCylinderFuelTrims[MAX_NUMBER_OF_CYLINDERS]; ///< Trims for injection, from 0% to 200% of base.
 	unsigned char filler[SMALL_TABLES_2_FILLER_SIZE];        ///< Padding data.
 } SmallTables2;
 
