@@ -315,3 +315,19 @@ unsigned short compare(unsigned char* original, unsigned char* toCheck, unsigned
 	}
 	return 0;
 }
+
+/**
+ * @returns the address of the destination
+ *
+ * @param target address
+ * @param set to value
+ * @param length to set
+ */
+void* mset(void* dest, int value, unsigned short length){
+	unsigned short i;
+	unsigned char *m = dest;
+	for(i=0; i < length; ++i){
+		*(m + i) = value;
+	}
+	return m + i;
+}
