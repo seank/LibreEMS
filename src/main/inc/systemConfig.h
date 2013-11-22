@@ -144,7 +144,7 @@
 
 // Scheduling stuff used in configuration and scheduler
 #define MAX_NUMBER_OF_OUTPUT_EVENTS 24
-#define INJECTION_CHANNELS  6    /* How many injection channels the code should support */
+#define ECT_OUTPUT_CHANNELS  6    /* How many ECT output channels the code should support */
 
 /* The TX and RX buffers are slightly larger than 2k because the RX buffer */
 /* needs to also receive a header, checksum and attributes for the data    */

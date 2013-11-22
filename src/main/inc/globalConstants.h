@@ -83,13 +83,13 @@ EXTERN const unsigned char operatingSystem[OPERATING_SYSTEM_LENGTH];
 
 
 /* Injection (currently used for both inj and ign) */
-EXTERN const unsigned char injectorMainOnMasks[INJECTION_CHANNELS];
-EXTERN const unsigned char injectorMainOffMasks[INJECTION_CHANNELS];
-EXTERN const unsigned char injectorMainActiveMasks[INJECTION_CHANNELS];
-EXTERN const unsigned char injectorMainEnableMasks[INJECTION_CHANNELS];
-EXTERN const unsigned char injectorMainDisableMasks[INJECTION_CHANNELS];
-EXTERN const unsigned char injectorMainGoHighMasks[INJECTION_CHANNELS];
-EXTERN const unsigned char injectorMainGoLowMasks[INJECTION_CHANNELS];
+EXTERN const unsigned char injectorMainOnMasks[ECT_OUTPUT_CHANNELS];
+EXTERN const unsigned char injectorMainOffMasks[ECT_OUTPUT_CHANNELS];
+EXTERN const unsigned char injectorMainActiveMasks[ECT_OUTPUT_CHANNELS];
+EXTERN const unsigned char injectorMainEnableMasks[ECT_OUTPUT_CHANNELS];
+EXTERN const unsigned char injectorMainDisableMasks[ECT_OUTPUT_CHANNELS];
+EXTERN const unsigned char injectorMainGoHighMasks[ECT_OUTPUT_CHANNELS];
+EXTERN const unsigned char injectorMainGoLowMasks[ECT_OUTPUT_CHANNELS];
 
 #endif
 

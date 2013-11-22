@@ -314,34 +314,34 @@ EXTERN unsigned short outputEventExtendRepeatPeriod[MAX_NUMBER_OF_OUTPUT_EVENTS]
 EXTERN unsigned short outputEventDelayFinalPeriod[MAX_NUMBER_OF_OUTPUT_EVENTS];
 EXTERN unsigned long  outputEventDelayTotalPeriod[MAX_NUMBER_OF_OUTPUT_EVENTS];
 
-EXTERN unsigned short outputEventPulseWidthsHolding[INJECTION_CHANNELS];
-EXTERN unsigned char outputEventExtendNumberOfRepeatsHolding[INJECTION_CHANNELS];
-EXTERN unsigned short outputEventExtendRepeatPeriodHolding[INJECTION_CHANNELS];
-EXTERN unsigned short outputEventDelayFinalPeriodHolding[INJECTION_CHANNELS];
+EXTERN unsigned short outputEventPulseWidthsHolding[ECT_OUTPUT_CHANNELS];
+EXTERN unsigned char outputEventExtendNumberOfRepeatsHolding[ECT_OUTPUT_CHANNELS];
+EXTERN unsigned short outputEventExtendRepeatPeriodHolding[ECT_OUTPUT_CHANNELS];
+EXTERN unsigned short outputEventDelayFinalPeriodHolding[ECT_OUTPUT_CHANNELS];
 
-EXTERN unsigned short outputEventPulseWidthsRealtime[INJECTION_CHANNELS];
-EXTERN unsigned char outputEventExtendNumberOfRepeatsRealtime[INJECTION_CHANNELS];
-EXTERN unsigned short outputEventExtendRepeatPeriodRealtime[INJECTION_CHANNELS];
-EXTERN unsigned short outputEventDelayFinalPeriodRealtime[INJECTION_CHANNELS];
+EXTERN unsigned short outputEventPulseWidthsRealtime[ECT_OUTPUT_CHANNELS];
+EXTERN unsigned char outputEventExtendNumberOfRepeatsRealtime[ECT_OUTPUT_CHANNELS];
+EXTERN unsigned short outputEventExtendRepeatPeriodRealtime[ECT_OUTPUT_CHANNELS];
+EXTERN unsigned short outputEventDelayFinalPeriodRealtime[ECT_OUTPUT_CHANNELS];
 
-EXTERN unsigned short injectorMainStartOffsetHolding[INJECTION_CHANNELS];
+EXTERN unsigned short injectorMainStartOffsetHolding[ECT_OUTPUT_CHANNELS];
 
 
 
 /* Register addresses */
-EXTERN volatile unsigned short * volatile injectorMainTimeRegisters[INJECTION_CHANNELS]; // Static during a run, setup at init, shouldn't be in RAM, FIXME
-EXTERN volatile unsigned char * volatile injectorMainControlRegisters[INJECTION_CHANNELS]; // Static during a run, setup at init, shouldn't be in RAM, FIXME
+EXTERN volatile unsigned short * volatile injectorMainTimeRegisters[ECT_OUTPUT_CHANNELS]; // Static during a run, setup at init, shouldn't be in RAM, FIXME
+EXTERN volatile unsigned char * volatile injectorMainControlRegisters[ECT_OUTPUT_CHANNELS]; // Static during a run, setup at init, shouldn't be in RAM, FIXME
 
 
 /* Timer holding vars (init not required) */
-EXTERN unsigned long injectorMainEndTimes[INJECTION_CHANNELS]; // Used for scheduling calculations
+EXTERN unsigned long injectorMainEndTimes[ECT_OUTPUT_CHANNELS]; // Used for scheduling calculations
 /* Channel latencies (init not required) */
-EXTERN unsigned short injectorCodeLatencies[INJECTION_CHANNELS]; // Used for injector control in a dysfunctional way.
+EXTERN unsigned short injectorCodeLatencies[ECT_OUTPUT_CHANNELS]; // Used for injector control in a dysfunctional way.
 
 
 /* Code time to run variables (init not required) */
-EXTERN unsigned short injectorCodeOpenRuntimes[INJECTION_CHANNELS]; // Stats only, remove or change to something accessible
-EXTERN unsigned short injectorCodeCloseRuntimes[INJECTION_CHANNELS]; // Stats only, remove or change to something accessible
+EXTERN unsigned short injectorCodeOpenRuntimes[ECT_OUTPUT_CHANNELS]; // Stats only, remove or change to something accessible
+EXTERN unsigned short injectorCodeCloseRuntimes[ECT_OUTPUT_CHANNELS]; // Stats only, remove or change to something accessible
 
 
 /// @todo TODO Perhaps use some of the space freed by shrinking all timing tables for this:
