@@ -197,6 +197,17 @@ typedef struct { // BIT7 at the top
 } ignitionCutFlags; // BIT0 at the bottom
 
 
+/* Individual fuel channel data that is needed for fuel trim and transient corrections */
+typedef struct {
+	unsigned long  calcTime;             ///< used for TPS and other delta calcs
+	unsigned short throttlePosition;     ///< used for TPS delta calculation
+	unsigned short airFlowCalc;          ///< used for fuel delta calculation
+	unsigned short primaryPulseWidth;    ///< used by the output scheduler
+	unsigned short secondaryPulseWidth;	 ///< used by the output scheduler
+	unsigned char  statusFlags;          ///< flags such as consumed etc
+} individualFuelChannel;
+
+
 #else
 	/* let us know if we are being untidy with headers */
 	#warning "Header file CONTAINER_TYPES_H seen before, sort it out!"
