@@ -154,12 +154,11 @@ void calculateFuelAndIgnition(){
 							   fixedConfigs1.schedulingSettings.numberOfInjectionsPerEngineCycle;
 	KeyUserDebugs.zsp6 = dutyCycle; //TODO add this to the log stream, its been years and still no *official DC in the log, pathetic
 	/* Check Duty Cycle */
-	if(dutyCycle > fixedConfigs1.engineSettings.maxPrimaryDC && CoreVars->RPM > (2000 * 2)){ //TODO remove RPM limit once math is *safe
+	if(dutyCycle > fixedConfigs1.engineSettings.maxPrimaryDC && CoreVars->RPM > (1000 * 2)){ //TODO remove RPM limit once math is *safe
 		if(fixedConfigs1.engineSettings.injectionStrategy == STAGED_EXTENSION){
 			splitFuelPulseWidth(dutyCycle);
 			unsigned short dutyCycleSecondary = ((CoreVars->RPM / 2) * (masterPulseWidthSecondary * 5UL) / RECIPROCAL_TICK_VALUE) / 600UL *
 										   	    fixedConfigs1.schedulingSettings.numberOfInjectionsPerEngineCycle;
-			KeyUserDebugs.zsp6 = dutyCycle; //TODO add this to the log stream, its been years and still no *official DC in the log, pathetic
 			KeyUserDebugs.zsp7 = dutyCycleSecondary; //TODO add this to the log stream, its been years and still no *official DC in the log, pathetic
 			if(dutyCycleSecondary > fixedConfigs1.engineSettings.maxSecondaryDC){
 				/* cut fuel all together */
@@ -170,6 +169,9 @@ void calculateFuelAndIgnition(){
 			masterPulseWidth = 0;
 			masterPulseWidthSecondary = 0;
 		}
+	}else {
+		masterPulseWidthSecondary = 0;
+		KeyUserDebugs.zsp7 = 0; //TODO add this to the log stream, its been years and still no *official DC in the log, pathetic
 	}
 
 //	//Test calcs for staged calcs TODO this is why much of this code-base needs to be refactored its hard to test pieces
