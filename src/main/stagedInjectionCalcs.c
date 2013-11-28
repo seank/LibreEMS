@@ -44,7 +44,7 @@
  * Your new primary PW will be equal to the max duty-cycle allowed. The remaining fuel that needs
  * to be delivered will be spread to the secondary injector. The flow difference between the two
  * injectors will be compensated for. If you exceed your secondary duty-cycle limit no fuel will
- * be scheduled for either injector.
+ * be scheduled from either injector(fuel cut).
  *
  * The accuracy/precision that is achieved via this code is acceptable(~1%), but it could be
  * improved.

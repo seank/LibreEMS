@@ -70,7 +70,7 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		strokesPerCycle:	4,
 		injectorFlow:       CC_PER_MINUTE(425), // http://witchhunter.com/flowdatapix/d3920.jpg
 		secondaryInjectorFlow: CC_PER_MINUTE(230), // http://witchhunter.com/flowdatapix/bcdh210.jpg
-		injectionStrategy: STAGED_EXTENSION,
+		injectionStrategy:  STAGED_EXTENSION,
 		maxPrimaryDC:		DUTYCYCLE(85.00),
 		maxSecondaryDC:		DUTYCYCLE(85.00),
 #elif CONFIG == SLATER_ID

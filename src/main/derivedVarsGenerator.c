@@ -77,11 +77,11 @@ void generateDerivedVars(){
 	}
 
 	/* Look up target Lambda with RPM and Load */
-#if CONFIG == SEANKR1_ID //FIXME temp hack until a real lambda table is built
-	DerivedVars->Lambda = LR(0.80); //From what I read E85 makes best power in the low .8s
-#else
+//#if CONFIG == SEANKR1_ID //FIXME temp hack until a real lambda table is built
+//	DerivedVars->Lambda = LR(0.80); //From what I read E85 makes best power in the low .8s
+//#else
 	DerivedVars->Lambda = lookupMainTable(CoreVars->RPM, DerivedVars->LoadMain, LambdaTableLocationID);
-#endif
+//#endif
 
 	/* Look up injector dead time with battery voltage */
 	DerivedVars->IDT = lookupTwoDTableUS((twoDTableUS*)&TablesA.SmallTablesA.injectorDeadTimeTable, CoreVars->BRV);
