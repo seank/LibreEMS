@@ -1,5 +1,19 @@
 # Top level convenience make file
 
+# Detect windows, set variables to handle platform differences
+ifdef ComSpec
+VAR_SET = SET
+SPECIAL_QUOTE = "
+PATHSEP = \\
+DESCEND = cd src\\main
+else
+VAR_SET = export
+SPECIAL_QUOTE = '
+PATHSEP = /
+DESCEND = cd src/main
+endif
+
+
 Help:
 	@echo
 	@echo "######################## Welcome to FreeEMS! ########################"
@@ -11,43 +25,42 @@ Help:
 	@echo
 	@echo "Options:"
 	@echo
-	@make -qp | awk -F':' '/^[a-zA-Z0-9][^$$#\/\t=]*:([^=]|$$)/ {split($$1,A,/ /);for(i in A)print A[i]}'
+	@make -qp | awk -F':' $(SPECIAL_QUOTE)/^[a-zA-Z0-9][^$$#\/\t=]*:([^=]|$$)/ {split($$1,A,/ /);for(i in A)print A[i]}$(SPECIAL_QUOTE)
 
 TEST_AND_SAVE_ALL:
-	cd src/main; ../../bin/testclibuilds.bash
+	$(DESCEND) && ..$(PATHSEP)..$(PATHSEP)bin$(PATHSEP)testclibuilds.bash
 
 BLANK:
-	cd src/main; make clean s19
+	$(DESCEND) && make clean s19
 
 SPECIAL: # Can use a dependency here instead. 
-	cd src/main; make clean EvenTeeth-Distributor-4of6and1
-
+	$(DESCEND) && make clean EvenTeeth-Distributor-4of6and1
 
 # Other special builds
+BENCHTEST: 
+	$(VAR_SET) CLIFLAGS="DEFAULT" && $(DESCEND) && make clean BenchTest 
+TRUCK: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean MitsiAndMazda-CAS-4and1
+HOTEL: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean HallOrOptical-Distributor-4of69
+PRESTO: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean EvenTeeth-Cam-24and1
+SEANKLT1: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean GM-LT1-CAS-360and8
+SNOTROCKET: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean EvenTeeth-Cam-24and1
+SPUDMN: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean MissingTeeth-Crank-8minus1
+SLATER: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean MissingTeeth-Crank-12minus1
+PETERJSERIES: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean JSeries-12CrankWith6-2Cam
+DEUCECOUPE: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean EvenTeeth-Cam-6and1
+DEUCES10: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean EvenTeeth-Cam-4and1
+PETERTRUCK: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean MissingTeeth-Cam-12minus1
+SCAVENGER: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean MitsiAndMazda-CAS-4and2
 
-BENCHTEST:
-	cd src/main; CLIFLAGS="DEFAULT" make clean BenchTest
-TRUCK:
-	cd src/main; CLIFLAGS="$@" make clean MitsiAndMazda-CAS-4and1
-HOTEL:
-	cd src/main; CLIFLAGS="$@" make clean HallOrOptical-Distributor-4of69
-PRESTO:
-	cd src/main; CLIFLAGS="$@" make clean EvenTeeth-Cam-24and1
-SEANKLT1:
-	cd src/main; CLIFLAGS="$@" make clean GM-LT1-CAS-360and8
-SNOTROCKET:
-	cd src/main; CLIFLAGS="$@" make clean EvenTeeth-Cam-24and1
-SPUDMN:
-	cd src/main; CLIFLAGS="$@" make clean MissingTeeth-Crank-8minus1
-SLATER:
-	cd src/main; CLIFLAGS="$@" make clean MissingTeeth-Crank-12minus1
-PETERJSERIES:
-	cd src/main; CLIFLAGS="$@" make clean JSeries-12CrankWith6-2Cam
-DEUCECOUPE:
-	cd src/main; CLIFLAGS="$@" make clean EvenTeeth-Cam-6and1
-DEUCES10:
-	cd src/main; CLIFLAGS="$@" make clean EvenTeeth-Cam-4and1
-PETERTRUCK:
-	cd src/main; CLIFLAGS="$@" make clean MissingTeeth-Cam-12minus1
-SCAVENGER:
-	cd src/main; CLIFLAGS="$@" make clean MitsiAndMazda-CAS-4and2

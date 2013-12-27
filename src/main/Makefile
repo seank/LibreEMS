@@ -53,18 +53,6 @@
 #                             All Fixed Variables                              #
 ################################################################################
 
-
-# Constants
-FIRMWARE_VERSION := $(shell git describe --dirty=-DEV)
-OUTPREFIX := FreeEMS
-BUILD_DATE := "$(shell date)"
-OS := $(shell uname)
-
-ifdef HASHCHECK
-BUILD_DATE="FIXED_FOR_HASH_CHECK"
-OS="FIXED_FOR_HASH_CHECK"
-endif
-
 # Windows differences
 ifdef ComSpec
 # Windows uses backslash
@@ -87,6 +75,19 @@ MD5SUM = md5 -r
 else
 # If using this on windows, we're in cygwin, same as Linux
 MD5SUM = md5sum
+endif
+
+
+# Constants
+OUTPREFIX := FreeEMS
+ifdef HASHCHECK
+FIRMWARE_VERSION := 0.2.0-FIXED_VERSION_FOR_HASH_CHECK
+BUILD_DATE=FIXED_DATE_FOR_HASH_CHECK
+OS=FIXED_OS_FOR_HASH_CHECK
+else
+FIRMWARE_VERSION := $(shell git describe --dirty=-DEV)
+BUILD_DATE := "$(shell $(PATHSEP)usr$(PATHSEP)bin$(PATHSEP)date)"
+OS := $(shell uname)
 endif
 
 ifdef CLIFLAGS
