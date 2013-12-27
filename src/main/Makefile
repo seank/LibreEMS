@@ -60,6 +60,11 @@ OUTPREFIX := FreeEMS
 BUILD_DATE := "$(shell date)"
 OS := $(shell uname)
 
+ifdef HASHCHECK
+BUILD_DATE="FIXED_FOR_HASH_CHECK"
+OS="FIXED_FOR_HASH_CHECK"
+endif
+
 # Windows differences
 ifdef ComSpec
 # Windows uses backslash
