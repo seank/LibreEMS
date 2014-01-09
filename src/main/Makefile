@@ -273,7 +273,7 @@ GCDDUMMY = $(patsubst $(S19DIR)/%,$(OUTDIR)/%.txt.dummy,$(GCDS19S))
 Listener: $(S19DIR)/$(LABEL)-Listener.s19
 BenchTest: $(S19DIR)/$(LABEL)-BenchTest.s19
 EvenTeeth-Cam-24and1: $(S19DIR)/$(LABEL)-EvenTeeth-Cam-24and1.s19
-EvenTeeth-Cam-16and1: $(S19DIR)/$(LABEL)-EvenTeeth-Cam-16and1.s19
+SEANKR1 EvenTeeth-Cam-16and1: $(S19DIR)/$(LABEL)-EvenTeeth-Cam-16and1.s19
 EvenTeeth-Cam-6and1:  $(S19DIR)/$(LABEL)-EvenTeeth-Cam-6and1.s19
 EvenTeeth-Cam-4and1:  $(S19DIR)/$(LABEL)-EvenTeeth-Cam-4and1.s19
 MissingTeeth-Crank-8minus1:  $(S19DIR)/$(LABEL)-MissingTeeth-Crank-8minus1.s19

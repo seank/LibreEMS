@@ -47,6 +47,8 @@ PRESTO:
 	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean EvenTeeth-Cam-24and1
 SEANKLT1: 
 	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean GM-LT1-CAS-360and8
+SEANKR1: 
+	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean SEANKR1
 SNOTROCKET: 
 	$(VAR_SET) CLIFLAGS="$@" && $(DESCEND) && make clean EvenTeeth-Cam-24and1
 SPUDMN: 
