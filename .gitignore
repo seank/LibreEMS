@@ -37,3 +37,5 @@ src/main/assembly/initialisers/*.s
 *.xcworkspacedata
 *.xcuserstate
 
+# Eclipse files
+.project
