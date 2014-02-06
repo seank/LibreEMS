@@ -1,3 +1,26 @@
+/* LibreEMS - the community driven open source engine management system
+ *
+ * Copyright 2014 Sean Keys
+ *
+ * This file is part of the LibreEMS project.
+ *
+ * FreeEMS software is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeEMS software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with any LibreEMS software.  If not, see http://www.gnu.org/licenses/
+ *
+ * Thank you for choosing LibreEMS to run your engine!
+ */
+
+
 /* FreeEMS - the open source engine management system
  *
  * Copyright 2008-2013 Fred Cooke
@@ -74,25 +97,6 @@
 #include "globalConstants.h"
 
 
-/* Where extern is used instead of EXTERN it indicates that    */
-/* the variable is initialised in staticInit.c, if someone     */
-/* attempts to use extern and doesn't initialise the variable  */
-/* statically then the linker should error on undefined symbol */
-
-
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
-
-
-#ifdef FREEEMS_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
-
-
 /* Types summary
  *
  * BEWARE : Be explicit!!
@@ -110,17 +114,15 @@
 /* GLOBAL Variables */
 // TODO change any of these that need it to volatile!!!
 
-EXTERN unsigned long RPMWeighted;  //Temp place for RPM averaging, needed for MAF at low RPM
+extern unsigned long RPMWeighted;  //Temp place for RPM averaging, needed for MAF at low RPM
 // temporary test vars
-EXTERN unsigned char portHDebounce;
+extern unsigned char portHDebounce;
 
-
-/* Declare instances of variable structs for use */
-EXTERN Clock Clocks;                  ///< Timer Clocks for various functions.
-EXTERN Counter Counters;              ///< Execution count for various blocks of code.
-EXTERN KeyUserDebug KeyUserDebugs;    ///< Formalised key logging vars in one place.
-EXTERN Flaggable Flaggables;          ///< The single instance of our flaggable struct.
-EXTERN Flaggable2 Flaggables2;        ///< The single instance of our flaggable2 struct.
+extern Clock Clocks;                  ///< Timer Clocks for various functions.
+extern Counter Counters;              ///< Execution count for various blocks of code.
+extern KeyUserDebug KeyUserDebugs;    ///< Formalised key logging vars in one place.
+extern Flaggable Flaggables;          ///< The single instance of our flaggable struct.
+extern Flaggable2 Flaggables2;        ///< The single instance of our flaggable2 struct.
 
 /** @page bankedRunningVariables Banked Running Variables
  *
@@ -155,18 +157,18 @@ EXTERN Flaggable2 Flaggables2;        ///< The single instance of our flaggable2
  * tracking and is well worth the extra memory expense and complication.
  */
 
-EXTERN CoreVar* CoreVars; /** Pointer to the core running variables */
-EXTERN CoreVar CoreVars0; /** Bank 0 core running variables */
+extern CoreVar* CoreVars; /** Pointer to the core running variables */
+extern CoreVar CoreVars0; /** Bank 0 core running variables */
 /* If we move to xgate or isr driven logging, add bank 1 back in */
 
-EXTERN DerivedVar* DerivedVars; /** Pointer to the secondary running variables */
-EXTERN DerivedVar DerivedVars0; /** Bank 0 secondary running variables */
+extern DerivedVar* DerivedVars; /** Pointer to the secondary running variables */
+extern DerivedVar DerivedVars0; /** Bank 0 secondary running variables */
 /* If we move to xgate or isr driven logging, add bank 1 back in */
 
-EXTERN ADCBuffer* ADCBuffers;       /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
-EXTERN ADCBuffer* ADCBuffersRecord; /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
-EXTERN ADCBuffer ADCBuffers0;       /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
-EXTERN ADCBuffer ADCBuffers1;       /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
+extern ADCBuffer* ADCBuffers;       /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
+extern ADCBuffer* ADCBuffersRecord; /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
+extern ADCBuffer ADCBuffers0;       /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
+extern ADCBuffer ADCBuffers1;       /** main adc storage area for syncronous sampling in the engine position ISR or injection ISR or ignition ISR etc. */
 
 /*break this on purpose so i fix it later
 #define VETablereference (*((volatile mainTable*)(0x1000)))
@@ -213,18 +215,18 @@ typedef union {
 
 
 /* Large blocks */
-EXTERN unsigned char TXBuffer[TX_BUFFER_SIZE] TXBUF;
-EXTERN unsigned char RXBuffer[RX_BUFFER_SIZE] RXBUF;
-EXTERN Tables1 TablesA RWINDOW;
-EXTERN Tables2 TablesB RWINDOW;
-EXTERN Tables3 TablesC RWINDOW;
-EXTERN Tables4 TablesD RWINDOW;
+extern unsigned char TXBuffer[TX_BUFFER_SIZE] TXBUF;
+extern unsigned char RXBuffer[RX_BUFFER_SIZE] RXBUF;
+extern Tables1 TablesA RWINDOW;
+extern Tables2 TablesB RWINDOW;
+extern Tables3 TablesC RWINDOW;
+extern Tables4 TablesD RWINDOW;
 
 
 /* RAM page variables */
-EXTERN unsigned char currentFuelRPage;
-EXTERN unsigned char currentTuneRPage;
-EXTERN unsigned char currentTimeRPage;
+extern unsigned char currentFuelRPage;
+extern unsigned char currentTuneRPage;
+extern unsigned char currentTimeRPage;
 
 
 /* These are inited once and remain the same, rpage switches change meaning. */
@@ -258,14 +260,14 @@ extern unsigned short masterPulseWidth;
 extern unsigned short masterPulseWidthSecondary;
 extern unsigned short flowDifference;
 
-EXTERN unsigned long bootFuelConst;  /* constant derived from configurable constants */
-EXTERN unsigned short TPSADCRange;   /* The ADC range used to generate TPS percentage */
+extern unsigned long bootFuelConst;  /* constant derived from configurable constants */
+extern unsigned short TPSADCRange;   /* The ADC range used to generate TPS percentage */
 
 
 /* ALL STATUS STUFF HERE */
 
 /* State variables : 0 = false (don't forget to change the init mask to suit!) */
-EXTERN unsigned char coreStatusA;	/* Each bit represents the state of some core parameter, masks below */
+extern unsigned char coreStatusA;	/* Each bit represents the state of some core parameter, masks below */
 /* Bit masks for coreStatusA */ // TODO needs a rename as does coresetingsA
 #define FUEL_PUMP_PRIME BIT0 /* 0 */
 #define STAGED_REQUIRED BIT1 /* 1 Fire the staged injectors */
