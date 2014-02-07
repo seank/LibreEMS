@@ -36,26 +36,8 @@
 #define FILE_BLOCK_DETAILS_LOOKUP_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
+unsigned short lookupBlockDetails(unsigned short, blockDetails*) FPAGE_FE;
 
 
-#ifdef BLOCK_DETAILS_LOOKUP_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
-
-
-EXTERN unsigned short lookupBlockDetails(unsigned short, blockDetails*) FPAGE_FE;
-
-
-#undef EXTERN
-
-#else
-	/* let us know if we are being untidy with headers */
-	#warning "Header file BLOCK_DETAILS_LOOKUP_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif

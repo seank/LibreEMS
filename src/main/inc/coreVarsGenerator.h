@@ -36,27 +36,7 @@
 #define FILE_COREVARSGENERATOR_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
+void generateCoreVars(void) LOOKUPF;
 
-
-#ifdef COREVARSGENERATOR_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
-
-
-EXTERN void generateCoreVars(void) LOOKUPF;
-
-
-#undef EXTERN
-
-
-#else
-	/* let us know if we are being untidy with headers */
-	#warning "Header file COREVARSGENERATOR_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif
