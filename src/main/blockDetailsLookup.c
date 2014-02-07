@@ -58,6 +58,12 @@
  * @return An error code. Zero means success, anything else is a failure.
  */
 unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* details){
+	extern Clock Clocks;
+	extern Counter Counters;
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables; 
+	extern Flaggable2 Flaggables2;
+
 	/* Initialise the four values needed for operations on memory at 0 for error checking */
 	details->RAMPage = 0;
 	details->FlashPage = 0;

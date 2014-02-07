@@ -49,6 +49,9 @@ void perDecoderReset(){
 
 
 void PrimaryRPMISR(){
+	extern Clock Clocks;
+	extern Counter Counters;
+	extern KeyUserDebug KeyUserDebugs;
 	/* Clear the interrupt flag for this input compare channel */
 	TFLG = 0x01;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT0, PORTB);
@@ -175,6 +178,9 @@ void PrimaryRPMISR(){
 
 
 void SecondaryRPMISR(){
+	extern Clock Clocks;
+	extern Counter Counters;
+	extern KeyUserDebug KeyUserDebugs;
 	// Reads the inner slot on the disk.
 
 	/* Clear the interrupt flag for this input compare channel */

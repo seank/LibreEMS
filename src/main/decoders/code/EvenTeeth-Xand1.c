@@ -54,6 +54,9 @@ void perDecoderReset(){} // Nothing special to reset for this code
 
 
 void PrimaryRPMISR(){
+	extern Clock Clocks;
+	extern Counter Counters;
+	extern KeyUserDebug KeyUserDebugs;
 	/* Clear the interrupt flag for this input compare channel */
 	TFLG = 0x01;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT0, PORTB);
@@ -151,6 +154,7 @@ void PrimaryRPMISR(){
 
 
 void SecondaryRPMISR(){
+	extern KeyUserDebug KeyUserDebugs;
 	/* Clear the interrupt flag for this input compare channel */
 	TFLG = 0x02;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT1, PORTB);

@@ -50,6 +50,8 @@
  * @todo TODO Currently not a problem, but as indirectly pointed out by johntramp, if no flag clearing is being done, then this code will run continuously, which is not a good idea...
  */
 void UISR(void){
+	extern Flaggable Flaggables;
+	extern KeyUserDebug KeyUserDebugs;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
 	FLAG_AND_INC_FLAGGABLE(FLAG_CALLS_TO_UISRS_OFFSET);
 	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT7, PORTB);
@@ -62,6 +64,8 @@ void UISR(void){
  * Theoretically this should not happen, and probably indicates a code fault.
  */
 void SpuriousISR(void){
+	extern Flaggable2 Flaggables2;
+	extern KeyUserDebug KeyUserDebugs;
 	// No flag to clear
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
 	FLAG_AND_INC_FLAGGABLE2(FLAG_SPURIOUS_INTERRUPTS_OFFSET);
@@ -74,6 +78,8 @@ void SpuriousISR(void){
  * attempt to execute data instead of code, but could be an assembler issue.
  */
 void UnimplOpcodeISR(void){
+	extern Flaggable2 Flaggables2;
+	extern KeyUserDebug KeyUserDebugs;
 	// No flag to clear
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
 	FLAG_AND_INC_FLAGGABLE2(FLAG_UNIMPLEMENTED_OPCODES_OFFSET);
@@ -85,6 +91,8 @@ void UnimplOpcodeISR(void){
  * If the CPU tries to access protected XGATE RAM, this is fired.
  */
 void RAMViolationISR(void){
+	extern Flaggable2 Flaggables2;
+	extern KeyUserDebug KeyUserDebugs;
 	// Clear the flag
 	RAMWPC = AVIF;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
@@ -97,6 +105,8 @@ void RAMViolationISR(void){
  * If buggy code is being executed on the XGATE, this may fire alerting us to it.
  */
 void XGATEErrorISR(void){
+	extern Flaggable2 Flaggables2;
+	extern KeyUserDebug KeyUserDebugs;
 	// Clear the flag
 	XGMCTL = (XGSWEIFM | XGSWEIF);
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
@@ -109,6 +119,8 @@ void XGATEErrorISR(void){
  * When the Phase Locked Loop is lost or gained, this is called.
  */
 void PLLLockISR(void){
+	extern KeyUserDebug KeyUserDebugs; 
+	extern Flaggable Flaggables;  
 	// Clear the flag
 	CRGFLG = PLLLOCKIF;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
@@ -143,6 +155,8 @@ void PLLLockISR(void){
  * See section 2.6.3 of the device manual for more information.
  */
 void SelfClockISR(void){
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables;
 	// Clear the flag
 	CRGFLG = SCMIF;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
@@ -172,6 +186,8 @@ void SelfClockISR(void){
  */
 void PortPISR(void){
 	/* Clear all port P flags (we only want one at a time) */
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables;
 	PIFP = ONES;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
 	FLAG_AND_INC_FLAGGABLE(FLAG_CALLS_TO_UISRS_OFFSET);
@@ -184,6 +200,8 @@ void PortPISR(void){
  * Interrupt handler for edge events on port J pins. Not currently used.
  */
 void PortJISR(void){
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables;
 	/* Clear all port H flags (we only want one at a time) */
 	PIFJ = ONES;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
@@ -198,6 +216,9 @@ void PortJISR(void){
  */
 void PortHISR(void)
 {
+	extern unsigned char portHDebounce;
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables;
 //	// read the interrupt flags to a variable
 //	unsigned char portHFlags = PIFH;
 //	portHFlags &= 0xF8; // mask out the other bits
@@ -290,6 +311,8 @@ void PortHISR(void)
 void IRQISR(void){
 	/* Clear the flag */
 	// ?? TODO
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
 	FLAG_AND_INC_FLAGGABLE(FLAG_CALLS_TO_UISRS_OFFSET);
 	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT7, PORTB);
@@ -303,6 +326,8 @@ void IRQISR(void){
 void XIRQISR(void){
 	/* Clear the flag */
 	// ?? TODO
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT7, PORTB);
 	FLAG_AND_INC_FLAGGABLE(FLAG_CALLS_TO_UISRS_OFFSET);
 	DEBUG_TURN_PIN_OFF(DECODER_BENCHMARKS, NBIT7, PORTB);
@@ -314,6 +339,8 @@ void XIRQISR(void){
  * Count how often our voltage drops lower than it should without resetting.
  */
 void LowVoltageISR(void){
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables;
 	/* Clear the flag */
 	VREGCTRL |= 0x01;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT6, PORTB);

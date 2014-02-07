@@ -46,6 +46,8 @@
  * tooth delay any given event should used based on the configuration provided.
  */
 void scheduleOutputs(){
+	extern Counter Counters;
+	extern KeyUserDebug KeyUserDebugs;
         /// TODO @todo FIXME part of to schedule or not to schedule should be : (masterPulseWidth > injectorMinimumPulseWidth)
         // IE, NOT in the decoders... KISS in the decoders. This is a hangover from (very) early decoder dev
 

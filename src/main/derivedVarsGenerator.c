@@ -50,6 +50,8 @@
  * temperature enrichment, Injector dead time, etc.
  */
 void generateDerivedVars(){
+	extern unsigned long RPMWeighted;
+	extern KeyUserDebug KeyUserDebugs;
 	/* Determine load based on options */
 	if(!(fixedConfigs2.algorithmSettings.loadType)){ /* Use MAP as load */
 		DerivedVars->LoadMain = CoreVars->MAP;

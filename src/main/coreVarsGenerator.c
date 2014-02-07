@@ -48,6 +48,7 @@
  * and used as input to the next phase.
  */
 void generateCoreVars(){
+	extern unsigned long RPMWeighted;
 	// Battery Reference Voltage
 	unsigned short localBRV;
 	if(!(fixedConfigs2.sensorSources.BRV)){

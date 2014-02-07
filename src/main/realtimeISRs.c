@@ -50,6 +50,8 @@
  * tasks that run quickly and must be done on time.
  */
 void RTIISR(){
+	extern Clock Clocks;
+	extern unsigned char portHDebounce;
 	/* Clear the RTI flag */
 	CRGFLG = 0x80;
 

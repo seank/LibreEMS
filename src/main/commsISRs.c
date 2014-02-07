@@ -110,6 +110,8 @@ void resetReceiveState(unsigned char sourceIDState){
  * @todo TODO Fix the init code such that this doesn't run at boot without a serail device attached. Clear buffer maybe? or flag clearing/isr enabling ordering?
  */
 void SCI0ISR(){
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables; 
 	// OK before flag reading because cleared when SCI0DRL accessed (R or W)
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT4, PORTB);
 

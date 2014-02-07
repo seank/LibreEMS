@@ -61,6 +61,8 @@
  * the configured length. If changing this, update the maxBasicDatalogLength.
  */
 unsigned short populateBasicDatalog(){
+	extern Clock Clocks;
+	extern KeyUserDebug KeyUserDebugs;
 	/// @todo TODO setup proper sequence and clock with some sort of differential measurement log to log. insert in front of actual data because these are part of the log itself.
 
 //	KeyUserDebugs.zsp10 = Counters.pinScheduledWithTimerExtension;
@@ -209,6 +211,11 @@ void finaliseAndSend(unsigned short errorID){
  * main loop code. The vast majority of communications action happens here.
  */
 void decodePacketAndRespond(){
+	extern Clock Clocks;
+	extern Counter Counters;
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables;
+	extern Flaggable2 Flaggables2;
 	/* Extract and build up the header fields */
 	TXBufferCurrentPositionHandler = (unsigned char*)&TXBuffer;
 

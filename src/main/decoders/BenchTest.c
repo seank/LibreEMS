@@ -83,6 +83,8 @@ const unsigned char eventValidForCrankSync[] = {0}; // no events really...
  * - Time units
  */
 void PrimaryRPMISR(){
+	extern Clock Clocks;
+	extern KeyUserDebug KeyUserDebugs;
 	TFLG = 0x01;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT0, PORTB);
 

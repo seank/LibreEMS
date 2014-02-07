@@ -114,15 +114,6 @@
 /* GLOBAL Variables */
 // TODO change any of these that need it to volatile!!!
 
-extern unsigned long RPMWeighted;  //Temp place for RPM averaging, needed for MAF at low RPM
-// temporary test vars
-extern unsigned char portHDebounce;
-
-extern Clock Clocks;                  ///< Timer Clocks for various functions.
-extern Counter Counters;              ///< Execution count for various blocks of code.
-extern KeyUserDebug KeyUserDebugs;    ///< Formalised key logging vars in one place.
-extern Flaggable Flaggables;          ///< The single instance of our flaggable struct.
-extern Flaggable2 Flaggables2;        ///< The single instance of our flaggable2 struct.
 
 /** @page bankedRunningVariables Banked Running Variables
  *
@@ -172,7 +163,7 @@ extern ADCBuffer ADCBuffers1;       /** main adc storage area for syncronous sam
 
 /*break this on purpose so i fix it later
 #define VETablereference (*((volatile mainTable*)(0x1000)))
-EXTERN const mainTable *VETableRef;
+extern const mainTable *VETableRef;
 PLUS
 const volatile mainTable *VETableRef = (volatile mainTable*)0x1000;
 broken too, need to research how to do this.
@@ -182,7 +173,7 @@ see line 80 or so from inc/injectorISR.c for array of pointer use. the above may
 
 /* Potentially pointers for data in RAM depending on how it gets implemented */
 // volatile ??
-//EXTERN tunableConfig tunableConfigs;
+//extern tunableConfig tunableConfigs;
 
 /* Layout the tunable copies and buffers in RAM space */
 
@@ -232,24 +223,24 @@ extern unsigned char currentTimeRPage;
 /* These are inited once and remain the same, rpage switches change meaning. */
 
 ///* Pointers to main tables to aid readability */
-//EXTERN mainTable* VETableMain;
-//EXTERN mainTable* VETableSecondary;
-//EXTERN mainTable* AirflowTable;
-//EXTERN mainTable* LambdaTable;
+//extern mainTable* VETableMain;
+//extern mainTable* VETableSecondary;
+//extern mainTable* AirflowTable;
+//extern mainTable* LambdaTable;
 //
-//EXTERN mainTable* IgnitionAdvanceTableMain;
-//EXTERN mainTable* IgnitionAdvanceTableSecondary;
-//EXTERN mainTable* InjectionAdvanceTableMain;
-//EXTERN mainTable* InjectionAdvanceTableSecondary;
+//extern mainTable* IgnitionAdvanceTableMain;
+//extern mainTable* IgnitionAdvanceTableSecondary;
+//extern mainTable* InjectionAdvanceTableMain;
+//extern mainTable* InjectionAdvanceTableSecondary;
 //
 ///* Pointers to SmallTablesA */
-//EXTERN twoDTableUS* dwellDesiredVersusVoltageTable;
-//EXTERN twoDTableUS* injectorDeadTimeTable;
-//EXTERN twoDTableUS* postStartEnrichmentTable;
-//EXTERN twoDTableUS* engineTempEnrichmentTableFixed;
-//EXTERN twoDTableUS* primingVolumeTable;
-//EXTERN twoDTableUS* engineTempEnrichmentTablePercent;
-//EXTERN twoDTableUS* dwellVersusRPMTable;
+//extern twoDTableUS* dwellDesiredVersusVoltageTable;
+//extern twoDTableUS* injectorDeadTimeTable;
+//extern twoDTableUS* postStartEnrichmentTable;
+//extern twoDTableUS* engineTempEnrichmentTableFixed;
+//extern twoDTableUS* primingVolumeTable;
+//extern twoDTableUS* engineTempEnrichmentTablePercent;
+//extern twoDTableUS* dwellVersusRPMTable;
 /* Pointers to SmallTablesB */
 /* Pointers to SmallTablesC */
 /* Pointers to SmallTablesD */
@@ -337,11 +328,5 @@ typedef union { /* Declare Union http://www.esacademy.com/faq/docs/cpointers/str
 #endif
 
 
-#undef EXTERN
-
-
-#else
-	/* let us know if we are being untidy with headers */
-	#warning "Header file FREEEMS_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif

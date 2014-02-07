@@ -67,6 +67,7 @@
  * place to do so.
  */
 void InjectorXISR(){
+	extern Counter Counters;
 	/* Clear the interrupt flag for this channel */
 	TFLG = INJECTOR_MAIN_ON_MASK;
 

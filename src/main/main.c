@@ -55,6 +55,7 @@
  * the latency low without starving any particular blocks of CPU time.
  */
 int  main(){ /// @todo TODO maybe move this to paged flash ?
+	extern Counter Counters;
 	// Set everything up.
 	init();
 

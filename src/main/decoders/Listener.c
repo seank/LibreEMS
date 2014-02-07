@@ -58,6 +58,8 @@ const unsigned char eventValidForCrankSync[] = {0}; // no events really...
 
 /* Keep disabling calcs as often as we can. */
 void PrimaryRPMISR(){
+	extern Clock Clocks;
+	extern KeyUserDebug KeyUserDebugs;
 	/* Clear the interrupt flag for this input compare channel */
 	TFLG = 0x01;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT0, PORTB);
@@ -71,6 +73,8 @@ void PrimaryRPMISR(){
 
 /* Keep disabling calcs as often as we can. */
 void SecondaryRPMISR(){
+	extern Clock Clocks;
+	extern KeyUserDebug KeyUserDebugs;
 	/* Clear the interrupt flag for this input compare channel */
 	TFLG = 0x02;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT1, PORTB);
