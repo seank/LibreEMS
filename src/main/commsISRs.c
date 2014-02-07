@@ -52,6 +52,9 @@
  * see the following URL for more info on inline functions :  *
  * http://gcc.gnu.org/onlinedocs/gcc-3.3.6/Inline.html#Inline */
 
+/* Global variables */
+unsigned char    TXByteEscaped;                                          
+
 
 /** @brief Reset Receive State
  *
