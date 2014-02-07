@@ -37,18 +37,6 @@
 #define FILE_XGATEVECTORS_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
-
-
-#ifdef XGATEVECTORS_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
-
 #define START_OF_FLASH_WINDOW	(unsigned short*)0x8000 /* 16KB long */
 #define START_OF_RAM_WINDOW		(unsigned short*)0x1000 /* 4KB long */
 #define XGATE_RAM_ALLOCATION_SIZE	0x0800 /* 2 KBytes */
@@ -70,7 +58,7 @@ typedef struct {
 } xgateIntVector;
 
 // This statement imports the symbol from the xgate ASM for use in the vector table
-extern void xgateSchedule(); // extern not EXTERN because it is defined outside of C
+extern void xgateSchedule(); 
 extern void xgatePITTurnOff();
 extern void xgatePITBangLoop();
 extern void xgateMetronome();
@@ -110,15 +98,10 @@ extern void xGSFlags();
 extern void xgsNumOfEventsToSchedule();
 //extern void parameterGuard(); /* counter that gets update when a write to shared RAM begins and again when the write is complete */
 
-EXTERN const xgateIntVector xgateIntVectorTable[121];
-
 
 // Xgate control value
 #define XGATE_ERROR_HANDLER 0x0000 /* TODO Create the XGATE error handling thread in asm. */
 
 
-#else
-        /* let us know if we are being untidy with headers */
-        #warning "Header file XGATEVECTORS_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif
