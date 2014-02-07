@@ -36,44 +36,22 @@
 #define FILE_TABLELOOKUP_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
-
-
-#ifdef TABLELOOKUP_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
-
-
-EXTERN unsigned short lookupTwoDTableUS(twoDTableUS *, unsigned short) TEXT;
-EXTERN unsigned short lookupTwoDTableUSV(twoDTableUSMAF *, unsigned short, unsigned char) TEXT;
-EXTERN unsigned long lookupTwoDTableUL(twoDTableUL *, unsigned short, unsigned char) TEXT;
-EXTERN unsigned short lookupMainTable(unsigned short, unsigned short, unsigned short) TEXT;
-
-
-EXTERN unsigned short validateTwoDTable(twoDTableUS*) TEXT;
-EXTERN unsigned short validateMainTable(mainTable*) TEXT;
+unsigned short lookupTwoDTableUS(twoDTableUS *, unsigned short) TEXT;
+unsigned short lookupTwoDTableUSV(twoDTableUSMAF *, unsigned short, unsigned char) TEXT;
+unsigned long lookupTwoDTableUL(twoDTableUL *, unsigned short, unsigned char) TEXT;
+unsigned short lookupMainTable(unsigned short, unsigned short, unsigned short) TEXT;
+unsigned short validateTwoDTable(twoDTableUS*) TEXT;
+unsigned short validateMainTable(mainTable*) TEXT;
 
 
 /* These might change or might stay the same, so keeping for now */
-//EXTERN unsigned short lookup16Bit3dUS(unsigned short*, unsigned short, unsigned short, unsigned short*, unsigned short*, unsigned char, unsigned char); bad wrong.
-//EXTERN unsigned char lookup8Bit2dUC(void);
-//EXTERN unsigned char lookup8Bit3dUC(void);
-//EXTERN signed short lookup16Bit3D(void);
-//EXTERN signed char lookup8Bit3D(void);
-//EXTERN signed short lookup16Bit2D(void);
-//EXTERN signed char lookup8Bit2D(void);
+//unsigned short lookup16Bit3dUS(unsigned short*, unsigned short, unsigned short, unsigned short*, unsigned short*, unsigned char, unsigned char); bad wrong.
+//unsigned char lookup8Bit2dUC(void);
+//unsigned char lookup8Bit3dUC(void);
+//signed short lookup16Bit3D(void);
+//signed char lookup8Bit3D(void);
+//signed short lookup16Bit2D(void);
+//signed char lookup8Bit2D(void);
 
-
-#undef EXTERN
-
-
-#else
-	/* let us know if we are being untidy with headers */
-	#warning "Header file TABLELOOKUP_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif
