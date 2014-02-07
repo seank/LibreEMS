@@ -54,6 +54,19 @@
 #include <string.h> /// @todo TODO this is pulling in the system string.h not the m68hc1x version, and functions other than memcpy do not work because they are not in crt1.o or other included-by-default libs
 #include "decoders/inc/BenchTest.h"
 
+/* Global Comms Variables */
+unsigned char  RXBufferContentSourceID;
+unsigned char* RXBufferCurrentPosition; 
+unsigned short RXCalculatedPayloadLength;
+unsigned char  RXHeaderFlags;
+unsigned short RXHeaderPayloadID;
+unsigned short RXHeaderPayloadLength;
+unsigned char  RXStateFlags;
+unsigned char* TXHeaderFlags;
+unsigned char* TXBufferCurrentPositionCAN0;
+unsigned char* TXBufferCurrentPositionHandler;
+unsigned char* TXBufferCurrentPositionSCI0;
+unsigned char  TXBufferInUseFlags;
 
 /** @brief Populate a basic datalog packet
  *
@@ -63,6 +76,7 @@
 unsigned short populateBasicDatalog(){
 	extern Clock Clocks;
 	extern KeyUserDebug KeyUserDebugs;
+
 	/// @todo TODO setup proper sequence and clock with some sort of differential measurement log to log. insert in front of actual data because these are part of the log itself.
 
 //	KeyUserDebugs.zsp10 = Counters.pinScheduledWithTimerExtension;
@@ -216,6 +230,7 @@ void decodePacketAndRespond(){
 	extern KeyUserDebug KeyUserDebugs;
 	extern Flaggable Flaggables;
 	extern Flaggable2 Flaggables2;
+
 	/* Extract and build up the header fields */
 	TXBufferCurrentPositionHandler = (unsigned char*)&TXBuffer;
 

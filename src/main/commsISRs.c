@@ -65,6 +65,9 @@ unsigned char    TXByteEscaped;
  * @param sourceIDState is the state to apply to the RX buffer state variable.
  */
 void resetReceiveState(unsigned char sourceIDState){
+	extern unsigned char* RXBufferCurrentPosition; 
+	extern unsigned char  RXStateFlags;
+	extern unsigned char RXBufferContentSourceID;
 	/* Set the receive buffer pointer to the beginning */
 	RXBufferCurrentPosition = (unsigned char*)&RXBuffer;
 
@@ -112,6 +115,14 @@ void resetReceiveState(unsigned char sourceIDState){
 void SCI0ISR(){
 	extern KeyUserDebug KeyUserDebugs;
 	extern Flaggable Flaggables; 
+	extern unsigned char RXBufferContentSourceID;
+	extern unsigned char* RXBufferCurrentPosition;
+	extern unsigned char  RXStateFlags;
+	extern unsigned char* TXBufferCurrentPositionSCI0;
+	extern unsigned char* TXBufferCurrentPositionHandler;
+	extern unsigned char TXBufferInUseFlags;
+
+
 	// OK before flag reading because cleared when SCI0DRL accessed (R or W)
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT4, PORTB);
 

@@ -56,6 +56,11 @@
  */
 int  main(){ /// @todo TODO maybe move this to paged flash ?
 	extern Counter Counters;
+	extern unsigned char TXBufferInUseFlags;
+	extern unsigned char  RXStateFlags;
+	extern unsigned char* TXBufferCurrentPositionHandler;                         
+	extern unsigned char* TXBufferCurrentPositionCAN0;
+	extern unsigned char* TXBufferCurrentPositionSCI0;
 	// Set everything up.
 	init();
 
