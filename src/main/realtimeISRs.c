@@ -52,6 +52,7 @@
 void RTIISR(){
 	extern Clock Clocks;
 	extern unsigned char portHDebounce;
+	extern const volatile fixedConfig2 fixedConfigs2;
 	/* Clear the RTI flag */
 	CRGFLG = 0x80;
 

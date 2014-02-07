@@ -80,6 +80,8 @@ void PrimaryRPMISR(){
 	extern Clock Clocks;
 	extern Counter Counters;
 	extern KeyUserDebug KeyUserDebugs;
+	extern const volatile fixedConfig1 fixedConfigs1;                                                                                                
+	extern const volatile fixedConfig2 fixedConfigs2;
 	/* Clear the interrupt flag for this input compare channel */
 	TFLG = 0x01;
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT0, PORTB);

@@ -63,6 +63,10 @@ unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* detai
 	extern KeyUserDebug KeyUserDebugs;
 	extern Flaggable Flaggables; 
 	extern Flaggable2 Flaggables2;
+	extern const volatile fixedConfig1 fixedConfigs1;
+	extern const volatile fixedConfig2 fixedConfigs2;
+	extern const volatile unsigned short IATTransferTable[1024]; /* 2k */                                                                            
+	extern const volatile unsigned short CHTTransferTable[1024];
 
 	/* Initialise the four values needed for operations on memory at 0 for error checking */
 	details->RAMPage = 0;

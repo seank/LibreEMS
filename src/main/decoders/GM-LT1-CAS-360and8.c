@@ -116,6 +116,7 @@ void PrimaryRPMISR(void){
 	extern Clock Clocks;
 	extern Counter Counters;
 	extern KeyUserDebug KeyUserDebugs;
+	extern const volatile fixedConfig1 fixedConfigs1;                                                                                                
 	/* Clear the interrupt flag for this input compare channel */
 	TFLG = 0x01;
 	// Grab this first as it is the most critical var in this decoder

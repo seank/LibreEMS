@@ -230,6 +230,13 @@ void decodePacketAndRespond(){
 	extern KeyUserDebug KeyUserDebugs;
 	extern Flaggable Flaggables;
 	extern Flaggable2 Flaggables2;
+	extern const unsigned char interfaceVersion[INTERFACE_VERSION_LENGTH];
+	extern const unsigned char firmwareVersion[FIRMWARE_VERSION_LENGTH];
+	extern const unsigned char buildTimeAndDate[FIRMWARE_BUILD_DATE_LENGTH];
+	extern const unsigned char compilerVersion[COMPILER_VERSION_LENGTH];
+	extern const unsigned char operatingSystem[OPERATING_SYSTEM_LENGTH]; 
+	extern const unsigned short injectorSwitchOnCodeTime;                                                                                            
+
 
 	/* Extract and build up the header fields */
 	TXBufferCurrentPositionHandler = (unsigned char*)&TXBuffer;

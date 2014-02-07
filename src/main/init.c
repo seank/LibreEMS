@@ -152,6 +152,7 @@ void initADC(){
 
 /// Set up the PWM module from configuration
 void initPWM(){
+	extern const volatile fixedConfig2 fixedConfigs2;   
 	/* TODO PWM channel concatenation for high resolution */
 	// join channel pairs together here (needs 16 bit regs enabled too)
 	/* TODO Initialise pwm channels with frequency, and initial duty for real use */
@@ -188,6 +189,7 @@ void initPWM(){
 
 /// Set up all the pin states as per configuration, but protect key states.
 void initGPIO(){
+	extern const volatile fixedConfig2 fixedConfigs2;   
 	// Set the initial pin state of pins configured as output
 	PORTA = fixedConfigs2.inputOutputSettings.PortInitialValueA | BIT6 | BIT7; // Mask the fuel pump relay and CEL pins on
 	PORTB = fixedConfigs2.inputOutputSettings.PortInitialValueB;
@@ -227,6 +229,10 @@ void initGPIO(){
  * Save pointers to the lookup tables which live in paged flash.
  */
 void initLookupAddresses(){
+	extern const volatile unsigned short IATTransferTable[]; /* 2k */                                                                            
+	extern const volatile unsigned short CHTTransferTable[]; /* 2k */
+	extern const volatile unsigned short MAFTransferTable[]; /* 2k */
+	extern const volatile unsigned char TestTransferTable[];
 	IATTransferTableLocation = (void*)&IATTransferTable;
 	CHTTransferTableLocation = (void*)&CHTTransferTable;
 	MAFTransferTableLocation = (void*)&MAFTransferTable;
@@ -239,6 +245,15 @@ void initLookupAddresses(){
  * Save pointers to the fuel tables which live in paged flash.
  */
 void initFuelAddresses(){
+	extern const volatile mainTable VETableMainFlash;                                                                                                
+	extern const volatile mainTable VETableSecondaryFlash;
+	extern const volatile mainTable AirflowTableFlash;
+	extern const volatile mainTable LambdaTableFlash;
+	extern const volatile mainTable VETableMainFlash2;
+	extern const volatile mainTable VETableSecondaryFlash2;
+	extern const volatile mainTable AirflowTableFlash2;
+	extern const volatile mainTable LambdaTableFlash2;
+
 	/* Setup addresses within the page to avoid warnings */
 	VETableMainFlashLocation       = (void*)&VETableMainFlash;
 	VETableSecondaryFlashLocation  = (void*)&VETableSecondaryFlash;
@@ -275,6 +290,14 @@ void initPagedRAMFuel(void){
  * Save pointers to the timing tables which live in paged flash.
  */
 void initTimingAddresses(){
+	extern const volatile mainTable IgnitionAdvanceTableMainFlash;
+	extern const volatile mainTable IgnitionAdvanceTableSecondaryFlash;
+	extern const volatile mainTable InjectionAdvanceTableMainFlash;
+	extern const volatile mainTable InjectionAdvanceTableSecondaryFlash;
+	extern const volatile mainTable IgnitionAdvanceTableMainFlash2;
+	extern const volatile mainTable IgnitionAdvanceTableSecondaryFlash2;
+	extern const volatile mainTable InjectionAdvanceTableMainFlash2;
+	extern const volatile mainTable InjectionAdvanceTableSecondaryFlash2;
 	/* Setup addresses within the page to avoid warnings */
 	IgnitionAdvanceTableMainFlashLocation        = (void*)&IgnitionAdvanceTableMainFlash;
 	IgnitionAdvanceTableSecondaryFlashLocation   = (void*)&IgnitionAdvanceTableSecondaryFlash;
@@ -313,6 +336,15 @@ void initPagedRAMTime(){
  */
 void initTunableAddresses(){
 	/* Setup addresses within the page to avoid warnings */
+	extern const volatile SmallTables1 SmallTablesAFlash;
+	extern const volatile SmallTables2 SmallTablesBFlash;
+	extern const volatile SmallTables3 SmallTablesCFlash;
+	extern const volatile SmallTables4 SmallTablesDFlash;
+	extern const volatile SmallTables1 SmallTablesAFlash2;
+	extern const volatile SmallTables2 SmallTablesBFlash2;
+	extern const volatile SmallTables3 SmallTablesCFlash2;
+	extern const volatile SmallTables4 SmallTablesDFlash2;
+
 	SmallTablesAFlashLocation  = (void*)&SmallTablesAFlash;
 	SmallTablesBFlashLocation  = (void*)&SmallTablesBFlash;
 	SmallTablesCFlashLocation  = (void*)&SmallTablesCFlash;
@@ -603,6 +635,8 @@ void initPITTimer(){
 
 /* Setup the sci module(s) that we need to use. */
 void initSCIStuff(){
+	extern const volatile fixedConfig1 fixedConfigs1;
+
 	/* The alternative register set selector defaults to zero */
 
 	// set the baud/data speed
@@ -647,6 +681,10 @@ void initSCIStuff(){
 
 /* TODO Load and calculate all configuration data required to run */
 void initConfiguration(){
+	extern const volatile fixedConfig1 fixedConfigs1;
+	extern const volatile fixedConfig2 fixedConfigs2;
+	extern const unsigned long masterFuelConstant;                                                                                                   
+
 //	// TODO Calc TPS ADC range on startup or every time? this depends on whether we ensure that things work without a re init or reset or not.
 
 
