@@ -36,19 +36,6 @@
 #define FILE_FLASHWRITE_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
-
-
-#ifdef FLASHWRITE_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
-
-
 /// @todo TODO add mass erase function and replace ?? with the real value
 #define MASS_ERASE   0x?? /* Used to erase 128k flash blocks */
 #define WORD_PROGRAM 0x20 /* Word = 2 bytes, this is the minimum write size, 64K of these per block, 512 per sector	*/
@@ -57,18 +44,10 @@
 
 
 /* The following code must run from unpaged space for obvious reasons. Location explicitly set to text. */
-EXTERN unsigned short writeWord(unsigned short*, unsigned short) TEXT;
-EXTERN unsigned short eraseSector(unsigned char, unsigned short*) TEXT;
-EXTERN unsigned short writeSector(unsigned char, unsigned short*, unsigned char, unsigned short*) TEXT;
-EXTERN unsigned short writeBlock(blockDetails*, void*) TEXT;
+unsigned short writeWord(unsigned short*, unsigned short) TEXT;
+unsigned short eraseSector(unsigned char, unsigned short*) TEXT;
+unsigned short writeSector(unsigned char, unsigned short*, unsigned char, unsigned short*) TEXT;
+unsigned short writeBlock(blockDetails*, void*) TEXT;
 
-
-#undef EXTERN
-
-
-#else
-	/* let us know ifunsigned short writeBlock(unsigned short* flashAddr, unsigned short* RAMAddr, unsigned short size){
-	 *  we are being untidy with headers */
-	#warning "Header file FLASHWRITE_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif
