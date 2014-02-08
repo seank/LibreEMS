@@ -45,7 +45,6 @@
 #include "inc/interrupts.h"
 #include "inc/utils.h"
 #include "inc/commsISRs.h"
-#include "inc/pagedLocationBuffers.h"
 #include "inc/init.h"
 #include "inc/decoderInterface.h"
 #include "inc/xgateVectors.h"
@@ -233,6 +232,10 @@ void initLookupAddresses(){
 	extern const volatile unsigned short CHTTransferTable[]; /* 2k */
 	extern const volatile unsigned short MAFTransferTable[]; /* 2k */
 	extern const volatile unsigned char TestTransferTable[];
+	extern void* IATTransferTableLocation;
+	extern void* CHTTransferTableLocation;
+	extern void* MAFTransferTableLocation;
+	extern void* TestTransferTableLocation;
 	IATTransferTableLocation = (void*)&IATTransferTable;
 	CHTTransferTableLocation = (void*)&CHTTransferTable;
 	MAFTransferTableLocation = (void*)&MAFTransferTable;
@@ -253,6 +256,14 @@ void initFuelAddresses(){
 	extern const volatile mainTable VETableSecondaryFlash2;
 	extern const volatile mainTable AirflowTableFlash2;
 	extern const volatile mainTable LambdaTableFlash2;
+	extern void* VETableMainFlashLocation;
+	extern void* VETableMainFlash2Location;
+	extern void* VETableSecondaryFlashLocation;
+	extern void* VETableSecondaryFlash2Location;
+	extern void* AirflowTableFlashLocation;
+	extern void* AirflowTableFlash2Location;
+	extern void* LambdaTableFlashLocation;
+	extern void* LambdaTableFlash2Location;
 
 	/* Setup addresses within the page to avoid warnings */
 	VETableMainFlashLocation       = (void*)&VETableMainFlash;
@@ -271,6 +282,14 @@ void initFuelAddresses(){
  * Initialises the fuel tables in RAM by copying them up from flash.
  */
 void initPagedRAMFuel(void){
+	extern void* VETableMainFlashLocation;
+	extern void* VETableMainFlash2Location;
+	extern void* VETableSecondaryFlashLocation;
+	extern void* VETableSecondaryFlash2Location;
+	extern void* AirflowTableFlashLocation;
+	extern void* AirflowTableFlash2Location;
+	extern void* LambdaTableFlashLocation;
+	extern void* LambdaTableFlash2Location;
 	/* Copy the tables from flash to RAM */
 	RPAGE = RPAGE_FUEL_ONE;
 	memcpy((void*)&TablesA, VETableMainFlashLocation,       sizeof(mainTable));
@@ -298,6 +317,14 @@ void initTimingAddresses(){
 	extern const volatile mainTable IgnitionAdvanceTableSecondaryFlash2;
 	extern const volatile mainTable InjectionAdvanceTableMainFlash2;
 	extern const volatile mainTable InjectionAdvanceTableSecondaryFlash2;
+	extern void* IgnitionAdvanceTableMainFlashLocation;
+	extern void* IgnitionAdvanceTableMainFlash2Location;
+	extern void* IgnitionAdvanceTableSecondaryFlashLocation;
+	extern void* IgnitionAdvanceTableSecondaryFlash2Location;
+	extern void* InjectionAdvanceTableMainFlashLocation;
+	extern void* InjectionAdvanceTableMainFlash2Location;
+	extern void* InjectionAdvanceTableSecondaryFlashLocation;
+	extern void* InjectionAdvanceTableSecondaryFlash2Location;
 	/* Setup addresses within the page to avoid warnings */
 	IgnitionAdvanceTableMainFlashLocation        = (void*)&IgnitionAdvanceTableMainFlash;
 	IgnitionAdvanceTableSecondaryFlashLocation   = (void*)&IgnitionAdvanceTableSecondaryFlash;
@@ -315,6 +342,14 @@ void initTimingAddresses(){
  * Initialises the timing tables in RAM by copying them up from flash.
  */
 void initPagedRAMTime(){
+	extern void* IgnitionAdvanceTableMainFlashLocation;
+	extern void* IgnitionAdvanceTableMainFlash2Location;
+	extern void* IgnitionAdvanceTableSecondaryFlashLocation;
+	extern void* IgnitionAdvanceTableSecondaryFlash2Location;
+	extern void* InjectionAdvanceTableMainFlashLocation;
+	extern void* InjectionAdvanceTableMainFlash2Location;
+	extern void* InjectionAdvanceTableSecondaryFlashLocation;
+	extern void* InjectionAdvanceTableSecondaryFlash2Location;
 	/* Copy the tables from flash to RAM */
 	RPAGE = RPAGE_TIME_ONE;
 	memcpy((void*)&TablesA, IgnitionAdvanceTableMainFlashLocation,        sizeof(mainTable));
@@ -344,6 +379,48 @@ void initTunableAddresses(){
 	extern const volatile SmallTables2 SmallTablesBFlash2;
 	extern const volatile SmallTables3 SmallTablesCFlash2;
 	extern const volatile SmallTables4 SmallTablesDFlash2;
+	/* Tunable blocks */
+	extern void* SmallTablesAFlashLocation;
+	extern void* SmallTablesAFlash2Location;
+	extern void* SmallTablesBFlashLocation;
+	extern void* SmallTablesBFlash2Location;
+	extern void* SmallTablesCFlashLocation;
+	extern void* SmallTablesCFlash2Location;
+	extern void* SmallTablesDFlashLocation;
+	extern void* SmallTablesDFlash2Location;
+	/* Small chunks of TablesA here */
+	extern void* dwellDesiredVersusVoltageTableLocation;
+	extern void* dwellDesiredVersusVoltageTable2Location;
+	extern void* injectorDeadTimeTableLocation;
+	extern void* injectorDeadTimeTable2Location;
+	extern void* postStartEnrichmentTableLocation;
+	extern void* postStartEnrichmentTable2Location;
+	extern void* engineTempEnrichmentTableFixedLocation;
+	extern void* engineTempEnrichmentTableFixed2Location;
+	extern void* primingVolumeTableLocation;
+	extern void* primingVolumeTable2Location;
+	extern void* engineTempEnrichmentTablePercentLocation;
+	extern void* engineTempEnrichmentTablePercent2Location;
+	extern void* dwellVersusRPMTableLocation;
+	extern void* dwellVersusRPMTable2Location;
+	extern void* blendVersusRPMTableLocation;
+	extern void* blendVersusRPMTable2Location;
+	/* Small chunks of TablesB here */
+	extern void* loggingSettingsLocation;
+	extern void* loggingSettings2Location;
+	extern void* perCylinderFuelTrimsLocation;
+	extern void* perCylinderFuelTrims2Location;
+	/* Small chunks of TablesC here */
+	extern void* MAFVersusVoltageTableLocation;
+	/* Fillers here */
+	extern void* fillerALocation;
+	extern void* fillerA2Location;
+	extern void* fillerBLocation;
+	extern void* fillerB2Location;
+	extern void* fillerCLocation;
+	extern void* fillerC2Location;
+	extern void* fillerDLocation;
+	extern void* fillerD2Location;
 
 	SmallTablesAFlashLocation  = (void*)&SmallTablesAFlash;
 	SmallTablesBFlashLocation  = (void*)&SmallTablesBFlash;
@@ -400,6 +477,18 @@ void initTunableAddresses(){
  *
  */
 void initPagedRAMTune(){
+	/* Tunable blocks */
+	extern void* SmallTablesAFlashLocation;
+	extern void* SmallTablesBFlashLocation;
+	extern void* SmallTablesCFlashLocation;
+	extern void* SmallTablesDFlashLocation;
+	/*
+	extern void* SmallTablesAFlash2Location;
+	extern void* SmallTablesBFlash2Location;
+	extern void* SmallTablesCFlash2Location;
+	extern void* SmallTablesDFlash2Location;
+	*/
+	
 	/* Copy the tables from flash to RAM */
 	RPAGE = RPAGE_TUNE_ONE;
 	memcpy((void*)&TablesA, SmallTablesAFlashLocation, sizeof(mainTable));
