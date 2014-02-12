@@ -25,7 +25,7 @@ We have pre-packed debian/ubuntu toolchain binaries available at the [apt reposi
 
 Toolchain binaries for 32 bit and 64 bit windows as well as Mac OS-x (10.6.8 or newer) at the [build site](https://builds.libreems.org/ToolChains).
 
-IF you don't have a debian/ubuntu/mac/windows system and want to make your toolchain by hand you can get the source/patches at the [build site](https://builds.libreems.org/ToolChains/Source).
+If you don't have a debian/ubuntu/mac/windows system and want to make your toolchain by hand you can get the source/patches at the [build site](https://builds.libreems.org/ToolChains/Source).
 
 You also need an up to date version of git available on the command line.
 
@@ -42,7 +42,7 @@ If you are working on the dev board, you need to flip the load/run switch
 to "load" and depress the reset button, or send a reset packet, prior to
 flashing.  Return the switch to the "run" position when complete.
 
-### Tuning your LibreEMS
+### Tuning your LibreEMS Install
 
 Tuning is currently done with a combination of techniques. For the full story
 check out [this thread](https://forums.libreems.org/forumdisplay.php?fid=8)
@@ -57,5 +57,5 @@ Thanks for playing with LibreEMS :-)
 
 Good luck and regards,
 
-LibreEMS Team.
+## LibreEMS Team.
 
