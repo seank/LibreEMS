@@ -71,7 +71,7 @@ void init(){
 	initSCIStuff();         /* Setup the sci module(s) that we will use. */
 	initConfiguration();    /* TODO Set user/feature/config up here! */
 #ifdef XGATE
-	initXgate();            /* Fred is a legend, for good reason as of now */
+	initXgate();            /* Setup XGATE CPU */
 #endif
 	initInterrupts();       /* still last, reset timers, enable interrupts here TODO move this to inside config in an organised way. Set up the rest of the individual interrupts */
 	ATOMIC_END();           /* Re-enable any configured interrupts */
