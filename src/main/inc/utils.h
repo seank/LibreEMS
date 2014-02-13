@@ -36,43 +36,25 @@
 #define FILE_UTILS_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
+unsigned short safeAdd(unsigned short, unsigned short);
+unsigned short safeSubtract(unsigned short, unsigned short);
+unsigned short safeTrim(unsigned short, signed short);
+unsigned short safeScale(unsigned short, unsigned short, unsigned short);
 
+void sleep(unsigned short) FPAGE_FE;
+void sleepMicro(unsigned short) FPAGE_FE;
 
-#ifdef UTILS_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
+void adjustPWM(void) FPAGE_FE;
+void setupPagedRAM(unsigned char) FPAGE_F8;
 
-EXTERN unsigned short safeAdd(unsigned short, unsigned short);
-EXTERN unsigned short safeSubtract(unsigned short, unsigned short);
-EXTERN unsigned short safeTrim(unsigned short, signed short);
-EXTERN unsigned short safeScale(unsigned short, unsigned short, unsigned short);
+void sampleEachADC(ADCBuffer*) FPAGE_F8;
+void sampleLoopADC(ADCBuffer*) FPAGE_F8;
+//void sampleBlockADC(ADCBuffer*) FPAGE_F8; broken, do not use
 
-EXTERN void sleep(unsigned short) FPAGE_FE;
-EXTERN void sleepMicro(unsigned short) FPAGE_FE;
+unsigned char checksum(unsigned char *, unsigned short) FPAGE_F8;
+unsigned short stringCopy(unsigned char*, unsigned char*) FPAGE_F8;
+unsigned short compare(unsigned char*, unsigned char*, unsigned short); // In unpaged flash as it needs to compare paged flash with unpaged things
+void* mset(void*, int, unsigned short);
 
-EXTERN void adjustPWM(void) FPAGE_FE;
-EXTERN void setupPagedRAM(unsigned char) FPAGE_F8;
-
-EXTERN void sampleEachADC(ADCBuffer*) FPAGE_F8;
-EXTERN void sampleLoopADC(ADCBuffer*) FPAGE_F8;
-//EXTERN void sampleBlockADC(ADCBuffer*) FPAGE_F8; broken, do not use
-
-EXTERN unsigned char checksum(unsigned char *, unsigned short) FPAGE_F8;
-EXTERN unsigned short stringCopy(unsigned char*, unsigned char*) FPAGE_F8;
-EXTERN unsigned short compare(unsigned char*, unsigned char*, unsigned short); // In unpaged flash as it needs to compare paged flash with unpaged things
-EXTERN void* mset(void*, int, unsigned short);
-
-#undef EXTERN
-
-
-#else
-	/* let us know if we are being untidy with headers */
-	#warning "Header file UTILS_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif

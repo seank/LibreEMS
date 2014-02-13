@@ -67,6 +67,14 @@
  * place to do so.
  */
 void InjectorXISR(){
+	extern Counter Counters;
+	extern const unsigned short injectorSwitchOnCodeTime;                                                                                            
+	extern const unsigned char injectorMainGoLowMasks[];
+	extern const unsigned char injectorMainEnableMasks[];
+	extern const unsigned char injectorMainDisableMasks[];
+	extern const unsigned char injectorMainGoHighMasks[];
+	extern const unsigned char injectorMainOffMasks[];
+
 	/* Clear the interrupt flag for this channel */
 	TFLG = INJECTOR_MAIN_ON_MASK;
 

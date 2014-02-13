@@ -53,6 +53,9 @@
  */
 void calculateFuelAndIgnition(){
 	unsigned short airInletTemp = CoreVars->IAT; /* All except MAF use this. */
+	extern KeyUserDebug KeyUserDebugs;
+	extern const volatile fixedConfig1 fixedConfigs1;                                                                                                
+	extern const volatile fixedConfig2 fixedConfigs2;
 	/* Determine the type of air flow data */
 	if(!(fixedConfigs2.algorithmSettings.algorithmType)){
 		/* Look up VE with RPM and MAP */

@@ -68,6 +68,7 @@ MKDIR = mkdir -p
 Q = "
 SHASUM = shasum
 endif
+DATE := $(shell which date)
 
 # Mac differences
 ifeq ($(OS), Darwin)
@@ -86,7 +87,7 @@ BUILD_DATE=FIXED_DATE_FOR_HASH_CHECK
 OS=FIXED_OS_FOR_HASH_CHECK
 else
 FIRMWARE_VERSION := $(shell git describe --dirty=-DEV)
-BUILD_DATE := "$(shell $(PATHSEP)usr$(PATHSEP)bin$(PATHSEP)date)"
+BUILD_DATE := "$(shell $(DATE))"
 OS := $(shell uname)
 endif
 
@@ -183,7 +184,7 @@ MATHCLASSES = coreVarsGenerator.c derivedVarsGenerator.c fuelAndIgnitionCalcs.c 
 COMCLASSES = flashWrite.c commsCore.c blockDetailsLookup.c
 ISRCLASSES = interrupts.c injectionISRs.c commsISRs.c realtimeISRs.c miscISRs.c xgateVectors.c
 # Combined source code files
-SOURCE = freeEMS.c staticInit.c main.c $(UTILCLASSES) $(MATHCLASSES) $(COMCLASSES) $(ISRCLASSES)
+SOURCE = libreEMS.c staticInit.c main.c $(UTILCLASSES) $(MATHCLASSES) $(COMCLASSES) $(ISRCLASSES)
 
 # All but the engine position/RPM combined here
 CLASSES = $(SOURCE) $(DATA)

@@ -36,16 +36,6 @@
 #define FILE_INIT_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
-
-
-#ifdef INIT_C
-#define EXTERN
-/* For private internal use of init.c init() function only, hence wrapped in this ifdef */
-
 /* Keep this non ISR stuff out of linear flash space */
 void initPLL(void) FPAGE_FE;
 void initADC(void) FPAGE_FE;
@@ -75,15 +65,11 @@ void initPagedRAMFuel(void) FUELTABLESF;
 void initPagedRAMTime(void) TIMETABLESF;
 void initPagedRAMTune(void) TUNETABLESF;
 
-#else
-#define EXTERN extern
-#endif
-
 
 /* Other function declarations are private and present in the C     */
 /* source file purely to assign them to a particular memory region. */
-extern void init(void) FPAGE_FE;
-extern void enablePLL(void) FPAGE_FE; // Needed in self clock ISR
+void init(void) FPAGE_FE;
+void enablePLL(void) FPAGE_FE; // Needed in self clock ISR
 
 
 /* Various masks and values used for initialising the contents of control registers. */
@@ -105,11 +91,5 @@ extern void enablePLL(void) FPAGE_FE; // Needed in self clock ISR
 /// @todo TODO move all the reg masks to a header of their own for general use.
 
 
-#undef EXTERN
-
-
-#else
-	/* let us know if we are being untidy with headers */
-	#warning "Header file INIT_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif

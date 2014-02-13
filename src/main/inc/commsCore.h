@@ -36,42 +36,18 @@
 #define FILE_COMMS_CORE_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
-
-
-#ifdef COMMSCORE_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
-
-
 // Buffer size minus the overhead of a maximal packet header
 #define TX_MAX_PAYLOAD_SIZE   (TX_BUFFER_SIZE - 32)
 
 
 /* Function declarations */
 /* This function accesses paged flash and thus must be in linear space. Set explicitly to text. */
-EXTERN void decodePacketAndRespond(void) TEXT;
+void decodePacketAndRespond(void) TEXT;
 
-EXTERN void resetReceiveState(unsigned char) FPAGE_FE;
-EXTERN void finaliseAndSend(unsigned short) FPAGE_FE;
+void resetReceiveState(unsigned char) FPAGE_FE;
+void finaliseAndSend(unsigned short) FPAGE_FE;
 
-EXTERN unsigned short populateBasicDatalog(void) FPAGE_FE;
-
-
-/* Global variables for TX (one set per interface) */
-EXTERN unsigned char* TXBufferCurrentPositionHandler;
-EXTERN unsigned char* TXBufferCurrentPositionCAN0;
-EXTERN unsigned char* TXBufferCurrentPositionSCI0;
-
-
-/* Buffer use and source IDs/flags */
-EXTERN unsigned char TXBufferInUseFlags;
-EXTERN unsigned char RXBufferContentSourceID;
+unsigned short populateBasicDatalog(void) FPAGE_FE;
 
 
 // Shared serial comms stuff TODO move this to a commsCommon.h header
@@ -104,10 +80,6 @@ EXTERN unsigned char RXBufferContentSourceID;
 #define CLEAR_ALL_SOURCE_ID_FLAGS     ZEROS
 
 
-/* Global variables for RX (one set for all) */
-EXTERN unsigned char  RXStateFlags;
-EXTERN unsigned char* RXBufferCurrentPosition;
-EXTERN unsigned short RXCalculatedPayloadLength; // why global??
 /* Masks for SCIRXStateFlags */
 //#define RX_BUFFER_IN_USE          BIT0
 #define RX_READY_TO_PROCESS       BIT1
@@ -143,13 +115,6 @@ EXTERN unsigned short RXCalculatedPayloadLength; // why global??
 // TODO probably 8 of these too
 
 
-/* Header components */
-EXTERN unsigned char  RXHeaderFlags;
-EXTERN unsigned char* TXHeaderFlags;
-EXTERN unsigned short RXHeaderPayloadID; /// TODO @todo why global?
-EXTERN unsigned short RXHeaderPayloadLength;
-
-
 /* Header flag masks */
 /* Always has flags (obviously)     */
 /* Always has payload ID so no flag */
@@ -183,11 +148,5 @@ EXTERN unsigned short RXHeaderPayloadLength;
 #include "unitTestIDs.h"
 
 
-#undef EXTERN
-
-
-#else
-	/* let us know if we are being untidy with headers */
-	#warning "Header file COMMS_CORE_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif

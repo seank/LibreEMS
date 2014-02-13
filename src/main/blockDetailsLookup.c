@@ -39,8 +39,92 @@
 #include "inc/freeEMS.h"
 #include "inc/interrupts.h"
 #include "inc/locationIDs.h"
-#include "inc/pagedLocationBuffers.h"
 #include "inc/blockDetailsLookup.h"
+
+/* Global Variables */
+/*&&&&&&&&&&&&&&&&&&&&& Large 1k or 2k blocks here only &&&&&&&&&&&&&&&&&&&&&*/
+
+/* Fueling blocks */
+void* VETableMainFlashLocation;
+void* VETableMainFlash2Location;
+void* VETableSecondaryFlashLocation;
+void* VETableSecondaryFlash2Location;
+void* AirflowTableFlashLocation;
+void* AirflowTableFlash2Location;
+void* LambdaTableFlashLocation;
+void* LambdaTableFlash2Location;
+
+/* Timing blocks */
+void* IgnitionAdvanceTableMainFlashLocation;
+void* IgnitionAdvanceTableMainFlash2Location;
+void* IgnitionAdvanceTableSecondaryFlashLocation;
+void* IgnitionAdvanceTableSecondaryFlash2Location;
+void* InjectionAdvanceTableMainFlashLocation;
+void* InjectionAdvanceTableMainFlash2Location;
+void* InjectionAdvanceTableSecondaryFlashLocation;
+void* InjectionAdvanceTableSecondaryFlash2Location;
+
+/* Tunable blocks */
+void* SmallTablesAFlashLocation;
+void* SmallTablesAFlash2Location;
+void* SmallTablesBFlashLocation;
+void* SmallTablesBFlash2Location;
+void* SmallTablesCFlashLocation;
+void* SmallTablesCFlash2Location;
+void* SmallTablesDFlashLocation;
+void* SmallTablesDFlash2Location;
+
+/* Flash ONLY blocks */
+void* IATTransferTableLocation;
+void* CHTTransferTableLocation;
+void* MAFTransferTableLocation;
+void* TestTransferTableLocation;
+
+
+/*&&&&&&&&&&&&&&& Small chunks of the above blocks here only! &&&&&&&&&&&&&&&*/
+
+/* Small chunks of TablesA here */
+void* dwellDesiredVersusVoltageTableLocation;
+void* dwellDesiredVersusVoltageTable2Location;
+void* injectorDeadTimeTableLocation;
+void* injectorDeadTimeTable2Location;
+void* postStartEnrichmentTableLocation;
+void* postStartEnrichmentTable2Location;
+void* engineTempEnrichmentTableFixedLocation;
+void* engineTempEnrichmentTableFixed2Location;
+void* primingVolumeTableLocation;
+void* primingVolumeTable2Location;
+void* engineTempEnrichmentTablePercentLocation;
+void* engineTempEnrichmentTablePercent2Location;
+void* dwellVersusRPMTableLocation;
+void* dwellVersusRPMTable2Location;
+void* blendVersusRPMTableLocation;
+void* blendVersusRPMTable2Location;
+
+/* Small chunks of TablesB here */
+void* loggingSettingsLocation;
+void* loggingSettings2Location;
+void* perCylinderFuelTrimsLocation;
+void* perCylinderFuelTrims2Location;
+
+/* Small chunks of TablesC here */
+void* MAFVersusVoltageTableLocation;
+
+/* Small chunks of TablesD here */
+
+/* Small chunks of FixedConf1 here */
+
+/* Small chunks of FixedConf2 here */
+
+/* Fillers here */
+void* fillerALocation;
+void* fillerA2Location;
+void* fillerBLocation;
+void* fillerB2Location;
+void* fillerCLocation;
+void* fillerC2Location;
+void* fillerDLocation;
+void* fillerD2Location;
 
 
 /** @brief Lookup memory block details.
@@ -58,6 +142,16 @@
  * @return An error code. Zero means success, anything else is a failure.
  */
 unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* details){
+	extern Clock Clocks;
+	extern Counter Counters;
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables; 
+	extern Flaggable2 Flaggables2;
+	extern const volatile fixedConfig1 fixedConfigs1;
+	extern const volatile fixedConfig2 fixedConfigs2;
+	extern const volatile unsigned short IATTransferTable[1024]; /* 2k */                                                                            
+	extern const volatile unsigned short CHTTransferTable[1024];
+
 	/* Initialise the four values needed for operations on memory at 0 for error checking */
 	details->RAMPage = 0;
 	details->FlashPage = 0;

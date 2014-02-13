@@ -55,6 +55,13 @@
  * the latency low without starving any particular blocks of CPU time.
  */
 int  main(){ /// @todo TODO maybe move this to paged flash ?
+	extern Counter Counters;
+	extern unsigned char TXBufferInUseFlags;
+	extern unsigned char  RXStateFlags;
+	extern unsigned char* TXBufferCurrentPositionHandler;                         
+	extern unsigned char* TXBufferCurrentPositionCAN0;
+	extern unsigned char* TXBufferCurrentPositionSCI0;
+	extern const volatile fixedConfig1 fixedConfigs1;
 	// Set everything up.
 	init();
 

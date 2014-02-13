@@ -48,6 +48,11 @@
  * and used as input to the next phase.
  */
 void generateCoreVars(){
+	extern unsigned long RPMWeighted;
+	extern const volatile fixedConfig2 fixedConfigs2;
+	extern const volatile unsigned short CHTTransferTable[];
+	extern const volatile unsigned short IATTransferTable[];
+
 	// Battery Reference Voltage
 	unsigned short localBRV;
 	if(!(fixedConfigs2.sensorSources.BRV)){

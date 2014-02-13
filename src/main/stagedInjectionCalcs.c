@@ -51,6 +51,8 @@
  */
 void splitFuelPulseWidth(unsigned short dutyCycle){
 
+	extern const volatile fixedConfig1 fixedConfigs1;                                                                                                
+
 	unsigned long ticksPerEngineCycle = (CoreVars->DRPM * DEGRESS_PERCYCLE_FACTOR);
 	masterPulseWidth = (unsigned short) ((ticksPerEngineCycle * fixedConfigs1.engineSettings.maxPrimaryDC) / FLOW_SCALE_FACTOR);
 	unsigned long secondaryPw;

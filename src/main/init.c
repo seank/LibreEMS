@@ -45,7 +45,6 @@
 #include "inc/interrupts.h"
 #include "inc/utils.h"
 #include "inc/commsISRs.h"
-#include "inc/pagedLocationBuffers.h"
 #include "inc/init.h"
 #include "inc/decoderInterface.h"
 #include "inc/xgateVectors.h"
@@ -152,6 +151,7 @@ void initADC(){
 
 /// Set up the PWM module from configuration
 void initPWM(){
+	extern const volatile fixedConfig2 fixedConfigs2;   
 	/* TODO PWM channel concatenation for high resolution */
 	// join channel pairs together here (needs 16 bit regs enabled too)
 	/* TODO Initialise pwm channels with frequency, and initial duty for real use */
@@ -188,6 +188,7 @@ void initPWM(){
 
 /// Set up all the pin states as per configuration, but protect key states.
 void initGPIO(){
+	extern const volatile fixedConfig2 fixedConfigs2;   
 	// Set the initial pin state of pins configured as output
 	PORTA = fixedConfigs2.inputOutputSettings.PortInitialValueA | BIT6 | BIT7; // Mask the fuel pump relay and CEL pins on
 	PORTB = fixedConfigs2.inputOutputSettings.PortInitialValueB;
@@ -227,6 +228,14 @@ void initGPIO(){
  * Save pointers to the lookup tables which live in paged flash.
  */
 void initLookupAddresses(){
+	extern const volatile unsigned short IATTransferTable[]; /* 2k */                                                                            
+	extern const volatile unsigned short CHTTransferTable[]; /* 2k */
+	extern const volatile unsigned short MAFTransferTable[]; /* 2k */
+	extern const volatile unsigned char TestTransferTable[];
+	extern void* IATTransferTableLocation;
+	extern void* CHTTransferTableLocation;
+	extern void* MAFTransferTableLocation;
+	extern void* TestTransferTableLocation;
 	IATTransferTableLocation = (void*)&IATTransferTable;
 	CHTTransferTableLocation = (void*)&CHTTransferTable;
 	MAFTransferTableLocation = (void*)&MAFTransferTable;
@@ -239,6 +248,23 @@ void initLookupAddresses(){
  * Save pointers to the fuel tables which live in paged flash.
  */
 void initFuelAddresses(){
+	extern const volatile mainTable VETableMainFlash;                                                                                                
+	extern const volatile mainTable VETableSecondaryFlash;
+	extern const volatile mainTable AirflowTableFlash;
+	extern const volatile mainTable LambdaTableFlash;
+	extern const volatile mainTable VETableMainFlash2;
+	extern const volatile mainTable VETableSecondaryFlash2;
+	extern const volatile mainTable AirflowTableFlash2;
+	extern const volatile mainTable LambdaTableFlash2;
+	extern void* VETableMainFlashLocation;
+	extern void* VETableMainFlash2Location;
+	extern void* VETableSecondaryFlashLocation;
+	extern void* VETableSecondaryFlash2Location;
+	extern void* AirflowTableFlashLocation;
+	extern void* AirflowTableFlash2Location;
+	extern void* LambdaTableFlashLocation;
+	extern void* LambdaTableFlash2Location;
+
 	/* Setup addresses within the page to avoid warnings */
 	VETableMainFlashLocation       = (void*)&VETableMainFlash;
 	VETableSecondaryFlashLocation  = (void*)&VETableSecondaryFlash;
@@ -256,6 +282,14 @@ void initFuelAddresses(){
  * Initialises the fuel tables in RAM by copying them up from flash.
  */
 void initPagedRAMFuel(void){
+	extern void* VETableMainFlashLocation;
+	extern void* VETableMainFlash2Location;
+	extern void* VETableSecondaryFlashLocation;
+	extern void* VETableSecondaryFlash2Location;
+	extern void* AirflowTableFlashLocation;
+	extern void* AirflowTableFlash2Location;
+	extern void* LambdaTableFlashLocation;
+	extern void* LambdaTableFlash2Location;
 	/* Copy the tables from flash to RAM */
 	RPAGE = RPAGE_FUEL_ONE;
 	memcpy((void*)&TablesA, VETableMainFlashLocation,       sizeof(mainTable));
@@ -275,6 +309,22 @@ void initPagedRAMFuel(void){
  * Save pointers to the timing tables which live in paged flash.
  */
 void initTimingAddresses(){
+	extern const volatile mainTable IgnitionAdvanceTableMainFlash;
+	extern const volatile mainTable IgnitionAdvanceTableSecondaryFlash;
+	extern const volatile mainTable InjectionAdvanceTableMainFlash;
+	extern const volatile mainTable InjectionAdvanceTableSecondaryFlash;
+	extern const volatile mainTable IgnitionAdvanceTableMainFlash2;
+	extern const volatile mainTable IgnitionAdvanceTableSecondaryFlash2;
+	extern const volatile mainTable InjectionAdvanceTableMainFlash2;
+	extern const volatile mainTable InjectionAdvanceTableSecondaryFlash2;
+	extern void* IgnitionAdvanceTableMainFlashLocation;
+	extern void* IgnitionAdvanceTableMainFlash2Location;
+	extern void* IgnitionAdvanceTableSecondaryFlashLocation;
+	extern void* IgnitionAdvanceTableSecondaryFlash2Location;
+	extern void* InjectionAdvanceTableMainFlashLocation;
+	extern void* InjectionAdvanceTableMainFlash2Location;
+	extern void* InjectionAdvanceTableSecondaryFlashLocation;
+	extern void* InjectionAdvanceTableSecondaryFlash2Location;
 	/* Setup addresses within the page to avoid warnings */
 	IgnitionAdvanceTableMainFlashLocation        = (void*)&IgnitionAdvanceTableMainFlash;
 	IgnitionAdvanceTableSecondaryFlashLocation   = (void*)&IgnitionAdvanceTableSecondaryFlash;
@@ -292,6 +342,14 @@ void initTimingAddresses(){
  * Initialises the timing tables in RAM by copying them up from flash.
  */
 void initPagedRAMTime(){
+	extern void* IgnitionAdvanceTableMainFlashLocation;
+	extern void* IgnitionAdvanceTableMainFlash2Location;
+	extern void* IgnitionAdvanceTableSecondaryFlashLocation;
+	extern void* IgnitionAdvanceTableSecondaryFlash2Location;
+	extern void* InjectionAdvanceTableMainFlashLocation;
+	extern void* InjectionAdvanceTableMainFlash2Location;
+	extern void* InjectionAdvanceTableSecondaryFlashLocation;
+	extern void* InjectionAdvanceTableSecondaryFlash2Location;
 	/* Copy the tables from flash to RAM */
 	RPAGE = RPAGE_TIME_ONE;
 	memcpy((void*)&TablesA, IgnitionAdvanceTableMainFlashLocation,        sizeof(mainTable));
@@ -313,6 +371,57 @@ void initPagedRAMTime(){
  */
 void initTunableAddresses(){
 	/* Setup addresses within the page to avoid warnings */
+	extern const volatile SmallTables1 SmallTablesAFlash;
+	extern const volatile SmallTables2 SmallTablesBFlash;
+	extern const volatile SmallTables3 SmallTablesCFlash;
+	extern const volatile SmallTables4 SmallTablesDFlash;
+	extern const volatile SmallTables1 SmallTablesAFlash2;
+	extern const volatile SmallTables2 SmallTablesBFlash2;
+	extern const volatile SmallTables3 SmallTablesCFlash2;
+	extern const volatile SmallTables4 SmallTablesDFlash2;
+	/* Tunable blocks */
+	extern void* SmallTablesAFlashLocation;
+	extern void* SmallTablesAFlash2Location;
+	extern void* SmallTablesBFlashLocation;
+	extern void* SmallTablesBFlash2Location;
+	extern void* SmallTablesCFlashLocation;
+	extern void* SmallTablesCFlash2Location;
+	extern void* SmallTablesDFlashLocation;
+	extern void* SmallTablesDFlash2Location;
+	/* Small chunks of TablesA here */
+	extern void* dwellDesiredVersusVoltageTableLocation;
+	extern void* dwellDesiredVersusVoltageTable2Location;
+	extern void* injectorDeadTimeTableLocation;
+	extern void* injectorDeadTimeTable2Location;
+	extern void* postStartEnrichmentTableLocation;
+	extern void* postStartEnrichmentTable2Location;
+	extern void* engineTempEnrichmentTableFixedLocation;
+	extern void* engineTempEnrichmentTableFixed2Location;
+	extern void* primingVolumeTableLocation;
+	extern void* primingVolumeTable2Location;
+	extern void* engineTempEnrichmentTablePercentLocation;
+	extern void* engineTempEnrichmentTablePercent2Location;
+	extern void* dwellVersusRPMTableLocation;
+	extern void* dwellVersusRPMTable2Location;
+	extern void* blendVersusRPMTableLocation;
+	extern void* blendVersusRPMTable2Location;
+	/* Small chunks of TablesB here */
+	extern void* loggingSettingsLocation;
+	extern void* loggingSettings2Location;
+	extern void* perCylinderFuelTrimsLocation;
+	extern void* perCylinderFuelTrims2Location;
+	/* Small chunks of TablesC here */
+	extern void* MAFVersusVoltageTableLocation;
+	/* Fillers here */
+	extern void* fillerALocation;
+	extern void* fillerA2Location;
+	extern void* fillerBLocation;
+	extern void* fillerB2Location;
+	extern void* fillerCLocation;
+	extern void* fillerC2Location;
+	extern void* fillerDLocation;
+	extern void* fillerD2Location;
+
 	SmallTablesAFlashLocation  = (void*)&SmallTablesAFlash;
 	SmallTablesBFlashLocation  = (void*)&SmallTablesBFlash;
 	SmallTablesCFlashLocation  = (void*)&SmallTablesCFlash;
@@ -368,6 +477,18 @@ void initTunableAddresses(){
  *
  */
 void initPagedRAMTune(){
+	/* Tunable blocks */
+	extern void* SmallTablesAFlashLocation;
+	extern void* SmallTablesBFlashLocation;
+	extern void* SmallTablesCFlashLocation;
+	extern void* SmallTablesDFlashLocation;
+	/*
+	extern void* SmallTablesAFlash2Location;
+	extern void* SmallTablesBFlash2Location;
+	extern void* SmallTablesCFlash2Location;
+	extern void* SmallTablesDFlash2Location;
+	*/
+	
 	/* Copy the tables from flash to RAM */
 	RPAGE = RPAGE_TUNE_ONE;
 	memcpy((void*)&TablesA, SmallTablesAFlashLocation, sizeof(mainTable));
@@ -603,6 +724,8 @@ void initPITTimer(){
 
 /* Setup the sci module(s) that we need to use. */
 void initSCIStuff(){
+	extern const volatile fixedConfig1 fixedConfigs1;
+
 	/* The alternative register set selector defaults to zero */
 
 	// set the baud/data speed
@@ -647,6 +770,10 @@ void initSCIStuff(){
 
 /* TODO Load and calculate all configuration data required to run */
 void initConfiguration(){
+	extern const volatile fixedConfig1 fixedConfigs1;
+	extern const volatile fixedConfig2 fixedConfigs2;
+	extern const unsigned long masterFuelConstant;                                                                                                   
+
 //	// TODO Calc TPS ADC range on startup or every time? this depends on whether we ensure that things work without a re init or reset or not.
 
 

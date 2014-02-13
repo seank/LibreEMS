@@ -45,6 +45,8 @@
  * as appropriate. Atomic blocks ensure no concurrency issues with current ECT.
  */
 void performSimpleGPIO(){
+	extern const volatile fixedConfig1 fixedConfigs1;
+
 	unsigned char i;
 	for(i = 0;i < fixedConfigs1.simpleGPIOSettings.numberConfigured && i < NUMBER_OF_OUTPUT_CONFIGS;i++){
 		unsigned short value = *(fixedConfigs1.simpleGPIOSettings.outputConfigs[i].variable);

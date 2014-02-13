@@ -45,6 +45,7 @@
 unsigned char xgateOutputChannel = fixedConfigs1.schedulingSettings.xgateOutputChannel[outputEventNumber];
 
 if(xgateOutputChannel != 0xFF) {
+	extern KeyUserDebug KeyUserDebugs;
 	/* temp *safety semaphore, to keep me from chasing my tail while testing. */
 	unsigned char i = 0;
 	do {

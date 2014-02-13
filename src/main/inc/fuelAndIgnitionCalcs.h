@@ -36,20 +36,7 @@
 #define FILE_FUELANDIGNITIONCALCS_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
-
-
-#ifdef FUELANDIGNITIONCALCS_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
-
-
-EXTERN void calculateFuelAndIgnition(void) FPAGE_FE;
+void calculateFuelAndIgnition(void) FPAGE_FE;
 
 
 /* The scaling system was reworked extensively in the commit after:
@@ -98,11 +85,5 @@ EXTERN void calculateFuelAndIgnition(void) FPAGE_FE;
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
 
 
-#undef EXTERN
-
-
-#else
-	/* let us know if we are being untidy with headers */
-	#warning "Header file FUELANDIGNITIONCALCS_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif

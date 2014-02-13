@@ -54,6 +54,19 @@
 #include <string.h> /// @todo TODO this is pulling in the system string.h not the m68hc1x version, and functions other than memcpy do not work because they are not in crt1.o or other included-by-default libs
 #include "decoders/inc/BenchTest.h"
 
+/* Global Comms Variables */
+unsigned char  RXBufferContentSourceID;
+unsigned char* RXBufferCurrentPosition; 
+unsigned short RXCalculatedPayloadLength;
+unsigned char  RXHeaderFlags;
+unsigned short RXHeaderPayloadID;
+unsigned short RXHeaderPayloadLength;
+unsigned char  RXStateFlags;
+unsigned char* TXHeaderFlags;
+unsigned char* TXBufferCurrentPositionCAN0;
+unsigned char* TXBufferCurrentPositionHandler;
+unsigned char* TXBufferCurrentPositionSCI0;
+unsigned char  TXBufferInUseFlags;
 
 /** @brief Populate a basic datalog packet
  *
@@ -61,6 +74,9 @@
  * the configured length. If changing this, update the maxBasicDatalogLength.
  */
 unsigned short populateBasicDatalog(){
+	extern Clock Clocks;
+	extern KeyUserDebug KeyUserDebugs;
+
 	/// @todo TODO setup proper sequence and clock with some sort of differential measurement log to log. insert in front of actual data because these are part of the log itself.
 
 //	KeyUserDebugs.zsp10 = Counters.pinScheduledWithTimerExtension;
@@ -209,6 +225,19 @@ void finaliseAndSend(unsigned short errorID){
  * main loop code. The vast majority of communications action happens here.
  */
 void decodePacketAndRespond(){
+	extern Clock Clocks;
+	extern Counter Counters;
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables;
+	extern Flaggable2 Flaggables2;
+	extern const unsigned char interfaceVersion[INTERFACE_VERSION_LENGTH];
+	extern const unsigned char firmwareVersion[FIRMWARE_VERSION_LENGTH];
+	extern const unsigned char buildTimeAndDate[FIRMWARE_BUILD_DATE_LENGTH];
+	extern const unsigned char compilerVersion[COMPILER_VERSION_LENGTH];
+	extern const unsigned char operatingSystem[OPERATING_SYSTEM_LENGTH]; 
+	extern const unsigned short injectorSwitchOnCodeTime;                                                                                            
+
+
 	/* Extract and build up the header fields */
 	TXBufferCurrentPositionHandler = (unsigned char*)&TXBuffer;
 

@@ -1,3 +1,25 @@
+/* LibreEMS - the community driven open source engine management system
+ *
+ * Copyright 2013-2014 Sean Keys
+ *
+ * This file is part of the LibreEMS project.
+ *
+ * FreeEMS software is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeEMS software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with any LibreEMS software.  If not, see http://www.gnu.org/licenses/
+ *
+ * Thank you for choosing LibreEMS to run your engine!
+ */
+
 /* FreeEMS - the open source engine management system
  *
  * Copyright 2011-2012 Fred Cooke
@@ -43,24 +65,11 @@
 #define FILE_BENCH_TEST_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
-
-
-#ifdef STATIC_BENCH_TEST_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
-
-
-EXTERN unsigned short testTicksPerEvent;
-EXTERN unsigned short testNumberOfCycles;
-EXTERN unsigned char testEventsPerCycle;
-EXTERN unsigned char testNumberOfMissing;
-EXTERN unsigned char testMode;
+extern unsigned short testTicksPerEvent;
+extern unsigned short testNumberOfCycles;
+extern unsigned char testEventsPerCycle;
+extern unsigned char testNumberOfMissing;
+extern unsigned char testMode;
 #define TEST_MODE_STOP                0
 #define TEST_MODE_ITERATIONS          1
 #define TEST_MODE_BUMP_UP_CYCLES      2
@@ -82,9 +91,6 @@ EXTERN unsigned char testMode;
 
 /// @todo TODO make event array length a var, and populate it with the const at init time, and with the chosen fake array type
 /// @todo TODO make the event array itself be a pointer, and switch this pointer in the bench test call with it pre-inited to the address of the const array for real decoders
-
-
-#undef EXTERN
 
 
 #else

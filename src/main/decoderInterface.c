@@ -49,6 +49,9 @@
  * @param uniqueLossID 0 is reserved for system use, within your decoder never use the same value twice.
  */
 void resetToNonRunningState(unsigned char uniqueLossID){
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables; 
+	extern const volatile fixedConfig2 fixedConfigs2;
 	if(uniqueLossID){
 		KeyUserDebugs.syncResetCalls++;
 	}
@@ -94,6 +97,16 @@ void resetToNonRunningState(unsigned char uniqueLossID){
  * @warning If you do not handle the skipEventFlags then excess advance may occur!
  */
 void schedulePortTPin(unsigned char outputEventNumber, LongTime timeStamp){
+	extern Counter Counters;
+	extern const volatile fixedConfig1 fixedConfigs1;
+	extern const unsigned short injectorSwitchOffCodeTime;
+	extern const unsigned char injectorMainOnMasks[];
+	extern const unsigned char injectorMainOffMasks[];
+	extern const unsigned char injectorMainActiveMasks[];
+	extern const unsigned char injectorMainGoHighMasks[];
+	extern const unsigned char injectorMainDisableMasks[];
+	extern const unsigned char injectorMainEnableMasks[];
+
 	unsigned char pin = fixedConfigs1.schedulingSettings.outputEventPinNumbers[outputEventNumber];
 	/* If the pin number is greater than the number of physical pins then this is an xgate only channel */
 #define NUMBER_OF_OUTPUT_PINS 6 // FIXME duplicated in main.c

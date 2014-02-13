@@ -36,19 +36,6 @@
 #define FILE_COMMS_ISRS_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
-
-
-#ifdef COMMSISRS_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
-
-
 /* SCISR1 register fields
  *
  * From left most/most significant to right most/least significant.
@@ -74,14 +61,5 @@
 #define SCISR1_RX_PARITY         BIT0
 
 
-/* TX/RX state variables */
-EXTERN unsigned char	TXByteEscaped;
-
-
-#undef EXTERN
-
-#else
-	/* let us know if we are being untidy with headers */
-	#warning "Header file COMMS_ISRS_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif

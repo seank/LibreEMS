@@ -52,16 +52,16 @@ typedef struct {
 	unsigned short inputTS;
 } XGOutputEvent;
 
-EXTERN XGOutputEvent *XGOutputEvents;
-EXTERN unsigned short *xgsInStamp;
-EXTERN unsigned short *xgsEventsToSch;
+extern XGOutputEvent *XGOutputEvents;
+extern unsigned short *xgsInStamp;
+extern unsigned short *xgsEventsToSch;
 
-EXTERN void incrementalTests();
-EXTERN void firstLastDiffTest();
-EXTERN void singleTest();
-EXTERN void scheduleLatencyTest();
-EXTERN void delayShiftDiffTest();
-EXTERN void competingInterruptsTest();
+extern void incrementalTests();
+extern void firstLastDiffTest();
+extern void singleTest();
+extern void scheduleLatencyTest();
+extern void delayShiftDiffTest();
+extern void competingInterruptsTest();
 
 //for debug
-EXTERN void eventFlags1();
+extern void eventFlags1();

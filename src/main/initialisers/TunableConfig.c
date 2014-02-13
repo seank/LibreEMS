@@ -57,6 +57,7 @@
 #define TUNETABLESDV4 TUNETABLESD4
 #endif
 
+extern KeyUserDebug KeyUserDebugs;
 
 const volatile SmallTables1 SmallTablesAFlashV  TUNETABLESDV1 = {
 

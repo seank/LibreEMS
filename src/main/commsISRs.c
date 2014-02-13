@@ -52,6 +52,9 @@
  * see the following URL for more info on inline functions :  *
  * http://gcc.gnu.org/onlinedocs/gcc-3.3.6/Inline.html#Inline */
 
+/* Global variables */
+unsigned char    TXByteEscaped;                                          
+
 
 /** @brief Reset Receive State
  *
@@ -62,6 +65,9 @@
  * @param sourceIDState is the state to apply to the RX buffer state variable.
  */
 void resetReceiveState(unsigned char sourceIDState){
+	extern unsigned char* RXBufferCurrentPosition; 
+	extern unsigned char  RXStateFlags;
+	extern unsigned char RXBufferContentSourceID;
 	/* Set the receive buffer pointer to the beginning */
 	RXBufferCurrentPosition = (unsigned char*)&RXBuffer;
 
@@ -107,6 +113,16 @@ void resetReceiveState(unsigned char sourceIDState){
  * @todo TODO Fix the init code such that this doesn't run at boot without a serail device attached. Clear buffer maybe? or flag clearing/isr enabling ordering?
  */
 void SCI0ISR(){
+	extern KeyUserDebug KeyUserDebugs;
+	extern Flaggable Flaggables; 
+	extern unsigned char RXBufferContentSourceID;
+	extern unsigned char* RXBufferCurrentPosition;
+	extern unsigned char  RXStateFlags;
+	extern unsigned char* TXBufferCurrentPositionSCI0;
+	extern unsigned char* TXBufferCurrentPositionHandler;
+	extern unsigned char TXBufferInUseFlags;
+
+
 	// OK before flag reading because cleared when SCI0DRL accessed (R or W)
 	DEBUG_TURN_PIN_ON(DECODER_BENCHMARKS, BIT4, PORTB);
 

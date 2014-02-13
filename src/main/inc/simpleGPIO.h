@@ -36,25 +36,8 @@
 #define FILE_SIMPLE_GPIO_H_SEEN
 
 
-#ifdef EXTERN
-#warning "EXTERN already defined by another header, please sort it out!"
-#undef EXTERN /* If fail on warning is off, remove the definition such that we can redefine correctly. */
-#endif
-
-#ifdef SIMPLE_GPIO_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
+void performSimpleGPIO(void) FPAGE_FE;
 
 
-EXTERN void performSimpleGPIO(void) FPAGE_FE;
-
-
-#undef EXTERN
-
-#else
-	/* let us know if we are being untidy with headers */
-	#warning "Header file SIMPLE_GPIO_H seen before, sort it out!"
 /* end of the wrapper ifdef from the very top */
 #endif

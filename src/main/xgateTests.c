@@ -37,8 +37,8 @@
 
 
 #define XGATETESTS_C
-EXTERN void sleepMicro(unsigned short) FPAGE_FE;
-EXTERN void generateCoreVars(void) LOOKUPF;
+void sleepMicro(unsigned short) FPAGE_FE;
+void generateCoreVars(void) LOOKUPF;
 
 /* gcc is one of the few compilers that supports nested functions in C ! */
 
