@@ -923,7 +923,7 @@ void decodePacketAndRespond(){
 			}
 
 			unsigned char newDatalogType = *((unsigned char*)RXBufferCurrentPosition);
-			if(newDatalogType > asyncDatalogLastType){
+			if(newDatalogType > ASYNCDATALOGLASTTYPE){
 				errorID = noSuchAsyncDatalogType;
 				break;
 			}

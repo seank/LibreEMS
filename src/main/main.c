@@ -207,11 +207,11 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 
 				/* send asynchronous data log if required */
 				switch (TablesB.SmallTablesB.loggingSettings.datalogStreamType) {
-					case asyncDatalogOff:
+					case ASYNCDATALOGOFF:
 					{
 						break;
 					}
-					case asyncDatalogBasic:
+					case ASYNCDATALOGBASIC:
 					{
 						/* Flag that we are transmitting! */
 						TXBufferInUseFlags |= COM_SET_SCI0_INTERFACE_ID;
@@ -241,31 +241,31 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 						finaliseAndSend(0);
 						break;
 					}
-					case asyncDatalogScratchPad:
+					case ASYNCDATALOGSCRATCHPAD:
 					{
 						break;
 					}
-					case asyncDatalogStructs:
+					case ASYNCDATALOGSTRUCTS:
 					{
 						break;
 					}
-					case asyncDatalogPosition:
+					case ASYNCDATALOGPOSITION:
 					{
 						break;
 					}
-					case asyncDatalogBlockBytes:
+					case ASYNCDATALOGBLOCKBYTES:
 					{
 						break;
 					}
-					case asyncDatalogBlockWords:
+					case ASYNCDATALOGBLOCKWORDS:
 					{
 						break;
 					}
-					case asyncDatalogBlockLongs:
+					case ASYNCDATALOGBLOCKLONGS:
 					{
 						break;
 					}
-					case asyncDatalogStreamByte:
+					case ASYNCDATALOGSTREAMBYTE:
 					{
 						/* Flag that we are transmitting! */
 						TXBufferInUseFlags |= COM_SET_SCI0_INTERFACE_ID;
@@ -293,11 +293,11 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 						finaliseAndSend(0);
 						break;
 					}
-					case asyncDatalogStreamWord:
+					case ASYNCDATALOGSTREAMWORD:
 					{
 						break;
 					}
-					case asyncDatalogStreamLong:
+					case ASYNCDATALOGSTREAMLONG:
 					{
 						break;
 					}
