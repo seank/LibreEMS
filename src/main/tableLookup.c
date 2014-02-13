@@ -112,7 +112,7 @@ signed char lookup8Bit3D( */
 unsigned short lookupMainTable(unsigned short realRPM, unsigned short realLoad, unsigned short locationID){
 	blockDetails mainTableDetails;
 	lookupBlockDetails(locationID, &mainTableDetails);
-	if(!(mainTableDetails.flags & block_is_main_table)){
+	if(!(mainTableDetails.flags & BLOCK_IS_MAIN_TABLE)){
 		return 0; // Safe value, always means no fuel or TDC timing.
 	}
 

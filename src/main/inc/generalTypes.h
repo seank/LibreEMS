@@ -45,22 +45,22 @@
 /* block_ prefixed defines have Masks for the flag field in the blockDetails struct. */
 
 /** Memory block has parent */
-#define block_has_parent           BIT0_16
-#define block_is_in_ram            BIT1_16
-#define block_is_in_flash          BIT2_16
-#define block_is_indexable         BIT3_16
-#define block_is_read_only         BIT4_16
-#define block_gets_verified        BIT5_16
-#define block_for_backup_restore   BIT6_16
-#define block_spare_flag_7         BIT7_16
-#define block_spare_flag_8         BIT8_16
-#define block_spare_flag_9         BIT9_16
-#define block_spare_flag_10        BIT10_16
-#define block_spare_flag_11        BIT11_16
-#define block_is_2dus_table        BIT12_16
-#define block_is_main_table        BIT13_16
-#define block_is_lookup_data       BIT14_16
-#define block_is_configuration     BIT15_16
+#define BLOCK_HAS_PARENT           BIT0_16
+#define BLOCK_IS_IN_RAM            BIT1_16
+#define BLOCK_IS_IN_FLASH          BIT2_16
+#define BLOCK_IS_INDEXABLE         BIT3_16
+#define BLOCK_IS_READ_ONLY         BIT4_16
+#define BLOCK_GETS_VERIFIED        BIT5_16
+#define BLOCK_FOR_BACKUP_RESTORE   BIT6_16
+#define BLOCK_SPARE_FLAG_7         BIT7_16
+#define BLOCK_SPARE_FLAG_8         BIT8_16
+#define BLOCK_SPARE_FLAG_9         BIT9_16
+#define BLOCK_SPARE_FLAG_10        BIT10_16
+#define BLOCK_SPARE_FLAG_11        BIT11_16
+#define BLOCK_IS_2DUS_TABLE        BIT12_16
+#define BLOCK_IS_MAIN_TABLE        BIT13_16
+#define BLOCK_IS_LOOKUP_DATA       BIT14_16
+#define BLOCK_IS_CONFIGURATION     BIT15_16
 
 /** Addressable memory block description.
  *

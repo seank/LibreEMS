@@ -737,30 +737,30 @@ unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* detai
 	// Setting flags above is wrong, keep it all in one place, here!
 
 	// Initialise the flags to having flash, everything does at the moment, and indexable, most is, negate at end for those that don't.
-	details->flags = block_is_in_flash | block_is_indexable;
+	details->flags = BLOCK_IS_IN_FLASH | BLOCK_IS_INDEXABLE;
 
 	if(locationID < MainTable_TwoDTableUS_Border){
-		details->flags |= block_is_main_table | block_is_in_ram | block_gets_verified | block_for_backup_restore;
+		details->flags |= BLOCK_IS_MAIN_TABLE | BLOCK_IS_IN_RAM | BLOCK_GETS_VERIFIED | BLOCK_FOR_BACKUP_RESTORE;
 	}else if(locationID < TwoDTableUS_SmallTableFullBlocks_Border){
-		details->flags |= block_is_2dus_table | block_is_in_ram | block_has_parent | block_gets_verified;
+		details->flags |= BLOCK_IS_2DUS_TABLE | BLOCK_IS_IN_RAM | BLOCK_HAS_PARENT | BLOCK_GETS_VERIFIED;
 	}else if(locationID < SmallTableFullBlocks_SmallTableFillers_Border){
-		details->flags |= block_is_in_ram | block_for_backup_restore;
-		details->flags &= ~block_is_indexable;
+		details->flags |= BLOCK_IS_IN_RAM | BLOCK_FOR_BACKUP_RESTORE;
+		details->flags &= ~BLOCK_IS_INDEXABLE;
 	}else if(locationID < SmallTableFillers_FlashLookupTables_Border){
-		details->flags |= block_has_parent | block_is_in_ram;
-		details->flags &= ~block_is_indexable;
+		details->flags |= BLOCK_HAS_PARENT | BLOCK_IS_IN_RAM;
+		details->flags &= ~BLOCK_IS_INDEXABLE;
 	}else if(locationID < FlashLookupTables_SmallTableConfigs_Border){
-		details->flags |= block_is_lookup_data | block_for_backup_restore;
-		details->flags &= ~block_is_indexable;
+		details->flags |= BLOCK_IS_LOOKUP_DATA | BLOCK_FOR_BACKUP_RESTORE;
+		details->flags &= ~BLOCK_IS_INDEXABLE;
 	}else if(locationID < SmallTableConfigs_FixedConfigBlocks_Border){
-		details->flags |= block_has_parent | block_is_in_ram | block_is_configuration;
+		details->flags |= BLOCK_HAS_PARENT | BLOCK_IS_IN_RAM | BLOCK_IS_CONFIGURATION;
 	}else if(locationID < FixedConfigBlocks_FixedConfigSubBlocks_Border){
-		details->flags |= block_for_backup_restore;
+		details->flags |= BLOCK_FOR_BACKUP_RESTORE;
 	}else if(locationID < FixedConfigSubBlocks_Border_ReadOnlyVarBlocks){
-		details->flags |= block_has_parent | block_is_configuration;
+		details->flags |= BLOCK_HAS_PARENT | BLOCK_IS_CONFIGURATION;
 	}else{ // RO variable blocks exposed polling and streaming
-		details->flags |= block_is_read_only | block_is_in_ram;
-		details->flags &= ~block_is_in_flash;
+		details->flags |= BLOCK_IS_READ_ONLY | BLOCK_IS_IN_RAM;
+		details->flags &= ~BLOCK_IS_IN_FLASH;
 	}
 
 /* Fall through to not return error */

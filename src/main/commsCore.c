@@ -514,7 +514,7 @@ void decodePacketAndRespond(){
 			lookupBlockDetails(locationID, &details);
 
 			// Don't let anyone write to running variables unless we are running BenchTest firmware!
-			if((details.flags & block_is_read_only) && compare((unsigned char*)&decoderName, (unsigned char*)BENCH_TEST_NAME, sizeof(BENCH_TEST_NAME))){
+			if((details.flags & BLOCK_IS_READ_ONLY) && compare((unsigned char*)&decoderName, (unsigned char*)BENCH_TEST_NAME, sizeof(BENCH_TEST_NAME))){
 				errorID = attemptToWriteToReadOnlyBlock;
 				break;
 			}
@@ -538,7 +538,7 @@ void decodePacketAndRespond(){
 			}
 
 			// Don't allow sub region manipulation where it does not make sense or is unsafe.
-			if((size != details.size) && !(details.flags & block_is_indexable)){
+			if((size != details.size) && !(details.flags & BLOCK_IS_INDEXABLE)){
 				errorID = uncheckedTableManipulationNotAllowed;
 				break;
 			}
@@ -550,7 +550,7 @@ void decodePacketAndRespond(){
 
 			/// TODO @todo factor this out into validation delegation function once the number of types increases somewhat
 			//
-			if((details.flags & block_is_main_table) || (details.flags & block_is_2dus_table)){
+			if((details.flags & BLOCK_IS_MAIN_TABLE) || (details.flags & BLOCK_IS_2DUS_TABLE)){
 				void* bufferToCheck;
 
 				// For sub regions, construct an image for verification
@@ -567,9 +567,9 @@ void decodePacketAndRespond(){
 				}
 
 				// Verify all tables
-				if(details.flags & block_is_main_table){
+				if(details.flags & BLOCK_IS_MAIN_TABLE){
 					errorID = validateMainTable((mainTable*)bufferToCheck);
-				}else if(details.flags & block_is_2dus_table){
+				}else if(details.flags & BLOCK_IS_2DUS_TABLE){
 					errorID = validateTwoDTable((twoDTableUS*)bufferToCheck);
 				}// TODO add other table types here
 
@@ -637,14 +637,14 @@ void decodePacketAndRespond(){
 			}
 
 			// Don't allow sub region manipulation where it does not make sense or is unsafe.
-			if((size != details.size) && !(details.flags & block_is_indexable)){
+			if((size != details.size) && !(details.flags & BLOCK_IS_INDEXABLE)){
 				errorID = uncheckedTableManipulationNotAllowed;
 				break;
 			}
 
 			/// TODO @todo factor this out into validation delegation function once the number of types increases somewhat
 			//
-			if((details.flags & block_is_main_table) || (details.flags & block_is_2dus_table)){
+			if((details.flags & BLOCK_IS_MAIN_TABLE) || (details.flags & BLOCK_IS_2DUS_TABLE)){
 				void* bufferToCheck;
 
 				// For sub regions, construct an image for verification
@@ -668,9 +668,9 @@ void decodePacketAndRespond(){
 				}
 
 				// Verify all tables
-				if(details.flags & block_is_main_table){
+				if(details.flags & BLOCK_IS_MAIN_TABLE){
 					errorID = validateMainTable((mainTable*)bufferToCheck);
-				}else if(details.flags & block_is_2dus_table){
+				}else if(details.flags & BLOCK_IS_2DUS_TABLE){
 					errorID = validateTwoDTable((twoDTableUS*)bufferToCheck);
 				}// TODO add other table types here
 
@@ -757,7 +757,7 @@ void decodePacketAndRespond(){
 			}
 
 			// Don't allow sub region retrieval where it does not make sense or is unsafe. (keep it symmetric for djandruczyk)
-			if((size != details.size) && !(details.flags & block_is_indexable)){
+			if((size != details.size) && !(details.flags & BLOCK_IS_INDEXABLE)){
 				errorID = doesNotMakeSenseToRetrievePartially;
 				break;
 			}
@@ -820,7 +820,7 @@ void decodePacketAndRespond(){
 			}
 
 			// Don't allow sub region retrieval where it does not make sense or is unsafe. (keep it symmetric for djandruczyk)
-			if((size != details.size) && !(details.flags & block_is_indexable)){
+			if((size != details.size) && !(details.flags & BLOCK_IS_INDEXABLE)){
 				errorID = doesNotMakeSenseToRetrievePartially;
 				break;
 			}
@@ -884,7 +884,7 @@ void decodePacketAndRespond(){
 			}
 
 			// Don't allow sub region retrieval where it does not make sense or is unsafe. (keep it symmetric for djandruczyk)
-			if((size != details.size) && !(details.flags & block_is_indexable)){
+			if((size != details.size) && !(details.flags & BLOCK_IS_INDEXABLE)){
 				errorID = doesNotMakeSenseToRetrievePartially;
 				break;
 			}
