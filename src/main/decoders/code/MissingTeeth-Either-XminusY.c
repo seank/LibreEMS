@@ -129,33 +129,33 @@ void PrimaryRPMISR(void) {
 				unsigned long idealWide = 0;
 				unsigned long idealBackward = 0;
 				if(larger < (smaller + tolerance)){ // has to be first to be most efficient
-					matches.pairs.thisPair = MatchedPair; // same period, roughly
+					matches.pairs.thisPair = MATCHEDPAIR; // same period, roughly
 				}else{
 					idealWide = smaller * (MISSING_TEETH + 1); // has to be second to be most efficient
 					if((larger < (idealWide + tolerance)) && (larger > (idealWide - tolerance))){
 						if(thisLargerThanLast){
-							matches.pairs.thisPair = NarrowWide;
+							matches.pairs.thisPair = NARROWWIDE;
 						}else{
-							matches.pairs.thisPair = WideNarrow;
+							matches.pairs.thisPair = WIDENARROW;
 						}
 					}else{ // We're not in good shape...
 						idealBackward = ((smaller * (MISSING_TEETH + 2)) / 2); // this leads to further code running later, so should come next
 						if((larger <  (idealBackward + tolerance)) && (larger > (idealBackward - tolerance))){
 							if(thisLargerThanLast){
-								matches.pairs.thisPair = NarrowBackward;
+								matches.pairs.thisPair = NARROWBACKWARD;
 							}else{
-								matches.pairs.thisPair = BackwardNarrow;
+								matches.pairs.thisPair = BACKWARDNARROW;
 							}
 						}else if(larger > (idealWide + tolerance)){ // We're in very bad shape...
 							if(thisLargerThanLast){
-								resetToNonRunningState(yourVRSensorHasALoosePlugFixIt);
+								resetToNonRunningState(YOURVRSENSORHASALOOSEPLUGFIXIT);
 								return;
 							}else{
-								resetToNonRunningState(noiseAppearedWayTooEarlyAsIfItWasAVRToothButWasnt);
+								resetToNonRunningState(NOISEAPPEAREDWAYTOOEARLYASIFITWASAVRTOOTHBUTWASNT);
 								return;
 							}
 						}else{ // Fell between the cracks, not matched, settings very tight, therefore was in two possible places on either side of (N+2)/2.
-							resetToNonRunningState(yourSyncToleranceIsTighterThanAWellYouGetTheIdea);
+							resetToNonRunningState(YOURSYNCTOLERANCEISTIGHTERTHANAWELLYOUGETTHEIDEA);
 							return;
 						}
 					}
@@ -170,23 +170,23 @@ void PrimaryRPMISR(void) {
 							KeyUserDebugs.currentEvent = 0;
 						}
 
-						if((KeyUserDebugs.currentEvent == 0) && (matches.pattern != MatchedPairNarrowWide)){ // First event after gap
-							resetToNonRunningState(matches.pattern + MaskBySumPattern);
+						if((KeyUserDebugs.currentEvent == 0) && (matches.pattern != MATCHEDPAIRNARROWWIDE)){ // First event after gap
+							resetToNonRunningState(matches.pattern + MASKBYSUMPATTERN);
 							return;
-						}else if((KeyUserDebugs.currentEvent == 1) && (matches.pattern != NarrowWideWideNarrow)){ // Second event after gap
-							resetToNonRunningState(matches.pattern + MaskBySumPattern);
+						}else if((KeyUserDebugs.currentEvent == 1) && (matches.pattern != NARROWWIDEWIDENARROW)){ // Second event after gap
+							resetToNonRunningState(matches.pattern + MASKBYSUMPATTERN);
 							return;
-						}else if((KeyUserDebugs.currentEvent == 2) && (matches.pattern != WideNarrowMatchedPair)){ // Third event after gap
-							resetToNonRunningState(matches.pattern + MaskBySumPattern);
+						}else if((KeyUserDebugs.currentEvent == 2) && (matches.pattern != WIDENARROWMATCHEDPAIR)){ // Third event after gap
+							resetToNonRunningState(matches.pattern + MASKBYSUMPATTERN);
 							return;
-						}else if((KeyUserDebugs.currentEvent > 2) && (matches.pattern != MatchedPairMatchedPair)){ // All other events should be preceeded by two matched pairs
-							resetToNonRunningState(matches.pattern + MaskBySumPattern);
+						}else if((KeyUserDebugs.currentEvent > 2) && (matches.pattern != MATCHEDPAIRMATCHEDPAIR)){ // All other events should be preceeded by two matched pairs
+							resetToNonRunningState(matches.pattern + MASKBYSUMPATTERN);
 							return;
 						}else if(!(KeyUserDebugs.decoderFlags & OK_TO_SCHEDULE)){
 							SET_SYNC_LEVEL_TO(CRANK_SYNC); // Add a confirmation if necessary
 						} // else carry on happily as always
 					}else{
-						if(matches.pattern == MatchedPairMatchedPair){      //         | small | small | small | - All periods match, could be anywhere, unless...
+						if(matches.pattern == MATCHEDPAIRMATCHEDPAIR){      //         | small | small | small | - All periods match, could be anywhere, unless...
 							NumberOfTwinMatchedPairs++;
 							// Because this method REQUIRES 4 evenly spaced teeth to work, it's only available to 5-1 or greater wheels.
 							if((NUMBER_OF_WHEEL_EVENTS > 3) && (NumberOfTwinMatchedPairs == (NUMBER_OF_WHEEL_EVENTS - 3))){ // This can't find a match until it's on it's fourth execution
@@ -201,18 +201,18 @@ void PrimaryRPMISR(void) {
 								// Missing teeth users are clearly not fussed about fast starting anyway
 								// And once sync is gained good readings can be taken without excess memory usage
 							}else if((NUMBER_OF_WHEEL_EVENTS > 3) && (NumberOfTwinMatchedPairs > (NUMBER_OF_WHEEL_EVENTS - 3))){ // More matched pairs than possible with config
-								resetToNonRunningState(yourSyncToleranceIsLooserThanAWellYouGetTheIdea);
+								resetToNonRunningState(YOURSYNCTOLERANCEISLOOSERTHANAWELLYOUGETTHEIDEA);
 								return;
 							} // else fall through to wait.
-						}else if(matches.pattern == MatchedPairNarrowWide){ // | small | small |      BIG      | Last tooth is first tooth after missing  - ((M-N)-3)/M = common
+						}else if(matches.pattern == MATCHEDPAIRNARROWWIDE){ // | small | small |      BIG      | Last tooth is first tooth after missing  - ((M-N)-3)/M = common
 							KeyUserDebugs.currentEvent = 0;
 							lastEvent = NUMBER_OF_WHEEL_EVENTS - 1; // Zero indexed
 							SET_SYNC_LEVEL_TO(CRANK_SYNC);
-						}else if(matches.pattern == NarrowWideWideNarrow){  // | small |      BIG      | small | Last tooth is second tooth after missing - 1/M
+						}else if(matches.pattern == NARROWWIDEWIDENARROW){  // | small |      BIG      | small | Last tooth is second tooth after missing - 1/M
 							KeyUserDebugs.currentEvent = 1;
 							lastEvent = 0;
 							SET_SYNC_LEVEL_TO(CRANK_SYNC);
-						}else if(matches.pattern == WideNarrowMatchedPair){ // |      BIG      | small | small | Last tooth is third tooth after missing  - 1/M
+						}else if(matches.pattern == WIDENARROWMATCHEDPAIR){ // |      BIG      | small | small | Last tooth is third tooth after missing  - 1/M
 							KeyUserDebugs.currentEvent = 2;
 							lastEvent = 1;
 							SET_SYNC_LEVEL_TO(CRANK_SYNC);

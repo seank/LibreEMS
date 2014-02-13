@@ -64,17 +64,17 @@
 // MissingTeeth uses from 0x40 - 0x8D, below and above are free for all other decoders to use.
 
 // Pair designations, possibly move this elsewhere to support defining the others as errors elsewhere too
-#define FellThrough     64 // 0x40 The cracks, ie, no match
-#define MatchedPair      4 // ~1:1
-#define NarrowWide       6 // ~1:(N+1)
-#define WideNarrow       7 // ~(N+1):1
-#define NarrowBackward   8 // ~1:(N+2)/2
-#define BackwardNarrow   5 // ~(N+2)/2:1
-#define NarrowTooWide   65 // 0x41 1:>(N+1)
-#define TooWideNarrow   66 // 0x42 >(N+1):1
+#define FELLTHROUGH     64 // 0x40 The cracks, ie, no match
+#define MATCHEDPAIR      4 // ~1:1
+#define NARROWWIDE       6 // ~1:(N+1)
+#define WIDENARROW       7 // ~(N+1):1
+#define NARROWBACKWARD   8 // ~1:(N+2)/2
+#define BACKWARDNARROW   5 // ~(N+2)/2:1
+#define NARROWTOOWIDE   65 // 0x41 1:>(N+1)
+#define TOOWIDENARROW   66 // 0x42 >(N+1):1
 
 // This is for transposing errors to a unique number to indicate loss of sync different to clear during search
-#define MaskBySumPattern       0x05 // 0xN4 >> 0xN9, 0xN8 >> 0xND, no collisions, free space for more too
+#define MASKBYSUMPATTERN       0x05 // 0xN4 >> 0xN9, 0xN8 >> 0xND, no collisions, free space for more too
 
 // Possible conditions of success and failure.
 //
@@ -83,220 +83,220 @@
 // Note, whether it is possible to strike these depends on the tolerance used
 
 // In sync:
-#define MatchedPairMatchedPair  68 // 0x44 small small small - All periods match
-#define MatchedPairNarrowWide   70 // 0x46 small small BIG - First tooth after missing
-#define NarrowWideWideNarrow   103 // 0x67 small BIG small - Second tooth after missing, the strongest and most certain sync
-#define WideNarrowMatchedPair  116 // 0x74 BIG small small - Third tooth after missing
+#define MATCHEDPAIRMATCHEDPAIR  68 // 0x44 small small small - All periods match
+#define MATCHEDPAIRNARROWWIDE   70 // 0x46 small small BIG - First tooth after missing
+#define NARROWWIDEWIDENARROW   103 // 0x67 small BIG small - Second tooth after missing, the strongest and most certain sync
+#define WIDENARROWMATCHEDPAIR  116 // 0x74 BIG small small - Third tooth after missing
 
 // Except when we should get something else:
-#define MatchedPairMatchedPairPlusMask  73 // 0x49 small small small - All periods match (Indicates wrong decoder with too few teeth, same missing)
-#define MatchedPairNarrowWidePlusMask   75 // 0x4B small small BIG - First tooth after missing (Indicates wrong decoder with too many teeth, same missing)
-#define NarrowWideWideNarrowPlusMask   108 // 0x6C small BIG small - Second tooth after missing, the strongest and most certain sync
-#define WideNarrowMatchedPairPlusMask  121 // 0x79 BIG small small - Third tooth after missing
+#define MATCHEDPAIRMATCHEDPAIRPLUSMASK  73 // 0x49 small small small - All periods match (Indicates wrong decoder with too few teeth, same missing)
+#define MATCHEDPAIRNARROWWIDEPLUSMASK   75 // 0x4B small small BIG - First tooth after missing (Indicates wrong decoder with too many teeth, same missing)
+#define NARROWWIDEWIDENARROWPLUSMASK   108 // 0x6C small BIG small - Second tooth after missing, the strongest and most certain sync
+#define WIDENARROWMATCHEDPAIRPLUSMASK  121 // 0x79 BIG small small - Third tooth after missing
 
 // Wild noise and bad settings:
-#define yourVRSensorHasALoosePlugFixIt                    NarrowTooWide
-#define noiseAppearedWayTooEarlyAsIfItWasAVRToothButWasnt TooWideNarrow
-#define yourSyncToleranceIsTighterThanAWellYouGetTheIdea  FellThrough
-#define yourSyncToleranceIsLooserThanAWellYouGetTheIdea   MatchedPairMatchedPair // Too many matched pairs in a row
+#define YOURVRSENSORHASALOOSEPLUGFIXIT                    NARROWTOOWIDE
+#define NOISEAPPEAREDWAYTOOEARLYASIFITWASAVRTOOTHBUTWASNT TOOWIDENARROW
+#define YOURSYNCTOLERANCEISTIGHTERTHANAWELLYOUGETTHEIDEA  FELLTHROUGH
+#define YOURSYNCTOLERANCEISLOOSERTHANAWELLYOUGETTHEIDEA   MATCHEDPAIRMATCHEDPAIR // Too many matched pairs in a row
 
 // Fails:
-#define NearlySyncedNarrowWideBackwardNarrow           101 // 0x65
-#define NearlySyncedNarrowBackwardWideNarrow           135 // 0x87
-#define NearlySyncedNarrowBackwardBackwardNarrow       133 // 0x85
-#define NearlySyncedMatchedPairNarrowBackward           72 // 0x48
-#define NearlySyncedBackwardNarrowMatchedPair           84 // 0x54
-#define ExtraToothWideNarrowNarrowWide                 118 // 0x76
-#define ExtraToothWideNarrowNarrowBackward             120 // 0x78
-#define ExtraToothBackwardNarrowNarrowWide              86 // 0x56
-#define ExtraToothBackwardNarrowNarrowBackward          88 // 0x58
-#define VRWiringBackwardMatchedPairBackwardNarrow       69 // 0x45 Engineered to be 69 for humour value!
-#define VRWiringBackwardMatchedPairWideNarrow           71 // 0x47
-#define VRWiringBackwardNarrowWideMatchedPair          100 // 0x64
-#define VRWiringBackwardNarrowBackwardMatchedPair      132 // 0x84
-#define ExcessDecelerationNarrowBackwardNarrowBackward 136 // 0x88
-#define ExcessDecelerationNarrowBackwardNarrowWide     134 // 0x86
-#define ExcessDecelerationNarrowWideNarrowBackward     104 // 0x68
-#define ExcessDecelerationNarrowWideNarrowWide         102 // 0x66
-#define ExcessAccelerationBackwardNarrowBackwardNarrow  85 // 0x55
-#define ExcessAccelerationBackwardNarrowWideNarrow      87 // 0x57
-#define ExcessAccelerationWideNarrowBackwardNarrow     117 // 0x75
-#define ExcessAccelerationWideNarrowWideNarrow         119 // 0x77
+#define NEARLYSYNCEDNARROWWIDEBACKWARDNARROW           101 // 0x65
+#define NEARLYSYNCEDNARROWBACKWARDWIDENARROW           135 // 0x87
+#define NEARLYSYNCEDNARROWBACKWARDBACKWARDNARROW       133 // 0x85
+#define NEARLYSYNCEDMATCHEDPAIRNARROWBACKWARD           72 // 0x48
+#define NEARLYSYNCEDBACKWARDNARROWMATCHEDPAIR           84 // 0x54
+#define EXTRATOOTHWIDENARROWNARROWWIDE                 118 // 0x76
+#define EXTRATOOTHWIDENARROWNARROWBACKWARD             120 // 0x78
+#define EXTRATOOTHBACKWARDNARROWNARROWWIDE              86 // 0x56
+#define EXTRATOOTHBACKWARDNARROWNARROWBACKWARD          88 // 0x58
+#define VRWIRINGBACKWARDMATCHEDPAIRBACKWARDNARROW       69 // 0x45 Engineered to be 69 for humour value!
+#define VRWIRINGBACKWARDMATCHEDPAIRWIDENARROW           71 // 0x47
+#define VRWIRINGBACKWARDNARROWWIDEMATCHEDPAIR          100 // 0x64
+#define VRWIRINGBACKWARDNARROWBACKWARDMATCHEDPAIR      132 // 0x84
+#define EXCESSDECELERATIONNARROWBACKWARDNARROWBACKWARD 136 // 0x88
+#define EXCESSDECELERATIONNARROWBACKWARDNARROWWIDE     134 // 0x86
+#define EXCESSDECELERATIONNARROWWIDENARROWBACKWARD     104 // 0x68
+#define EXCESSDECELERATIONNARROWWIDENARROWWIDE         102 // 0x66
+#define EXCESSACCELERATIONBACKWARDNARROWBACKWARDNARROW  85 // 0x55
+#define EXCESSACCELERATIONBACKWARDNARROWWIDENARROW      87 // 0x57
+#define EXCESSACCELERATIONWIDENARROWBACKWARDNARROW     117 // 0x75
+#define EXCESSACCELERATIONWIDENARROWWIDENARROW         119 // 0x77
 
 // Fails while synced:
-#define NearlySyncedNarrowWideBackwardNarrowPlusMask           106 // 0x6A
-#define NearlySyncedNarrowBackwardWideNarrowPlusMask           140 // 0x8C
-#define NearlySyncedNarrowBackwardBackwardNarrowPlusMask       138 // 0x8A
-#define NearlySyncedMatchedPairNarrowBackwardPlusMask           77 // 0x4D
-#define NearlySyncedBackwardNarrowMatchedPairPlusMask           89 // 0x59
-#define ExtraToothWideNarrowNarrowWidePlusMask                 123 // 0x7B
-#define ExtraToothWideNarrowNarrowBackwardPlusMask             125 // 0x7D
-#define ExtraToothBackwardNarrowNarrowWidePlusMask              91 // 0x5B
-#define ExtraToothBackwardNarrowNarrowBackwardPlusMask          93 // 0x5D
-#define VRWiringBackwardMatchedPairBackwardNarrowPlusMask       74 // 0x4A
-#define VRWiringBackwardMatchedPairWideNarrowPlusMask           76 // 0x4C
-#define VRWiringBackwardNarrowWideMatchedPairPlusMask          105 // 0x69
-#define VRWiringBackwardNarrowBackwardMatchedPairPlusMask      137 // 0x89
-#define ExcessDecelerationNarrowBackwardNarrowBackwardPlusMask 141 // 0x8D
-#define ExcessDecelerationNarrowBackwardNarrowWidePlusMask     139 // 0x8B
-#define ExcessDecelerationNarrowWideNarrowBackwardPlusMask     109 // 0x6D
-#define ExcessDecelerationNarrowWideNarrowWidePlusMask         107 // 0x6B
-#define ExcessAccelerationBackwardNarrowBackwardNarrowPlusMask  90 // 0x5A
-#define ExcessAccelerationBackwardNarrowWideNarrowPlusMask      92 // 0x5C
-#define ExcessAccelerationWideNarrowBackwardNarrowPlusMask     122 // 0x7A
-#define ExcessAccelerationWideNarrowWideNarrowPlusMask         124 // 0x7C
+#define NEARLYSYNCEDNARROWWIDEBACKWARDNARROWPLUSMASK           106 // 0x6A
+#define NEARLYSYNCEDNARROWBACKWARDWIDENARROWPLUSMASK           140 // 0x8C
+#define NEARLYSYNCEDNARROWBACKWARDBACKWARDNARROWPLUSMASK       138 // 0x8A
+#define NEARLYSYNCEDMATCHEDPAIRNARROWBACKWARDPLUSMASK           77 // 0x4D
+#define NEARLYSYNCEDBACKWARDNARROWMATCHEDPAIRPLUSMASK           89 // 0x59
+#define EXTRATOOTHWIDENARROWNARROWWIDEPLUSMASK                 123 // 0x7B
+#define EXTRATOOTHWIDENARROWNARROWBACKWARDPLUSMASK             125 // 0x7D
+#define EXTRATOOTHBACKWARDNARROWNARROWWIDEPLUSMASK              91 // 0x5B
+#define EXTRATOOTHBACKWARDNARROWNARROWBACKWARDPLUSMASK          93 // 0x5D
+#define VRWIRINGBACKWARDMATCHEDPAIRBACKWARDNARROWPLUSMASK       74 // 0x4A
+#define VRWIRINGBACKWARDMATCHEDPAIRWIDENARROWPLUSMASK           76 // 0x4C
+#define VRWIRINGBACKWARDNARROWWIDEMATCHEDPAIRPLUSMASK          105 // 0x69
+#define VRWIRINGBACKWARDNARROWBACKWARDMATCHEDPAIRPLUSMASK      137 // 0x89
+#define EXCESSDECELERATIONNARROWBACKWARDNARROWBACKWARDPLUSMASK 141 // 0x8D
+#define EXCESSDECELERATIONNARROWBACKWARDNARROWWIDEPLUSMASK     139 // 0x8B
+#define EXCESSDECELERATIONNARROWWIDENARROWBACKWARDPLUSMASK     109 // 0x6D
+#define EXCESSDECELERATIONNARROWWIDENARROWWIDEPLUSMASK         107 // 0x6B
+#define EXCESSACCELERATIONBACKWARDNARROWBACKWARDNARROWPLUSMASK  90 // 0x5A
+#define EXCESSACCELERATIONBACKWARDNARROWWIDENARROWPLUSMASK      92 // 0x5C
+#define EXCESSACCELERATIONWIDENARROWBACKWARDNARROWPLUSMASK     122 // 0x7A
+#define EXCESSACCELERATIONWIDENARROWWIDENARROWPLUSMASK         124 // 0x7C
 
 // Self-checks on the above
-#if (MatchedPairMatchedPair != ((MatchedPair << 4) + MatchedPair))
+#if (MATCHEDPAIRMATCHEDPAIR != ((MATCHEDPAIR << 4) + MATCHEDPAIR))
 #error "Header is broken, fix it!"
 #endif
-#if (MatchedPairNarrowWide != ((MatchedPair << 4) + NarrowWide))
+#if (MATCHEDPAIRNARROWWIDE != ((MATCHEDPAIR << 4) + NARROWWIDE))
 #error "Header is broken, fix it!"
 #endif
-#if (NarrowWideWideNarrow != ((NarrowWide << 4) + WideNarrow))
+#if (NARROWWIDEWIDENARROW != ((NARROWWIDE << 4) + WIDENARROW))
 #error "Header is broken, fix it!"
 #endif
-#if (WideNarrowMatchedPair != ((WideNarrow << 4) + MatchedPair))
+#if (WIDENARROWMATCHEDPAIR != ((WIDENARROW << 4) + MATCHEDPAIR))
 #error "Header is broken, fix it!"
 #endif
-#if (NearlySyncedNarrowWideBackwardNarrow != ((NarrowWide << 4) + BackwardNarrow))
+#if (NEARLYSYNCEDNARROWWIDEBACKWARDNARROW != ((NARROWWIDE << 4) + BACKWARDNARROW))
 #error "Header is broken, fix it!"
 #endif
-#if (NearlySyncedNarrowBackwardWideNarrow != ((NarrowBackward << 4) + WideNarrow))
+#if (NEARLYSYNCEDNARROWBACKWARDWIDENARROW != ((NARROWBACKWARD << 4) + WIDENARROW))
 #error "Header is broken, fix it!"
 #endif
-#if (NearlySyncedNarrowBackwardBackwardNarrow != ((NarrowBackward << 4) + BackwardNarrow))
+#if (NEARLYSYNCEDNARROWBACKWARDBACKWARDNARROW != ((NARROWBACKWARD << 4) + BACKWARDNARROW))
 #error "Header is broken, fix it!"
 #endif
-#if (NearlySyncedMatchedPairNarrowBackward != ((MatchedPair << 4) + NarrowBackward))
+#if (NEARLYSYNCEDMATCHEDPAIRNARROWBACKWARD != ((MATCHEDPAIR << 4) + NARROWBACKWARD))
 #error "Header is broken, fix it!"
 #endif
-#if (NearlySyncedBackwardNarrowMatchedPair != ((BackwardNarrow << 4) + MatchedPair))
+#if (NEARLYSYNCEDBACKWARDNARROWMATCHEDPAIR != ((BACKWARDNARROW << 4) + MATCHEDPAIR))
 #error "Header is broken, fix it!"
 #endif
-#if (ExtraToothWideNarrowNarrowWide != ((WideNarrow << 4) + NarrowWide))
+#if (EXTRATOOTHWIDENARROWNARROWWIDE != ((WIDENARROW << 4) + NARROWWIDE))
 #error "Header is broken, fix it!"
 #endif
-#if (ExtraToothWideNarrowNarrowBackward != ((WideNarrow << 4) + NarrowBackward))
+#if (EXTRATOOTHWIDENARROWNARROWBACKWARD != ((WIDENARROW << 4) + NARROWBACKWARD))
 #error "Header is broken, fix it!"
 #endif
-#if (ExtraToothBackwardNarrowNarrowWide != ((BackwardNarrow << 4) + NarrowWide))
+#if (EXTRATOOTHBACKWARDNARROWNARROWWIDE != ((BACKWARDNARROW << 4) + NARROWWIDE))
 #error "Header is broken, fix it!"
 #endif
-#if (ExtraToothBackwardNarrowNarrowBackward != ((BackwardNarrow << 4) + NarrowBackward))
+#if (EXTRATOOTHBACKWARDNARROWNARROWBACKWARD != ((BACKWARDNARROW << 4) + NARROWBACKWARD))
 #error "Header is broken, fix it!"
 #endif
-#if (VRWiringBackwardMatchedPairBackwardNarrow != ((MatchedPair << 4) + BackwardNarrow))
+#if (VRWIRINGBACKWARDMATCHEDPAIRBACKWARDNARROW != ((MATCHEDPAIR << 4) + BACKWARDNARROW))
 #error "Header is broken, fix it!"
 #endif
-#if (VRWiringBackwardMatchedPairWideNarrow != ((MatchedPair << 4) + WideNarrow))
+#if (VRWIRINGBACKWARDMATCHEDPAIRWIDENARROW != ((MATCHEDPAIR << 4) + WIDENARROW))
 #error "Header is broken, fix it!"
 #endif
-#if (VRWiringBackwardNarrowWideMatchedPair != ((NarrowWide << 4) + MatchedPair))
+#if (VRWIRINGBACKWARDNARROWWIDEMATCHEDPAIR != ((NARROWWIDE << 4) + MATCHEDPAIR))
 #error "Header is broken, fix it!"
 #endif
-#if (VRWiringBackwardNarrowBackwardMatchedPair != ((NarrowBackward << 4) + MatchedPair))
+#if (VRWIRINGBACKWARDNARROWBACKWARDMATCHEDPAIR != ((NARROWBACKWARD << 4) + MATCHEDPAIR))
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessDecelerationNarrowBackwardNarrowBackward != ((NarrowBackward << 4) + NarrowBackward))
+#if (EXCESSDECELERATIONNARROWBACKWARDNARROWBACKWARD != ((NARROWBACKWARD << 4) + NARROWBACKWARD))
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessDecelerationNarrowBackwardNarrowWide != ((NarrowBackward << 4) + NarrowWide))
+#if (EXCESSDECELERATIONNARROWBACKWARDNARROWWIDE != ((NARROWBACKWARD << 4) + NARROWWIDE))
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessDecelerationNarrowWideNarrowBackward != ((NarrowWide << 4) + NarrowBackward))
+#if (EXCESSDECELERATIONNARROWWIDENARROWBACKWARD != ((NARROWWIDE << 4) + NARROWBACKWARD))
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessDecelerationNarrowWideNarrowWide != ((NarrowWide << 4) + NarrowWide))
+#if (EXCESSDECELERATIONNARROWWIDENARROWWIDE != ((NARROWWIDE << 4) + NARROWWIDE))
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessAccelerationBackwardNarrowBackwardNarrow != ((BackwardNarrow << 4) + BackwardNarrow))
+#if (EXCESSACCELERATIONBACKWARDNARROWBACKWARDNARROW != ((BACKWARDNARROW << 4) + BACKWARDNARROW))
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessAccelerationBackwardNarrowWideNarrow != ((BackwardNarrow << 4) + WideNarrow))
+#if (EXCESSACCELERATIONBACKWARDNARROWWIDENARROW != ((BACKWARDNARROW << 4) + WIDENARROW))
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessAccelerationWideNarrowBackwardNarrow != ((WideNarrow << 4) + BackwardNarrow))
+#if (EXCESSACCELERATIONWIDENARROWBACKWARDNARROW != ((WIDENARROW << 4) + BACKWARDNARROW))
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessAccelerationWideNarrowWideNarrow != ((WideNarrow << 4) + WideNarrow))
+#if (EXCESSACCELERATIONWIDENARROWWIDENARROW != ((WIDENARROW << 4) + WIDENARROW))
 #error "Header is broken, fix it!"
 #endif
 
 // And for the masked ones:
-#if (MatchedPairMatchedPairPlusMask != ((MatchedPair << 4) + MatchedPair) + MaskBySumPattern)
+#if (MATCHEDPAIRMATCHEDPAIRPLUSMASK != ((MATCHEDPAIR << 4) + MATCHEDPAIR) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (MatchedPairNarrowWidePlusMask != ((MatchedPair << 4) + NarrowWide) + MaskBySumPattern)
+#if (MATCHEDPAIRNARROWWIDEPLUSMASK != ((MATCHEDPAIR << 4) + NARROWWIDE) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (NarrowWideWideNarrowPlusMask != ((NarrowWide << 4) + WideNarrow) + MaskBySumPattern)
+#if (NARROWWIDEWIDENARROWPLUSMASK != ((NARROWWIDE << 4) + WIDENARROW) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (WideNarrowMatchedPairPlusMask != ((WideNarrow << 4) + MatchedPair) + MaskBySumPattern)
+#if (WIDENARROWMATCHEDPAIRPLUSMASK != ((WIDENARROW << 4) + MATCHEDPAIR) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (NearlySyncedNarrowWideBackwardNarrowPlusMask != ((NarrowWide << 4) + BackwardNarrow) + MaskBySumPattern)
+#if (NEARLYSYNCEDNARROWWIDEBACKWARDNARROWPLUSMASK != ((NARROWWIDE << 4) + BACKWARDNARROW) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (NearlySyncedNarrowBackwardWideNarrowPlusMask != ((NarrowBackward << 4) + WideNarrow) + MaskBySumPattern)
+#if (NEARLYSYNCEDNARROWBACKWARDWIDENARROWPLUSMASK != ((NARROWBACKWARD << 4) + WIDENARROW) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (NearlySyncedNarrowBackwardBackwardNarrowPlusMask != ((NarrowBackward << 4) + BackwardNarrow) + MaskBySumPattern)
+#if (NEARLYSYNCEDNARROWBACKWARDBACKWARDNARROWPLUSMASK != ((NARROWBACKWARD << 4) + BACKWARDNARROW) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (NearlySyncedMatchedPairNarrowBackwardPlusMask != ((MatchedPair << 4) + NarrowBackward) + MaskBySumPattern)
+#if (NEARLYSYNCEDMATCHEDPAIRNARROWBACKWARDPLUSMASK != ((MATCHEDPAIR << 4) + NARROWBACKWARD) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (NearlySyncedBackwardNarrowMatchedPairPlusMask != ((BackwardNarrow << 4) + MatchedPair) + MaskBySumPattern)
+#if (NEARLYSYNCEDBACKWARDNARROWMATCHEDPAIRPLUSMASK != ((BACKWARDNARROW << 4) + MATCHEDPAIR) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExtraToothWideNarrowNarrowWidePlusMask != ((WideNarrow << 4) + NarrowWide) + MaskBySumPattern)
+#if (EXTRATOOTHWIDENARROWNARROWWIDEPLUSMASK != ((WIDENARROW << 4) + NARROWWIDE) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExtraToothWideNarrowNarrowBackwardPlusMask != ((WideNarrow << 4) + NarrowBackward) + MaskBySumPattern)
+#if (EXTRATOOTHWIDENARROWNARROWBACKWARDPLUSMASK != ((WIDENARROW << 4) + NARROWBACKWARD) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExtraToothBackwardNarrowNarrowWidePlusMask != ((BackwardNarrow << 4) + NarrowWide) + MaskBySumPattern)
+#if (EXTRATOOTHBACKWARDNARROWNARROWWIDEPLUSMASK != ((BACKWARDNARROW << 4) + NARROWWIDE) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExtraToothBackwardNarrowNarrowBackwardPlusMask != ((BackwardNarrow << 4) + NarrowBackward) + MaskBySumPattern)
+#if (EXTRATOOTHBACKWARDNARROWNARROWBACKWARDPLUSMASK != ((BACKWARDNARROW << 4) + NARROWBACKWARD) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (VRWiringBackwardMatchedPairBackwardNarrowPlusMask != ((MatchedPair << 4) + BackwardNarrow) + MaskBySumPattern)
+#if (VRWIRINGBACKWARDMATCHEDPAIRBACKWARDNARROWPLUSMASK != ((MATCHEDPAIR << 4) + BACKWARDNARROW) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (VRWiringBackwardMatchedPairWideNarrowPlusMask != ((MatchedPair << 4) + WideNarrow) + MaskBySumPattern)
+#if (VRWIRINGBACKWARDMATCHEDPAIRWIDENARROWPLUSMASK != ((MATCHEDPAIR << 4) + WIDENARROW) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (VRWiringBackwardNarrowWideMatchedPairPlusMask != ((NarrowWide << 4) + MatchedPair) + MaskBySumPattern)
+#if (VRWIRINGBACKWARDNARROWWIDEMATCHEDPAIRPLUSMASK != ((NARROWWIDE << 4) + MATCHEDPAIR) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (VRWiringBackwardNarrowBackwardMatchedPairPlusMask != ((NarrowBackward << 4) + MatchedPair) + MaskBySumPattern)
+#if (VRWIRINGBACKWARDNARROWBACKWARDMATCHEDPAIRPLUSMASK != ((NARROWBACKWARD << 4) + MATCHEDPAIR) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessDecelerationNarrowBackwardNarrowBackwardPlusMask != ((NarrowBackward << 4) + NarrowBackward) + MaskBySumPattern)
+#if (EXCESSDECELERATIONNARROWBACKWARDNARROWBACKWARDPLUSMASK != ((NARROWBACKWARD << 4) + NARROWBACKWARD) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessDecelerationNarrowBackwardNarrowWidePlusMask != ((NarrowBackward << 4) + NarrowWide) + MaskBySumPattern)
+#if (EXCESSDECELERATIONNARROWBACKWARDNARROWWIDEPLUSMASK != ((NARROWBACKWARD << 4) + NARROWWIDE) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessDecelerationNarrowWideNarrowBackwardPlusMask != ((NarrowWide << 4) + NarrowBackward) + MaskBySumPattern)
+#if (EXCESSDECELERATIONNARROWWIDENARROWBACKWARDPLUSMASK != ((NARROWWIDE << 4) + NARROWBACKWARD) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessDecelerationNarrowWideNarrowWidePlusMask != ((NarrowWide << 4) + NarrowWide) + MaskBySumPattern)
+#if (EXCESSDECELERATIONNARROWWIDENARROWWIDEPLUSMASK != ((NARROWWIDE << 4) + NARROWWIDE) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessAccelerationBackwardNarrowBackwardNarrowPlusMask != ((BackwardNarrow << 4) + BackwardNarrow) + MaskBySumPattern)
+#if (EXCESSACCELERATIONBACKWARDNARROWBACKWARDNARROWPLUSMASK != ((BACKWARDNARROW << 4) + BACKWARDNARROW) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessAccelerationBackwardNarrowWideNarrowPlusMask != ((BackwardNarrow << 4) + WideNarrow) + MaskBySumPattern)
+#if (EXCESSACCELERATIONBACKWARDNARROWWIDENARROWPLUSMASK != ((BACKWARDNARROW << 4) + WIDENARROW) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessAccelerationWideNarrowBackwardNarrowPlusMask != ((WideNarrow << 4) + BackwardNarrow) + MaskBySumPattern)
+#if (EXCESSACCELERATIONWIDENARROWBACKWARDNARROWPLUSMASK != ((WIDENARROW << 4) + BACKWARDNARROW) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
-#if (ExcessAccelerationWideNarrowWideNarrowPlusMask != ((WideNarrow << 4) + WideNarrow) + MaskBySumPattern)
+#if (EXCESSACCELERATIONWIDENARROWWIDENARROWPLUSMASK != ((WIDENARROW << 4) + WIDENARROW) + MASKBYSUMPATTERN)
 #error "Header is broken, fix it!"
 #endif
 
