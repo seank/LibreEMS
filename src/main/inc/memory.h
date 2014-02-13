@@ -43,8 +43,8 @@
 #define FILE_MEMORY_H_SEEN
 
 
-#define flashSectorSize        1024
-#define flashSectorSizeInWords  512 /* 512 words to a 1k flash sector */
+#define FLASHSECTORSIZE        1024
+#define FLASHSECTORSIZEINWORDS  512 /* 512 words to a 1k flash sector */
 
 
 /* Valid RPAGE values :

@@ -79,7 +79,7 @@ typedef struct {
 } loggingSetting;
 
 
-#define SMALL_TABLES_1_FILLER_SIZE (flashSectorSize - (sizeof(twoDTableUS) * 9))  // Update this if adding another table!
+#define SMALL_TABLES_1_FILLER_SIZE (FLASHSECTORSIZE - (sizeof(twoDTableUS) * 9))  // Update this if adding another table!
 /**
  * One of four structs of live tunable data such as small tables and fuel trims
  * etc. If you add something here, please ensure you update all of the following :
@@ -103,7 +103,7 @@ typedef struct {
 } SmallTables1;
 
 
-#define SMALL_TABLES_2_FILLER_SIZE (flashSectorSize - (sizeof(loggingSetting) + 24)) // Update this if adding another table/struct!
+#define SMALL_TABLES_2_FILLER_SIZE (FLASHSECTORSIZE - (sizeof(loggingSetting) + 24)) // Update this if adding another table/struct!
 /** @copydoc SmallTables1 */
 typedef struct {
 	loggingSetting loggingSettings;                          ///< @copydoc loggingSetting
@@ -112,7 +112,7 @@ typedef struct {
 } SmallTables2;
 
 
-#define SMALL_TABLES_3_FILLER_SIZE (flashSectorSize - (sizeof(twoDTableUSMAF))) // Update this if adding a table!
+#define SMALL_TABLES_3_FILLER_SIZE (FLASHSECTORSIZE - (sizeof(twoDTableUSMAF))) // Update this if adding a table!
 /** @copydoc SmallTables1 */
 typedef struct {
 	twoDTableUSMAF MAFVersusVoltageTable;			  ///< MAF table location
@@ -120,7 +120,7 @@ typedef struct {
 } SmallTables3;
 
 
-#define SMALL_TABLES_4_FILLER_SIZE flashSectorSize // Update this if adding a table!
+#define SMALL_TABLES_4_FILLER_SIZE FLASHSECTORSIZE // Update this if adding a table!
 /** @copydoc SmallTables1 */
 typedef struct {
 	unsigned char filler[SMALL_TABLES_4_FILLER_SIZE]; ///< Padding data.

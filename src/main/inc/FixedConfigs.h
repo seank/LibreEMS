@@ -317,7 +317,7 @@ typedef struct {
 } inputOutputSetting;
 
 
-#define userTextFieldArrayLength1 (flashSectorSize - (sizeof(engineSetting) + sizeof(serialSetting) + sizeof(coarseBitBangSetting) + sizeof(schedulingSetting) + sizeof(cutAndLimiterSetting) + sizeof(simpleGPIOSetting)))
+#define userTextFieldArrayLength1 (FLASHSECTORSIZE - (sizeof(engineSetting) + sizeof(serialSetting) + sizeof(coarseBitBangSetting) + sizeof(schedulingSetting) + sizeof(cutAndLimiterSetting) + sizeof(simpleGPIOSetting)))
 /**
  * One of two structs of fixed configuration data such as physical parameters etc.
  *
@@ -337,7 +337,7 @@ typedef struct {
 } fixedConfig1;
 
 
-#define userTextFieldArrayLength2 (flashSectorSize - (sizeof(sensorSource) + sizeof(sensorPreset) + sizeof(sensorRange) + sizeof(sensorSetting) + sizeof(algorithmSetting) + sizeof(inputOutputSetting) + sizeof(decoderSetting)))
+#define userTextFieldArrayLength2 (FLASHSECTORSIZE - (sizeof(sensorSource) + sizeof(sensorPreset) + sizeof(sensorRange) + sizeof(sensorSetting) + sizeof(algorithmSetting) + sizeof(inputOutputSetting) + sizeof(decoderSetting)))
 /** @copydoc fixedConfig1 */
 typedef struct {
 	sensorSource sensorSources;                              ///< @see sensorSource

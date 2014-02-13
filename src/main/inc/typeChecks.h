@@ -74,7 +74,7 @@
 CASSERT(sizeof(Flaggable) == 16, Flaggable)
 CASSERT(sizeof(ADCBuffer)  == 32, ADCBuffer)
 CASSERT(sizeof(twoDTableUS) == 64, twoDTableUS)
-CASSERT(sizeof(mainTable) == flashSectorSize, mainTable)
+CASSERT(sizeof(mainTable) == FLASHSECTORSIZE, mainTable)
 CASSERT(sizeof(cutEnabled) == 2, cutEnabled)
 CASSERT(sizeof(ignitionCutFlags) == 1, ignitionCutFlags)
 CASSERT(sizeof(injectionCutFlags) == 1, injectionCutFlags)
@@ -87,13 +87,13 @@ CASSERT((sizeof(DerivedVar) % 2) == 0, DerivedVar)
 CASSERT((sizeof(KeyUserDebug) % 2) == 0, KeyUserDebug)
 
 // Flash block alignment checks:
-CASSERT((sizeof(SmallTables1) == flashSectorSize), SmallTables1)
-CASSERT((sizeof(SmallTables2) == flashSectorSize), SmallTables2)
-CASSERT((sizeof(SmallTables3) == flashSectorSize), SmallTables3)
-CASSERT((sizeof(SmallTables4) == flashSectorSize), SmallTables4)
+CASSERT((sizeof(SmallTables1) == FLASHSECTORSIZE), SmallTables1)
+CASSERT((sizeof(SmallTables2) == FLASHSECTORSIZE), SmallTables2)
+CASSERT((sizeof(SmallTables3) == FLASHSECTORSIZE), SmallTables3)
+CASSERT((sizeof(SmallTables4) == FLASHSECTORSIZE), SmallTables4)
 
-CASSERT((sizeof(fixedConfig1) == flashSectorSize), fixedConfig1)
-CASSERT((sizeof(fixedConfig2) == flashSectorSize), fixedConfig2)
+CASSERT((sizeof(fixedConfig1) == FLASHSECTORSIZE), fixedConfig1)
+CASSERT((sizeof(fixedConfig2) == FLASHSECTORSIZE), fixedConfig2)
 
 // Check the fixed point readability macros for correct behaviour
 CASSERT(KPA(655.36) > SHORTMAX, PRESSURE)          // Overflow gets caught

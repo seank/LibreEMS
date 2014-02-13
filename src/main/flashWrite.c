@@ -64,7 +64,7 @@
  */
 unsigned short eraseSector(unsigned char PPage, unsigned short *flashAddr){
 
-	if(((unsigned short)flashAddr % flashSectorSize) != 0){
+	if(((unsigned short)flashAddr % FLASHSECTORSIZE) != 0){
 		return addressNotSectorAligned;
 	}
 	unsigned char currentPage = PPAGE;
@@ -118,7 +118,7 @@ unsigned short writeBlock(blockDetails* details, void* buffer){
 	}else if(details->size < 1024){
 		unsigned short chunkFlashAddress = (unsigned short)details->FlashAddress;
 		/* Get the offset from the start of the sector */
-		unsigned short offset = chunkFlashAddress % flashSectorSize;
+		unsigned short offset = chunkFlashAddress % FLASHSECTORSIZE;
 
 		/* Check for flash sector boundary crossing */
 		if((offset + details->size) > 1024){
@@ -160,12 +160,12 @@ unsigned short writeBlock(blockDetails* details, void* buffer){
 		PPAGE = oldFlashPage;
 	} else {
 		/* If not smaller than 1024, check size is product of sector size */
-		if((details->size % flashSectorSize) != 0){
+		if((details->size % FLASHSECTORSIZE) != 0){
 			return sizeNotMultipleOfSectorSize;
 		}
 
 		/* Set the variables to what they would have been before */
-		sectors = details->size / flashSectorSize;
+		sectors = details->size / FLASHSECTORSIZE;
 		RAMPage = details->RAMPage;
 		RAMAddress = (unsigned short*)details->RAMAddress;
 		FlashAddress = (unsigned short*)details->FlashAddress;
@@ -178,8 +178,8 @@ unsigned short writeBlock(blockDetails* details, void* buffer){
 			return errorID;
 		}
 		/* Incrementing a pointer is done by blocks the size of the type, hence 512 per sector here */
-		RAMAddress += flashSectorSizeInWords;
-		FlashAddress += flashSectorSizeInWords;
+		RAMAddress += FLASHSECTORSIZEINWORDS;
+		FlashAddress += FLASHSECTORSIZEINWORDS;
 	}
 	// @todo TODO verify the write? necessary??
 	return 0;
@@ -206,7 +206,7 @@ unsigned short writeBlock(blockDetails* details, void* buffer){
  */
 unsigned short writeSector(unsigned char RPage, unsigned short* RAMSourceAddress, unsigned char PPage , unsigned short* flashDestinationAddress){
 
-	if(((unsigned short)flashDestinationAddress % flashSectorSize) != 0){
+	if(((unsigned short)flashDestinationAddress % FLASHSECTORSIZE) != 0){
 		return addressNotSectorAligned;
 	}
 
@@ -217,7 +217,7 @@ unsigned short writeSector(unsigned char RPage, unsigned short* RAMSourceAddress
 	/// @todo TODO Decide if we need to disable interrupts since we are manually setting Flash/RAM pages.
 	eraseSector((unsigned char)PPage, (unsigned short*)flashDestinationAddress);  /* First Erase our destination block */
 
-	unsigned short wordCount = flashSectorSizeInWords;
+	unsigned short wordCount = FLASHSECTORSIZEINWORDS;
 
 	/* Save pages */
 	unsigned char currentRPage = RPAGE;
