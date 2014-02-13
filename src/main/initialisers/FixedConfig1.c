@@ -110,11 +110,11 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 		maxSecondaryDC:		DUTYCYCLE(85.00),
 #endif
 #if CONFIG == SEANKR1_ID
-		stoichiometricAFR:  stoichiometricAFRE85,
-		densityOfFuelAtSTP: densityOfE85
+		stoichiometricAFR:  STOICHIOMETRICAFRE85,
+		densityOfFuelAtSTP: DENSITYOFE85
 #else
-		stoichiometricAFR:  stoichiometricAFRPetrol,
-		densityOfFuelAtSTP: densityOfPetrol
+		stoichiometricAFR:  STOICHIOMETRICAFRPETROL,
+		densityOfFuelAtSTP: DENSITYOFPETROL
 #endif
 	},
 	serialSettings:{
@@ -128,10 +128,10 @@ const volatile fixedConfig1 fixedConfigs1 FIXEDCONF1 = {
 #elif CONFIG == SLATER_ID // 11 events for 12-1 crank setup with 4 cylinder tacho
 		outputActions:      {1,0,0,2,0,0,1,0,0,2,0},
 #else
-		outputActions:      standardTachoArray,
+		outputActions:      STANDARDTACHOARRAY,
 #endif
-		ports:              standardTachoPorts,
-		masks:              standardTachoMasks,
+		ports:              STANDARDTACHOPORTS,
+		masks:              STANDARDTACHOMASKS,
 		numberConfigured:   1
 	},
 	schedulingSettings:{

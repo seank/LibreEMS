@@ -147,8 +147,8 @@ const volatile SmallTables1 SmallTablesAFlashV  TUNETABLESDV1 = {
 
 const volatile SmallTables2 SmallTablesBFlashV TUNETABLESDV2 = {
 		loggingSettings: {
-			datalogStreamType:                    asyncDatalogBasic,
-			datalogPollingType:                   asyncDatalogBasic,
+			datalogStreamType:                    ASYNCDATALOGBASIC,
+			datalogPollingType:                   ASYNCDATALOGBASIC,
 			firstChunk: 0,
 			numberOfChunks: 3,
 			logChunks: {

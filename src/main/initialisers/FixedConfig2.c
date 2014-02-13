@@ -63,53 +63,53 @@ const volatile fixedConfig2 fixedConfigs2 FIXEDCONF2 = {
 	sensorRanges:{
 // MAP Sensor Configuration
 #if CONFIG == HOTEL_ID
-		MAPMinimum:    HondaDenso183kPaMin,
-		MAPRange:      HondaDenso183kPaRange,
+		MAPMinimum:    HONDADENSO183KPAMIN,
+		MAPRange:      HONDADENSO183KPARANGE,
 #elif CONFIG == PRESTO_ID
-		MAPMinimum:    HondaDenso183kPaMin,
-		MAPRange:      HondaDenso183kPaRange,
+		MAPMinimum:    HONDADENSO183KPAMIN,
+		MAPRange:      HONDADENSO183KPARANGE,
 #elif CONFIG == SNOTROCKET_ID
-		MAPMinimum:    HondaDenso183kPaMin,
-		MAPRange:      HondaDenso183kPaRange,
+		MAPMinimum:    HONDADENSO183KPAMIN,
+		MAPRange:      HONDADENSO183KPARANGE,
 #elif CONFIG == SEANKLT1_ID
-		MAPMinimum:    GM2BarMin,
-		MAPRange:      GM2BarRange,
+		MAPMinimum:    GM2BARMIN,
+		MAPRange:      GM2BARRANGE,
 #elif CONFIG == SLATER_ID
-		MAPMinimum:    HondaDenso183kPaMin,
-		MAPRange:      HondaDenso183kPaRange,
+		MAPMinimum:    HONDADENSO183KPAMIN,
+		MAPRange:      HONDADENSO183KPARANGE,
 #elif CONFIG == DEUCECOUPE_ID
-		MAPMinimum:    MPX4100AMin,
-		MAPRange:      MPX4100ARange,
+		MAPMinimum:    MPX4100AMIN,
+		MAPRange:      MPX4100ARANGE,
 #elif CONFIG == DEUCES10_ID
-		MAPMinimum:    GM1BarMin,
-		MAPRange:      GM1BarRange,
+		MAPMinimum:    GM1BARMIN,
+		MAPRange:      GM1BARRANGE,
 #elif CONFIG == SEANKR1_ID
-		MAPMinimum:    MPX4250AMin,
-		MAPRange:      MPX4250ARange,
+		MAPMinimum:    MPX4250AMIN,
+		MAPRange:      MPX4250ARANGE,
 #else
-		MAPMinimum:    MPX4250AMin,
-		MAPRange:      MPX4250ARange,
+		MAPMinimum:    MPX4250AMIN,
+		MAPRange:      MPX4250ARANGE,
 #endif
 // AAP Sensor Configuration
 #if CONFIG == SNOTROCKET_ID
-		AAPMinimum:    HondaDenso183kPaMin,
-		AAPRange:      HondaDenso183kPaRange,
+		AAPMinimum:    HONDADENSO183KPAMIN,
+		AAPRange:      HONDADENSO183KPARANGE,
 #elif CONFIG == SEANKR1_ID
-		AAPMinimum:    YamahaDensoMin,
-		AAPRange:      YamahaDensoRange,
+		AAPMinimum:    YAMAHADENSOMIN,
+		AAPRange:      YAMAHADENSORANGE,
 #else
-		AAPMinimum:    MPX4100AMin,
-		AAPRange:      MPX4100ARange,
+		AAPMinimum:    MPX4100AMIN,
+		AAPRange:      MPX4100ARANGE,
 #endif
 #if CONFIG == SEANKLT1_ID
-		EGOMinimum:    AFR1020LambdaMin,
-		EGORange:      AFR1020LambdaRange,
+		EGOMinimum:    AFR1020LAMBDAMIN,
+		EGORange:      AFR1020LAMBDARANGE,
 #elif CONFIG == SCAVENGER_ID // http://www.schnitzracing.com/manuals/AEMWBK.pdf
 		EGOMinimum:    LAMBDA(0.683),
 		EGORange:      (LAMBDA(1.365) - LAMBDA(0.683)),
 #else
-		EGOMinimum:    LC1LambdaMin,
-		EGORange:      LC1LambdaRange,
+		EGOMinimum:    LC1LAMBDAMIN,
+		EGORange:      LC1LAMBDARANGE,
 #endif
 #if CONFIG == HOTEL_ID
 		BRVMinimum:    VOLTS(0),

@@ -42,31 +42,31 @@
 
 
 // Densities of various common fuels in grams per litre
-#define densityOfOctane FUEL_DENSITY(703)
-#define densityOfPetrol FUEL_DENSITY(720)
-#define densityOfE85	 FUEL_DENSITY(770)
+#define DENSITYOFOCTANE FUEL_DENSITY(703)
+#define DENSITYOFPETROL FUEL_DENSITY(720)
+#define DENSITYOFE85	 FUEL_DENSITY(770)
 
 // Stoichiometric AFRs for various common fuels. Generated with http://www.diyefi.org/calculators.htm#stoich
-#define stoichiometricAFRMethane  STOICH_AFR(17.245)
-#define stoichiometricAFRPropane  STOICH_AFR(15.685)
-#define stoichiometricAFRLPG      STOICH_AFR(15.599)
-#define stoichiometricAFRButane   STOICH_AFR(15.469)
-#define stoichiometricAFROctane   STOICH_AFR(15.137)
-#define stoichiometricAFRPetrol   STOICH_AFR(14.700)
-#define stoichiometricAFRXylene   STOICH_AFR(13.681)
-#define stoichiometricAFRToluene  STOICH_AFR(13.512)
-#define stoichiometricAFRBenzene  STOICH_AFR(13.282)
-#define stoichiometricAFRE85      STOICH_AFR( 9.862)
-#define stoichiometricAFREthanol  STOICH_AFR( 9.008)
-#define stoichiometricAFRMethanol STOICH_AFR( 6.475)
+#define STOICHIOMETRICAFRMETHANE  STOICH_AFR(17.245)
+#define STOICHIOMETRICAFRPROPANE  STOICH_AFR(15.685)
+#define STOICHIOMETRICAFRLPG      STOICH_AFR(15.599)
+#define STOICHIOMETRICAFRBUTANE   STOICH_AFR(15.469)
+#define STOICHIOMETRICAFROCTANE   STOICH_AFR(15.137)
+#define STOICHIOMETRICAFRPETROL   STOICH_AFR(14.700)
+#define STOICHIOMETRICAFRXYLENE   STOICH_AFR(13.681)
+#define STOICHIOMETRICAFRTOLUENE  STOICH_AFR(13.512)
+#define STOICHIOMETRICAFRBENZENE  STOICH_AFR(13.282)
+#define STOICHIOMETRICAFRE85      STOICH_AFR( 9.862)
+#define STOICHIOMETRICAFRETHANOL  STOICH_AFR( 9.008)
+#define STOICHIOMETRICAFRMETHANOL STOICH_AFR( 6.475)
 
 // Wide-band input common configuration values
-#define LC1LambdaMin                LAMBDA(0.5)
-#define LC1LambdaMax                LAMBDA(1.5)
-#define LC1LambdaRange              (LC1LambdaMax - LC1LambdaMin) // 1.0
-#define AFR1020LambdaMin            LAMBDA(0.68)
-#define AFR1020LambdaMax            LAMBDA(1.36)
-#define AFR1020LambdaRange          (AFR1020LambdaMax - AFR1020LambdaMin) // 0.68
+#define LC1LAMBDAMIN                LAMBDA(0.5)
+#define LC1LAMBDAMAX                LAMBDA(1.5)
+#define LC1LAMBDARANGE              (LC1LAMBDAMAX - LC1LAMBDAMIN) // 1.0
+#define AFR1020LAMBDAMIN            LAMBDA(0.68)
+#define AFR1020LAMBDAMAX            LAMBDA(1.36)
+#define AFR1020LAMBDARANGE          (AFR1020LAMBDAMAX - AFR1020LAMBDAMIN) // 0.68
 
 
 /* MAP Sensor Data Explanation
@@ -83,54 +83,54 @@
 
 
 /* Honda Denso 1.8bar found on 88 - ?? Honda vehicles. */
-#define HondaDenso183kPaMin      KPA( -6.64)    /* Pressure read at lowest ADC reading */
-#define HondaDenso183kPaMax      KPA(182.78)    /* Pressure read at highest ADC reading */
-#define HondaDenso183kPaRange    (HondaDenso183kPaMax - HondaDenso183kPaMin)
+#define HONDADENSO183KPAMIN      KPA( -6.64)    /* Pressure read at lowest ADC reading */
+#define HONDADENSO183KPAMAX      KPA(182.78)    /* Pressure read at highest ADC reading */
+#define HONDADENSO183KPARANGE    (HONDADENSO183KPAMAX - HONDADENSO183KPAMIN)
 
 /* Toyota 2.3bar found on some Toyota Cynos 5E-FE cars (and probably many others), em_knaps and Lev8n are responsible for this data! */
-#define ToyotaNA227kPaMin        KPA( 25)       /* Pressure read at lowest ADC reading */
-#define ToyotaNA227kPaMax        KPA(247)       /* Pressure read at highest ADC reading */
-#define ToyotaNA227kPaRange      (ToyotaNA227kPaMax - ToyotaNA227kPaMin)
+#define TOYOTANA227KPAMIN        KPA( 25)       /* Pressure read at lowest ADC reading */
+#define TOYOTANA227KPAMAX        KPA(247)       /* Pressure read at highest ADC reading */
+#define TOYOTANA227KPARANGE      (TOYOTANA227KPAMAX - TOYOTANA227KPAMIN)
 // NOTE: The accuracy of this calibration is highly questionable. Please use the Honda units which is configured above and known to be accurate
 
 /* GM 1bar found on naturally aspirated vehicles. Taken from http://www.robietherobot.com/storm/mapsensor.htm */
-#define GM1BarMin                KPA( 10.0)     /* Pressure read at lowest ADC reading */
-#define GM1BarMax                KPA(105.0)     /* Pressure read at highest ADC reading */
-#define GM1BarRange              (GM1BarMax - GM1BarMin)
+#define GM1BARMIN                KPA( 10.0)     /* Pressure read at lowest ADC reading */
+#define GM1BARMAX                KPA(105.0)     /* Pressure read at highest ADC reading */
+#define GM1BARRANGE              (GM1BARMAX - GM1BARMIN)
 
 /* GM 2bar found on Cyclone Turbo V6 and probably other cars too. TODO These numbers are probably not that accurate... */
-#define GM2BarMin                KPA(  1.5)     /* Pressure read at lowest ADC reading */
-#define GM2BarMax                KPA(200.0)     /* Pressure read at highest ADC reading */
-#define GM2BarRange              (GM2BarMax - GM2BarMin)
+#define GM2BARMIN                KPA(  1.5)     /* Pressure read at lowest ADC reading */
+#define GM2BARMAX                KPA(200.0)     /* Pressure read at highest ADC reading */
+#define GM2BARRANGE              (GM2BARMAX - GM2BARMIN)
 
 /* GM 2bar found on Cyclone Turbo V6 and probably other cars too. TODO These numbers are probably not that accurate... */
-#define YamahaDensoMin           KPA( 10.5)     /* Pressure read at lowest ADC reading */
-#define YamahaDensoMax           KPA(180.0)     /* Pressure read at highest ADC reading */
-#define YamahaDensoRange         (YamahaDensoMax - YamahaDensoMin)
+#define YAMAHADENSOMIN           KPA( 10.5)     /* Pressure read at lowest ADC reading */
+#define YAMAHADENSOMAX           KPA(180.0)     /* Pressure read at highest ADC reading */
+#define YAMAHADENSORANGE         (YAMAHADENSOMAX - YAMAHADENSOMIN)
 
 /* www.freescale.com/files/sensors/doc/data_sheet/MPX4100A.pdf */
-#define MPX4100AMin              KPA( 14.0)     /* Pressure read at lowest ADC reading */
-#define MPX4100AMax              KPA(107.5)     /* Pressure read at highest ADC reading */
-#define MPX4100ARange            (MPX4100AMax - MPX4100AMin)
+#define MPX4100AMIN              KPA( 14.0)     /* Pressure read at lowest ADC reading */
+#define MPX4100AMAX              KPA(107.5)     /* Pressure read at highest ADC reading */
+#define MPX4100ARANGE            (MPX4100AMAX - MPX4100AMIN)
 
 /* www.freescale.com/files/sensors/doc/data_sheet/MPX4250A.pdf */
-#define MPX4250AMin              KPA(  8)       /* Pressure read at lowest ADC reading */
-#define MPX4250AMax              KPA(260)       /* Pressure read at highest ADC reading */
-#define MPX4250ARange            (MPX4250AMax - MPX4250AMin)
+#define MPX4250AMIN              KPA(  8)       /* Pressure read at lowest ADC reading */
+#define MPX4250AMAX              KPA(260)       /* Pressure read at highest ADC reading */
+#define MPX4250ARANGE            (MPX4250AMAX - MPX4250AMIN)
 
-#define MPXH6300AMin             KPA( 12)       /* Pressure read at lowest ADC reading */
-#define MPXH6300AMax             KPA(320)       /* Pressure read at highest ADC reading */
-#define MPXH6300ARange           (MPXH6300AMax - MPXH6300AMin)
+#define MPXH6300AMIN             KPA( 12)       /* Pressure read at lowest ADC reading */
+#define MPXH6300AMAX             KPA(320)       /* Pressure read at highest ADC reading */
+#define MPXH6300ARANGE           (MPXH6300AMAX - MPXH6300AMIN)
 
-#define MPXH6400AMin             KPA( 12)       /* Pressure read at lowest ADC reading */
-#define MPXH6400AMax             KPA(420)       /* Pressure read at highest ADC reading */
-#define MPXH6400ARange           (MPXH6400AMax - MPXH6400AMin)
+#define MPXH6400AMIN             KPA( 12)       /* Pressure read at lowest ADC reading */
+#define MPXH6400AMAX             KPA(420)       /* Pressure read at highest ADC reading */
+#define MPXH6400ARANGE           (MPXH6400AMAX - MPXH6400AMIN)
 
 
 // Tachometer default configuration
-#define standardTachoArray {1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2}
-#define standardTachoPorts {(unsigned char*)&PORTE,(unsigned char*)&PORTK,(unsigned char*)&PORTK,(unsigned char*)&PORTK}
-#define standardTachoMasks {0x80,0x01,0x02,0x04}
+#define STANDARDTACHOARRAY {1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2}
+#define STANDARDTACHOPORTS {(unsigned char*)&PORTE,(unsigned char*)&PORTK,(unsigned char*)&PORTK,(unsigned char*)&PORTK}
+#define STANDARDTACHOMASKS {0x80,0x01,0x02,0x04}
 
 
 // Voltage based small table default data
