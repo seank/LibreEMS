@@ -126,7 +126,7 @@ void schedulePortTPin(unsigned char outputEventNumber, LongTime timeStamp){
 		/// @todo TODO Make this more understandable as right now it is difficult to grok.
 		// determine whether or not to reschedule or self schedule assuming pin is currently scheduled
 		unsigned long diff = (injectorMainEndTimes[pin] + injectorSwitchOffCodeTime) - startTimeLong;
-#define newStartIsAfterOutputEndTimeAndCanSelfSet (diff > LONGHALF)
+#define NEW_START_IS_AFTER_OUTPUT_END_TIME_AND_CAN_SELF_SET (diff > LONGHALF)
 		// http://forum.diyefi.org/viewtopic.php?f=8&t=57&p=861#p861
 
 		/*
@@ -149,7 +149,7 @@ void schedulePortTPin(unsigned char outputEventNumber, LongTime timeStamp){
 					Counters.pinScheduledAlready++;
 				} else { // Otherwise it's go low
 						 // if too close, resched to turn, ie, stay on... , if far enough away, self sched
-					if (newStartIsAfterOutputEndTimeAndCanSelfSet) {
+					if (NEW_START_IS_AFTER_OUTPUT_END_TIME_AND_CAN_SELF_SET) {
 						// self sched
 						injectorMainStartOffsetHolding[pin] = startTime - *injectorMainTimeRegisters[pin];
 						outputEventPulseWidthsHolding[pin] = outputEventPulseWidthsMath[outputEventNumber];
