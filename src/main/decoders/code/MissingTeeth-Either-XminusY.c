@@ -229,7 +229,7 @@ void PrimaryRPMISR(void) {
 		if(KeyUserDebugs.decoderFlags & CRANK_SYNC){
 			unsigned short thisAngle = 0;
 			if(KeyUserDebugs.currentEvent == 0){
-				thisAngle = eventAngles[KeyUserDebugs.currentEvent] + angleOfSingleIteration - eventAngles[lastEvent] ; // Optimisable... leave readable for now! :-p J/K learn from this...
+				thisAngle = eventAngles[KeyUserDebugs.currentEvent] + ANGLE_OF_SINGLE_ITERATION - eventAngles[lastEvent] ; // Optimisable... leave readable for now! :-p J/K learn from this...
 			}else{
 				thisAngle = eventAngles[KeyUserDebugs.currentEvent] - eventAngles[lastEvent];
 			}
