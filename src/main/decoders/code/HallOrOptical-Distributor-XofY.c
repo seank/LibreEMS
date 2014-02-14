@@ -44,19 +44,19 @@
  */
 
 
-#define angleOfSingleIteration (180 * ANGLE_FACTOR)
+#define ANGLE_OF_SINGLE_ITERATION (180 * ANGLE_FACTOR)
 
 #define E0 0
 // Define E1 in your reverse header!
-#define E2 (E0 + angleOfSingleIteration)
-#define E3 (E1 + angleOfSingleIteration)
-#define E4 (E0 + (2 * angleOfSingleIteration))
-#define E5 (E1 + (2 * angleOfSingleIteration))
-#define E6 (E0 + (3 * angleOfSingleIteration))
-#define E7 (E1 + (3 * angleOfSingleIteration))
+#define E2 (E0 + ANGLE_OF_SINGLE_ITERATION)
+#define E3 (E1 + ANGLE_OF_SINGLE_ITERATION)
+#define E4 (E0 + (2 * ANGLE_OF_SINGLE_ITERATION))
+#define E5 (E1 + (2 * ANGLE_OF_SINGLE_ITERATION))
+#define E6 (E0 + (3 * ANGLE_OF_SINGLE_ITERATION))
+#define E7 (E1 + (3 * ANGLE_OF_SINGLE_ITERATION))
 
 
-#if (E1 >= angleOfSingleIteration)
+#if (E1 >= ANGLE_OF_SINGLE_ITERATION)
 #error "Angle E1 defined to be larger than the available angle which it is within!"
 #endif
 
@@ -108,7 +108,7 @@ void PrimaryRPMISR(){
 		lastPrimaryEventTimeStamp = primaryLeadingEdgeTimeStamp;
 
 
-		thisTicksPerDegree = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * timeBetweenSuccessivePrimaryPulses) / angleOfSingleIteration);
+		thisTicksPerDegree = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * timeBetweenSuccessivePrimaryPulses) / ANGLE_OF_SINGLE_ITERATION);
 		*ticksPerDegreeRecord = thisTicksPerDegree;
 
 		// TODO Once sampling/RPM is configurable, use this tooth for a lower MAP reading.
@@ -130,7 +130,7 @@ void PrimaryRPMISR(){
 		lastSecondaryEventTimeStamp = secondaryLeadingEdgeTimeStamp;
 
 
-		thisTicksPerDegree = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * timeBetweenSuccessiveSecondaryPulses) / angleOfSingleIteration);
+		thisTicksPerDegree = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * timeBetweenSuccessiveSecondaryPulses) / ANGLE_OF_SINGLE_ITERATION);
 		*ticksPerDegreeRecord = thisTicksPerDegree;
 
 		// TODO make this stuff behave correctly, this one will only run at startup, and the other will always run, but do it by generic config and split this stuff out into a shared function, soon.
@@ -158,7 +158,7 @@ void PrimaryRPMISR(){
 		if(KeyUserDebugs.currentEvent == 0){
 			// Fix this to work for all:
 //			thisAngle = eventAngles[KeyUserDebugs.currentEvent] + totalEventAngleRange - eventAngles[lastEvent] ; // Optimisable... leave readable for now! :-p J/K learn from this...
-			thisAngle = eventAngles[KeyUserDebugs.currentEvent] + angleOfSingleIteration - eventAngles[lastEvent] ; // Optimisable... leave readable for now! :-p J/K learn from this...
+			thisAngle = eventAngles[KeyUserDebugs.currentEvent] + ANGLE_OF_SINGLE_ITERATION - eventAngles[lastEvent] ; // Optimisable... leave readable for now! :-p J/K learn from this...
 		}else{
 			thisAngle = eventAngles[KeyUserDebugs.currentEvent] - eventAngles[lastEvent];
 		}
