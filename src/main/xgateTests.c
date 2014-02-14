@@ -511,7 +511,7 @@ void stagedInjectionTests() {
 	if (Clocks.millisToTenths % TIME_DIVISOR == 0) {
 		ATOMIC_START();
 		*ticksPerDegree = (unsigned short)((ticks_per_degree_multiplier * (1250UL * TIME_DIVISOR) ) / (720UL * ANGLE_FACTOR));
-		//CoreVars->DRPM = #define ticks_per_degree_multiplier (10 * ANGLE_FACTOR) // FIX <<< shouldn't be done like this.
+		//CoreVars->DRPM = #define TICKS_PER_DEGREE_MULTIPLIER (10 * ANGLE_FACTOR) // FIX <<< shouldn't be done like this.
 		generateCoreVars();
 		//CoreVars->RPM = RPM(6000); //these need to match TIME_DIVISOR or your scope results wont
 		unsigned char outputEventNumber = 0;

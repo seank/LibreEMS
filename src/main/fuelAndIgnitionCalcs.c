@@ -99,8 +99,8 @@ void calculateFuelAndIgnition(){
 	/* Result is 7500 - 60000 always. TODO clean up the last item on the above line */
 
 	/* Divisors for air inlet temp and pressure :
-	 * #define airInletTempDivisor 100
-	 * #define airPressureDivisor 100
+	 * #define AIR_INLET_TEMP_DIVISOR 100
+	 * #define AIR_PRESSURE_DIVISOR 100
 	 * cancel each other out! all others are used. */
 
 	DerivedVars->BasePW = (bootFuelConst * DerivedVars->AirFlow) / DerivedVars->densityAndFuel;
@@ -179,7 +179,7 @@ void calculateFuelAndIgnition(){
 
 //	//Test calcs for staged calcs TODO this is why much of this code-base needs to be refactored its hard to test pieces
 //#define TIME_DIVISOR	10UL //12000 rpm
-//#define ticks_per_degree_multiplier (10 * ANGLE_FACTOR) // FIX <<< shouldn't be done like this.
+//#define TICKS_PER_DEGREE_MULTIPLIER (10 * ANGLE_FACTOR) // FIX <<< shouldn't be done like this.
 //extern unsigned short *ticksPerDegree;
 //*ticksPerDegree = (unsigned short)((ticks_per_degree_multiplier * (1250UL * TIME_DIVISOR) ) / (720UL * ANGLE_FACTOR));
 //extern	void generateCoreVars();
