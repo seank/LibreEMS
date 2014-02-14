@@ -249,7 +249,7 @@ void PrimaryRPMISR(void){
 				/* RPM CALC, KISS for now and only run this part of the ISR when the edge has gone high
 				 * this way we have evenly spaced teeth
 				 */
-				*ticksPerDegreeRecord = (unsigned short)((ticks_per_degree_multiplier * timeBetweenSuccessivePrimaryPulses) / (90 * ANGLE_FACTOR));
+				*ticksPerDegreeRecord = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * timeBetweenSuccessivePrimaryPulses) / (90 * ANGLE_FACTOR));
 				// instead of above:
 				// save time difference
 				// have angle of time difference as setting

@@ -110,7 +110,7 @@ void PrimaryRPMISR(){
 	thisTicksPerDegree = 0;
 	if(KeyUserDebugs.decoderFlags & LAST_TIMESTAMP_VALID){
 		thisInterEventPeriod = thisEventTimeStamp - lastPrimaryEventTimeStamp;
-		thisTicksPerDegree = (unsigned short)((ticks_per_degree_multiplier * thisInterEventPeriod) / eventAngles[1]);
+		thisTicksPerDegree = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * thisInterEventPeriod) / eventAngles[1]);
 	}
 
 	if(KeyUserDebugs.decoderFlags & CAM_SYNC){

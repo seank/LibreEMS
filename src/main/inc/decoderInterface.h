@@ -71,8 +71,8 @@
 // 1250000 * 60 = 75000000
 // 75000000 / 360 = 208333.333333333333333
 // 208333.333333333333333 * 2 * 10 = 4166666.666666666666667
-#define degreeTicksPerMinute 4166667 // rounded up by 1/3
-#define ticks_per_degree_multiplier (10 * ANGLE_FACTOR) // FIX <<< shouldn't be done like this.
+#define DEGREE_TICKS_PER_MINUTE 4166667 // rounded up by 1/3
+#define TICKS_PER_DEGREE_MULTIPLIER (10 * ANGLE_FACTOR) // FIX <<< shouldn't be done like this.
 /// @todo TODO make this ^ scaling better x10 yields 64rpm minimum functional engine speed.
 
 

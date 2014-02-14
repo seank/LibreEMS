@@ -117,7 +117,7 @@ void generateCoreVars(){
 
 	// Calculate RPM and delta RPM and delta delta RPM from data recorded
 	if(*ticksPerDegree  != 0){
-		CoreVars->RPM = (unsigned short)(degreeTicksPerMinute / *ticksPerDegree);
+		CoreVars->RPM = (unsigned short)(DEGREE_TICKS_PER_MINUTE / *ticksPerDegree);
 		if(RPMWeighted){
 			RPMWeighted = (RPMWeighted + CoreVars->RPM) / 2;
 		}else{

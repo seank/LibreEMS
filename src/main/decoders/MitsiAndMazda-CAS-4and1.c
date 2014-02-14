@@ -140,7 +140,7 @@ void PrimaryRPMISR(){
 			thisAngle = eventAngles[KeyUserDebugs.currentEvent] - eventAngles[lastEvent];
 		}
 
-		thisTicksPerDegree = (unsigned short)((ticks_per_degree_multiplier * thisInterEventPeriod) / thisAngle); // with current scale range for 60/12000rpm is largest ticks per degree = 3472, smallest = 17 with largish error
+		thisTicksPerDegree = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * thisInterEventPeriod) / thisAngle); // with current scale range for 60/12000rpm is largest ticks per degree = 3472, smallest = 17 with largish error
 
 		if(KeyUserDebugs.decoderFlags & LAST_PERIOD_VALID){
 			unsigned short ratioBetweenThisAndLast = (unsigned short)(((unsigned long)lastTicksPerDegree * 1000) / thisTicksPerDegree);
@@ -255,7 +255,7 @@ void SecondaryRPMISR(){
 	if(KeyUserDebugs.decoderFlags & CAM_SYNC){
 		unsigned short thisAngle = eventAngles[KeyUserDebugs.currentEvent] - eventAngles[lastEvent];
 
-		thisTicksPerDegree = (unsigned short)((ticks_per_degree_multiplier * thisInterEventPeriod) / thisAngle); // with current scale range for 60/12000rpm is largest ticks per degree = 3472, smallest = 17 with largish error
+		thisTicksPerDegree = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * thisInterEventPeriod) / thisAngle); // with current scale range for 60/12000rpm is largest ticks per degree = 3472, smallest = 17 with largish error
 
 		if(KeyUserDebugs.decoderFlags & LAST_PERIOD_VALID){
 			unsigned short ratioBetweenThisAndLast = (unsigned short)(((unsigned long)lastTicksPerDegree * 1000) / thisTicksPerDegree);

@@ -108,7 +108,7 @@ void PrimaryRPMISR(){
 		lastPrimaryEventTimeStamp = primaryLeadingEdgeTimeStamp;
 
 
-		thisTicksPerDegree = (unsigned short)((ticks_per_degree_multiplier * timeBetweenSuccessivePrimaryPulses) / angleOfSingleIteration);
+		thisTicksPerDegree = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * timeBetweenSuccessivePrimaryPulses) / angleOfSingleIteration);
 		*ticksPerDegreeRecord = thisTicksPerDegree;
 
 		// TODO Once sampling/RPM is configurable, use this tooth for a lower MAP reading.
@@ -130,7 +130,7 @@ void PrimaryRPMISR(){
 		lastSecondaryEventTimeStamp = secondaryLeadingEdgeTimeStamp;
 
 
-		thisTicksPerDegree = (unsigned short)((ticks_per_degree_multiplier * timeBetweenSuccessiveSecondaryPulses) / angleOfSingleIteration);
+		thisTicksPerDegree = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * timeBetweenSuccessiveSecondaryPulses) / angleOfSingleIteration);
 		*ticksPerDegreeRecord = thisTicksPerDegree;
 
 		// TODO make this stuff behave correctly, this one will only run at startup, and the other will always run, but do it by generic config and split this stuff out into a shared function, soon.
@@ -163,7 +163,7 @@ void PrimaryRPMISR(){
 			thisAngle = eventAngles[KeyUserDebugs.currentEvent] - eventAngles[lastEvent];
 		}
 
-		thisTicksPerDegree = (unsigned short)((ticks_per_degree_multiplier * thisInterEventPeriod) / thisAngle); // with current scale range for 60/12000rpm is largest ticks per degree = 3472, smallest = 17 with largish error
+		thisTicksPerDegree = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * thisInterEventPeriod) / thisAngle); // with current scale range for 60/12000rpm is largest ticks per degree = 3472, smallest = 17 with largish error
 
 		if(KeyUserDebugs.decoderFlags & LAST_PERIOD_VALID){
 			unsigned short ratioBetweenThisAndLast = (unsigned short)(((unsigned long)lastTicksPerDegree * 1000) / thisTicksPerDegree);

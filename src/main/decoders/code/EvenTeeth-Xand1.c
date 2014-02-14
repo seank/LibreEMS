@@ -88,7 +88,7 @@ void PrimaryRPMISR(){
 	unsigned short thisTicksPerDegree = 0;
 	if(KeyUserDebugs.decoderFlags & LAST_TIMESTAMP_VALID){
 		thisInterEventPeriod = thisEventTimeStamp - lastPrimaryEventTimeStamp;
-		thisTicksPerDegree = (unsigned short)((ticks_per_degree_multiplier * thisInterEventPeriod) / eventAngles[1]); // with current scale range for 60/12000rpm is largest ticks per degree = 3472, smallest = 17 with largish error
+		thisTicksPerDegree = (unsigned short)((TICKS_PER_DEGREE_MULTIPLIER * thisInterEventPeriod) / eventAngles[1]); // with current scale range for 60/12000rpm is largest ticks per degree = 3472, smallest = 17 with largish error
 	}
 
 	if(KeyUserDebugs.decoderFlags & CONFIGURED_SYNC){

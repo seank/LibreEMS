@@ -184,9 +184,9 @@ void scheduleOutputs(){
 				for(possibleEvent = 0;possibleEvent < numberOfVirtualEvents;possibleEvent++){
 					unsigned long ticksBetweenEventAndSpark = LONGMAX;
 					if(codeAngleOfOutputEvent > eventAngles[lastGoodEvent]){
-						ticksBetweenEventAndSpark = ((unsigned long)*ticksPerDegree * (codeAngleOfOutputEvent - eventAngles[lastGoodEvent])) / ticks_per_degree_multiplier;
+						ticksBetweenEventAndSpark = ((unsigned long)*ticksPerDegree * (codeAngleOfOutputEvent - eventAngles[lastGoodEvent])) / TICKS_PER_DEGREE_MULTIPLIER;
 					}else{
-						ticksBetweenEventAndSpark = ((unsigned long)*ticksPerDegree * ((unsigned long)codeAngleOfOutputEvent + (totalEventAngleRange - eventAngles[lastGoodEvent]))) / ticks_per_degree_multiplier;
+						ticksBetweenEventAndSpark = ((unsigned long)*ticksPerDegree * ((unsigned long)codeAngleOfOutputEvent + (totalEventAngleRange - eventAngles[lastGoodEvent]))) / TICKS_PER_DEGREE_MULTIPLIER;
 					}
 
 					if(ticksBetweenEventAndSpark > ((unsigned long)pulsewidthToUseForThisChannel + decoderMaxCodeTime)){
