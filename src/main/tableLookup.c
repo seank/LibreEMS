@@ -323,24 +323,24 @@ unsigned short validateMainTable(mainTable* Table){
 	/* any main table, not just a freshly received untrusted ones in linear space   */
 
 	if(Table->RPMLength > MAINTABLE_MAX_RPM_LENGTH){
-		return invalidMainTableRPMLength;
+		return INVALID_MAIN_TABLE_RPM_LENGTH;
 	}else if(Table->LoadLength > MAINTABLE_MAX_LOAD_LENGTH){
-		return invalidMainTableLoadLength;
+		return INVALID_MAIN_TABLE_LOAD_LENGTH;
 	}else if((Table->RPMLength * Table->LoadLength) > MAINTABLE_MAX_MAIN_LENGTH){
-		return invalidMainTableMainLength;
+		return INVALID_MAIN_TABLE_MAIN_LENGTH;
 	}else{
 		/* Check the order of the RPM axis */
 		unsigned char i;
 		for(i=0;i<(Table->RPMLength - 1);i++){
 			if(Table->RPM[i] >= Table->RPM[i+1]){
-				return invalidMainTableRPMOrder;
+				return INVALID_MAIN_TABLE_RPM_ORDER;
 			}
 		}
 		/* Check the order of the Load axis */
 		unsigned char j;
 		for(j=0;j<(Table->LoadLength - 1);j++){
 			if(Table->Load[j] >= Table->Load[j+1]){
-				return invalidMainTableLoadOrder;
+				return INVALID_MAIN_TABLE_LOAD_ORDER;
 			}
 		}
 		/* If we made it this far all is well */
@@ -363,7 +363,7 @@ unsigned short validateTwoDTable(twoDTableUS* Table){
 	unsigned char i;
 	for(i=0;i<(TWODTABLEUS_LENGTH - 1);i++){
 		if(Table->Axis[i] >= Table->Axis[i+1]){
-			return invalidTwoDTableAxisOrder;
+			return INVALID_TWO_D_TABLE_AXIS_ORDER;
 		}
 	}
 	return 0;

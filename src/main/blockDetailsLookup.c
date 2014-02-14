@@ -729,7 +729,7 @@ unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* detai
 
 	default:
 		/* Return early if locationID is not valid. */
-		return locationIDNotFound;
+		return LOCATION_ID_NOT_FOUND;
 	}
 
 

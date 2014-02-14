@@ -63,77 +63,77 @@
 
 
 /* Flash burning error codes */
-#define sizeNotMultipleOfSectorSize     0x3000
-#define sizeOfBlockToBurnIsZero         0x3001
-#define smallBlockCrossesSectorBoundary 0x3002
-#define addressNotSectorAligned         0x3003
-#define addressNotWordAligned           0x3004
-#define addressNotFlashRegion           0x3005
-#define flashEraseFailed                0x3006
-#define flashAccessError                0x3007
-#define flashProtectionError            0x3008
+#define SIZE_NOT_MULTIPLE_OF_SECTOR_SIZE     0x3000
+#define SIZE_OF_BLOCK_TO_BURN_IS_ZERO         0x3001
+#define SMALL_BLOCK_CROSSES_SECTOR_BOUNDARY 0x3002
+#define ADDRESS_NOT_SECTOR_ALIGNED         0x3003
+#define ADDRESS_NOT_WORD_ALIGNED           0x3004
+#define ADDRESS_NOT_FLASH_REGION           0x3005
+#define FLASH_ERASE_FAILED                0x3006
+#define FLASH_ACCESS_ERROR                0x3007
+#define FLASH_PROTECTION_ERROR            0x3008
 
 
 // memory check error
 #define MEMORY_WRITE_ERROR                   0x3009
 
 /* Communications error codes */
-#define unimplementedFunction                0x4000
-#define packetChecksumMismatch               0x4001
-#define packetTooShortForSpecifiedFields     0x4002
-#define doesNotMakeSenseToRetrievePartially  0x4003
-#define payloadLengthTypeMismatch            0x4004
-#define payloadLengthHeaderMismatch          0x4005
-#define invalidPayloadID                     0x4006
-#define unrecognisedPayloadID                0x4007
-#define invalidMemoryActionForID             0x4008
-#define invalidIDForMainTableAction          0x4009
-#define invalidIDForTwoDTableAction          0x400A
-#define noSuchAsyncDatalogType               0x400B
-#define datalogLengthExceedsMax              0x400C
-#define locationIDNotFound                   0x400D
-#define requestedRAMPageInvalid              0x400E
-#define requestedFlashPageInvalid            0x400F
-#define requestedLengthTooLarge              0x4010
-#define requestedAddressDisallowed           0x4011
-#define invalidSizeOffsetCombination         0x4012
-#define uncheckedTableManipulationNotAllowed 0x4013
-#define payloadNotEqualToSpecifiedValue      0x4014
-#define noSuchLocationIDListType             0x4015
-#define payloadShorterThanRequiredForTest    0x4016
-#define noSuchUnitTestID                     0x4017
-#define attemptToWriteToReadOnlyBlock        0x4018
+#define UNIMPLEMENTED_FUNCTION                0x4000
+#define PACKET_CHECKSUM_MISMATCH               0x4001
+#define PACKET_TOO_SHORT_FOR_SPECIFIED_FIELDS     0x4002
+#define DOES_NOT_MAKE_SENSE_TO_RETRIEVE_PARTIALLY  0x4003
+#define PAYLOAD_LENGTH_TYPE_MISMATCH            0x4004
+#define PAYLOAD_LENGTH_HEADER_MISMATCH          0x4005
+#define INVALID_PAYLOAD_ID                     0x4006
+#define UNRECOGNISED_PAYLOAD_ID                0x4007
+#define INVALID_MEMORY_ACTION_FOR_ID             0x4008
+#define INVALID_ID_FOR_MAIN_TABLE_ACTION          0x4009
+#define INVALID_ID_FOR_TWOD_TABLE_ACTION          0x400A
+#define NO_SUCH_ASYNC_DATALOG_TYPE               0x400B
+#define DATALOG_LENGTH_EXCEEDS_MAX              0x400C
+#define LOCATION_ID_NOT_FOUND                   0x400D
+#define REQUESTED_RAM_PAGE_INVALID              0x400E
+#define REQUESTED_FLASH_PAGE_INVALID            0x400F
+#define REQUESTED_LENGTH_TOO_LARGE              0x4010
+#define REQUESTED_ADDRESS_DISALLOWED           0x4011
+#define INVALID_SIZE_OFFSET_COMBINATION         0x4012
+#define UNCHECKED_TABLE_MANIPULATION_NOT_ALLOWED 0x4013
+#define PAYLOAD_NOT_EQUAL_TO_SPECIFIED_VALUE      0x4014
+#define NO_SUCH_LOCATION_ID_LIST_TYPE             0x4015
+#define PAYLOAD_SHORTER_THAN_REQUIRED_FOR_TEST    0x4016
+#define NO_SUCH_UNIT_TEST_ID                     0x4017
+#define ATTEMPT_TO_WRITE_TO_READ_ONLY_BLOCK        0x4018
 
-#define invalidAxisOrder 1 /* prevent parsing */
-#define invalidAxisIndex 2 /* prevent parsing */
+#define INVALID_AXIS_ORDER 1 /* prevent parsing */
+#define INVALID_AXIS_INDEX 2 /* prevent parsing */
 
-#define errorBaseMainTableRPM           0x6000
-#define invalidMainTableRPMOrder        0x6001
-#define invalidMainTableRPMIndex        0x6002
-#define invalidMainTableRPMLength       0x6003
-#define errorBaseMainTableLoad          0x6004
-#define invalidMainTableLoadOrder       0x6005
-#define invalidMainTableLoadIndex       0x6006
-#define invalidMainTableLoadLength      0x6007
-#define invalidMainTableMainLength      0x6008
+#define ERROR_BASE_MAIN_TABLE_RPM           0x6000
+#define INVALID_MAIN_TABLE_RPM_ORDER        0x6001
+#define INVALID_MAIN_TABLE_RPM_INDEX        0x6002
+#define INVALID_MAIN_TABLE_RPM_LENGTH       0x6003
+#define ERROR_BASE_MAIN_TABLE_LOAD          0x6004
+#define INVALID_MAIN_TABLE_LOAD_ORDER       0x6005
+#define INVALID_MAIN_TABLE_LOAD_INDEX       0x6006
+#define INVALID_MAIN_TABLE_LOAD_LENGTH      0x6007
+#define INVALID_MAIN_TABLE_MAIN_LENGTH      0x6008
 
-#define errorBaseTwoDTableAxis          0x6010
-#define invalidTwoDTableAxisOrder       0x6011
-#define invalidTwoDTableIndex           0x6012
+#define ERROR_BASE_TWO_D_TABLE_AXIS          0x6010
+#define INVALID_TWO_D_TABLE_AXIS_ORDER       0x6011
+#define INVALID_TWO_D_TABLE_INDEX           0x6012
 
-#define thisIsNotTheBenchTestDecoder    0x7777
-#define tooShortOfAPulseWidthToTest     0x7778
-#define unimplementedTestMode           0x7779
-#define invalidEventsPerCycle           0x777A
-#define invalidNumberOfCycles           0x777B
-#define tooShortOfAnEventPeriod         0x777C
-#define noChannelsConfiguredToTest      0x777D
-#define benchTestAlreadyRunning         0x777E
-#define packetSizeWrongForTestMode      0x777F
-#define bumpingByZeroMakesNoSense       0x7780
-#define benchTestNotRunningToStop       0x7781
-#define benchTestNotRunningToBump       0x7782
-#define tooManyEventsPerCycleMissingTth 0x7783
+#define THIS_IS_NOT_THE_BENCH_TEST_DECODER    0x7777
+#define TOO_SHORT_OF_A_PULSE_WIDTH_TO_TEST     0x7778
+#define UNIMPLEMENTED_TEST_MODE           0x7779
+#define INVALID_EVENTS_PER_CYCLE           0x777A
+#define INVALID_NUMBER_OF_CYCLES           0x777B
+#define TOO_SHORT_OF_AN_EVENT_PERIOD         0x777C
+#define NO_CHANNELS_CONFIGURED_TO_TEST      0x777D
+#define BENCH_TEST_ALREADY_RUNNING         0x777E
+#define PACKET_SIZE_WRONG_FOR_TEST_MODE      0x777F
+#define BUMPING_BY_ZERO_MAKES_NO_SENSE       0x7780
+#define BENCH_TEST_NOT_RUNNING_TO_STOP       0x7781
+#define BENCH_TEST_NOT_RUNNING_TO_BUMP       0x7782
+#define TOO_MANY_EVENTS_PER_CYCLE_MISSING_TTH 0x7783
 
 
 #else

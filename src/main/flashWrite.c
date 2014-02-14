@@ -65,7 +65,7 @@
 unsigned short eraseSector(unsigned char PPage, unsigned short *flashAddr){
 
 	if(((unsigned short)flashAddr % FLASHSECTORSIZE) != 0){
-		return addressNotSectorAligned;
+		return ADDRESS_NOT_SECTOR_ALIGNED;
 	}
 	unsigned char currentPage = PPAGE;
 	PPAGE = PPage;
@@ -114,7 +114,7 @@ unsigned short writeBlock(blockDetails* details, void* buffer){
 
 	/* Check that the size isn't zero... */
 	if(details->size == 0){
-		return sizeOfBlockToBurnIsZero;
+		return SIZE_OF_BLOCK_TO_BURN_IS_ZERO;
 	}else if(details->size < 1024){
 		unsigned short chunkFlashAddress = (unsigned short)details->FlashAddress;
 		/* Get the offset from the start of the sector */
@@ -122,7 +122,7 @@ unsigned short writeBlock(blockDetails* details, void* buffer){
 
 		/* Check for flash sector boundary crossing */
 		if((offset + details->size) > 1024){
-			return smallBlockCrossesSectorBoundary;
+			return SMALL_BLOCK_CROSSES_SECTOR_BOUNDARY;
 		}
 
 		/* Configure the final burn variables */
@@ -161,7 +161,7 @@ unsigned short writeBlock(blockDetails* details, void* buffer){
 	} else {
 		/* If not smaller than 1024, check size is product of sector size */
 		if((details->size % FLASHSECTORSIZE) != 0){
-			return sizeNotMultipleOfSectorSize;
+			return SIZE_NOT_MULTIPLE_OF_SECTOR_SIZE;
 		}
 
 		/* Set the variables to what they would have been before */
@@ -207,11 +207,11 @@ unsigned short writeBlock(blockDetails* details, void* buffer){
 unsigned short writeSector(unsigned char RPage, unsigned short* RAMSourceAddress, unsigned char PPage , unsigned short* flashDestinationAddress){
 
 	if(((unsigned short)flashDestinationAddress % FLASHSECTORSIZE) != 0){
-		return addressNotSectorAligned;
+		return ADDRESS_NOT_SECTOR_ALIGNED;
 	}
 
 	if(((unsigned short)flashDestinationAddress) < 0x4000){
-		return addressNotFlashRegion;
+		return ADDRESS_NOT_FLASH_REGION;
 	}
 
 	/// @todo TODO Decide if we need to disable interrupts since we are manually setting Flash/RAM pages.
@@ -266,7 +266,7 @@ unsigned short writeSector(unsigned char RPage, unsigned short* RAMSourceAddress
  */
 unsigned short writeWord(unsigned short* flashDestination, unsigned short data){
 	if((unsigned short)flashDestination & 0x0001){
-		return addressNotWordAligned;
+		return ADDRESS_NOT_WORD_ALIGNED;
 	}
 
 	FSTAT=(ACCERR | PVIOL);

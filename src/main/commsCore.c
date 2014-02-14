@@ -299,7 +299,7 @@ void decodePacketAndRespond(){
 	if(((RXHeaderFlags & HEADER_HAS_LENGTH) && (RXHeaderFlags & HEADER_HAS_SEQUENCE) && (RXPacketLengthReceived < 7))
 		|| ((RXHeaderFlags & HEADER_HAS_LENGTH) && (RXPacketLengthReceived < 6))
 		|| ((RXHeaderFlags & HEADER_HAS_SEQUENCE) && (RXPacketLengthReceived < 5))){
-		finaliseAndSend(packetTooShortForSpecifiedFields);
+		finaliseAndSend(PACKET_TOO_SHORT_FOR_SPECIFIED_FIELDS);
 		resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
 		return;
 	}
@@ -321,7 +321,7 @@ void decodePacketAndRespond(){
 		RXCalculatedPayloadLength -= 2;
 		/* Already subtracted one for checksum */
 		if(RXHeaderPayloadLength != RXCalculatedPayloadLength){
-			finaliseAndSend(payloadLengthHeaderMismatch);
+			finaliseAndSend(PAYLOAD_LENGTH_HEADER_MISMATCH);
 			resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
 			return;
 		}
@@ -342,7 +342,7 @@ void decodePacketAndRespond(){
 		case REQUEST_INTERFACE_VERSION:
 		{
 			if(RXCalculatedPayloadLength != 0){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -358,7 +358,7 @@ void decodePacketAndRespond(){
 		case REQUEST_FIRMWARE_VERSION:
 		{
 			if(RXCalculatedPayloadLength != 0){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 			/* This type must have a length field, set that up */
@@ -373,7 +373,7 @@ void decodePacketAndRespond(){
 		case REQUEST_MAX_PACKET_SIZE:
 		{
 			if(RXCalculatedPayloadLength != 0){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 			/* Load the size into place */
@@ -397,7 +397,7 @@ void decodePacketAndRespond(){
 		case REQUEST_SOFT_SYSTEM_RESET:
 		{
 			if(RXCalculatedPayloadLength != 0){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 			}else{ // Perform soft system reset
 				_start();
 			}
@@ -406,7 +406,7 @@ void decodePacketAndRespond(){
 		case REQUEST_HARD_SYSTEM_RESET:
 		{
 			if(RXCalculatedPayloadLength != 0){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 			}else{
 				/* This is how the serial monitor does it. */
 				COPCTL = 0x01; /* Arm with shortest time */
@@ -419,7 +419,7 @@ void decodePacketAndRespond(){
 		case REQUEST_RE_INIT_OF_SYSTEM:
 		{
 			if(RXCalculatedPayloadLength != 0){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 			}else{
 				init();
 			}
@@ -429,7 +429,7 @@ void decodePacketAndRespond(){
 		case CLEAR_COUNTERS_AND_FLAGS_TO_ZERO:
 		{
 			if(RXCalculatedPayloadLength != 0){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -463,7 +463,7 @@ void decodePacketAndRespond(){
 		case REQUEST_OPERATING_SYSTEM:
 		{
 			if(RXCalculatedPayloadLength != 0){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -493,7 +493,7 @@ void decodePacketAndRespond(){
 		{
 			// Subtract six to allow for the locationID, size, offset
 			if(RXCalculatedPayloadLength < 7){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -515,31 +515,31 @@ void decodePacketAndRespond(){
 
 			// Don't let anyone write to running variables unless we are running BenchTest firmware!
 			if((details.flags & BLOCK_IS_READ_ONLY) && compare((unsigned char*)&decoderName, (unsigned char*)BENCH_TEST_NAME, sizeof(BENCH_TEST_NAME))){
-				errorID = attemptToWriteToReadOnlyBlock;
+				errorID = ATTEMPT_TO_WRITE_TO_READ_ONLY_BLOCK;
 				break;
 			}
 
 			// Subtract six to allow for the locationID, size, offset
 			if((RXCalculatedPayloadLength - 6) != size){
-				errorID = payloadNotEqualToSpecifiedValue;
+				errorID = PAYLOAD_NOT_EQUAL_TO_SPECIFIED_VALUE;
 				break;
 			}
 
 			// If either of these is zero then this block is not in RAM!
 			if((details.RAMPage == 0) || (details.RAMAddress == 0)){
-				errorID = invalidMemoryActionForID;
+				errorID = INVALID_MEMORY_ACTION_FOR_ID;
 				break;
 			}
 
 			// Check that size and offset describe a region that is not out of bounds
 			if((size == 0) || (offset > (details.size - 1)) || (size > (details.size - offset))){
-				errorID = invalidSizeOffsetCombination;
+				errorID = INVALID_SIZE_OFFSET_COMBINATION;
 				break;
 			}
 
 			// Don't allow sub region manipulation where it does not make sense or is unsafe.
 			if((size != details.size) && !(details.flags & BLOCK_IS_INDEXABLE)){
-				errorID = uncheckedTableManipulationNotAllowed;
+				errorID = UNCHECKED_TABLE_MANIPULATION_NOT_ALLOWED;
 				break;
 			}
 
@@ -598,7 +598,7 @@ void decodePacketAndRespond(){
 		{
 			// Subtract six to allow for the locationID, size, offset
 			if(RXCalculatedPayloadLength < 7){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -620,25 +620,25 @@ void decodePacketAndRespond(){
 
 			// Subtract six to allow for the locationID, size, offset
 			if((RXCalculatedPayloadLength - 6) != size){
-				errorID = payloadNotEqualToSpecifiedValue;
+				errorID = PAYLOAD_NOT_EQUAL_TO_SPECIFIED_VALUE;
 				break;
 			}
 
 			// If either of these is zero then this block is not in flash!
 			if((details.FlashPage == 0) || (details.FlashAddress == 0)){
-				errorID = invalidMemoryActionForID;
+				errorID = INVALID_MEMORY_ACTION_FOR_ID;
 				break;
 			}
 
 			// Check that size and offset describe a region that is not out of bounds
 			if((size == 0) || (offset > (details.size - 1)) || (size > (details.size - offset))){
-				errorID = invalidSizeOffsetCombination;
+				errorID = INVALID_SIZE_OFFSET_COMBINATION;
 				break;
 			}
 
 			// Don't allow sub region manipulation where it does not make sense or is unsafe.
 			if((size != details.size) && !(details.flags & BLOCK_IS_INDEXABLE)){
-				errorID = uncheckedTableManipulationNotAllowed;
+				errorID = UNCHECKED_TABLE_MANIPULATION_NOT_ALLOWED;
 				break;
 			}
 
@@ -720,7 +720,7 @@ void decodePacketAndRespond(){
 		case RETRIEVE_BLOCK_FROM_RAM:
 		{
 			if(RXCalculatedPayloadLength != 6){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -741,7 +741,7 @@ void decodePacketAndRespond(){
 			lookupBlockDetails(locationID, &details);
 
 			if((details.RAMPage == 0) || (details.RAMAddress == 0)){
-				errorID = invalidMemoryActionForID;
+				errorID = INVALID_MEMORY_ACTION_FOR_ID;
 				break;
 			}
 
@@ -752,13 +752,13 @@ void decodePacketAndRespond(){
 
 			// Check that size and offset describe a region that is not out of bounds
 			if((size == 0) || (offset > (details.size - 1)) || (size > (details.size - offset))){
-				errorID = invalidSizeOffsetCombination;
+				errorID = INVALID_SIZE_OFFSET_COMBINATION;
 				break;
 			}
 
 			// Don't allow sub region retrieval where it does not make sense or is unsafe. (keep it symmetric for djandruczyk)
 			if((size != details.size) && !(details.flags & BLOCK_IS_INDEXABLE)){
-				errorID = doesNotMakeSenseToRetrievePartially;
+				errorID = DOES_NOT_MAKE_SENSE_TO_RETRIEVE_PARTIALLY;
 				break;
 			}
 
@@ -783,7 +783,7 @@ void decodePacketAndRespond(){
 		case RETRIEVE_BLOCK_FROM_FLASH:
 		{
 			if(RXCalculatedPayloadLength != 6){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -804,7 +804,7 @@ void decodePacketAndRespond(){
 			lookupBlockDetails(locationID, &details);
 
 			if((details.FlashPage == 0) || (details.FlashAddress == 0)){
-				errorID = invalidMemoryActionForID;
+				errorID = INVALID_MEMORY_ACTION_FOR_ID;
 				break;
 			}
 
@@ -815,13 +815,13 @@ void decodePacketAndRespond(){
 
 			// Check that size and offset describe a region that is not out of bounds
 			if((size == 0) || (offset > (details.size - 1)) || (size > (details.size - offset))){
-				errorID = invalidSizeOffsetCombination;
+				errorID = INVALID_SIZE_OFFSET_COMBINATION;
 				break;
 			}
 
 			// Don't allow sub region retrieval where it does not make sense or is unsafe. (keep it symmetric for djandruczyk)
 			if((size != details.size) && !(details.flags & BLOCK_IS_INDEXABLE)){
-				errorID = doesNotMakeSenseToRetrievePartially;
+				errorID = DOES_NOT_MAKE_SENSE_TO_RETRIEVE_PARTIALLY;
 				break;
 			}
 
@@ -846,7 +846,7 @@ void decodePacketAndRespond(){
 		case BURN_BLOCK_FROM_RAM_TO_FLASH:
 		{
 			if(RXCalculatedPayloadLength != 6){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -868,7 +868,7 @@ void decodePacketAndRespond(){
 
 			/* Check that all data we need is present */
 			if((details.RAMPage == 0) || (details.RAMAddress == 0) || (details.FlashPage == 0) || (details.FlashAddress == 0)){
-				errorID = invalidMemoryActionForID;
+				errorID = INVALID_MEMORY_ACTION_FOR_ID;
 				break;
 			}
 
@@ -879,13 +879,13 @@ void decodePacketAndRespond(){
 
 			// Check that size and offset describe a region that is not out of bounds
 			if((size == 0) || (offset > (details.size - 1)) || (size > (details.size - offset))){
-				errorID = invalidSizeOffsetCombination;
+				errorID = INVALID_SIZE_OFFSET_COMBINATION;
 				break;
 			}
 
 			// Don't allow sub region retrieval where it does not make sense or is unsafe. (keep it symmetric for djandruczyk)
 			if((size != details.size) && !(details.flags & BLOCK_IS_INDEXABLE)){
-				errorID = doesNotMakeSenseToRetrievePartially;
+				errorID = DOES_NOT_MAKE_SENSE_TO_RETRIEVE_PARTIALLY;
 				break;
 			}
 
@@ -902,7 +902,7 @@ void decodePacketAndRespond(){
 		case REQUEST_DATALOG_PACKET: // Set type through standard configuration methods
 		{
 			if(RXCalculatedPayloadLength != 0){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -918,13 +918,13 @@ void decodePacketAndRespond(){
 		case SET_ASYNC_DATALOG_TYPE:
 		{
 			if(RXCalculatedPayloadLength != 1){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
 			unsigned char newDatalogType = *((unsigned char*)RXBufferCurrentPosition);
 			if(newDatalogType > ASYNCDATALOGLASTTYPE){
-				errorID = noSuchAsyncDatalogType;
+				errorID = NO_SUCH_ASYNC_DATALOG_TYPE;
 				break;
 			}
 
@@ -934,7 +934,7 @@ void decodePacketAndRespond(){
 		case RETRIEVE_ARBITRARY_MEMORY:
 		{
 			if(RXCalculatedPayloadLength != 6){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -942,7 +942,7 @@ void decodePacketAndRespond(){
 			RXBufferCurrentPosition += 2;
 			// Make sure the buffer can handle the block
 			if(length > TX_MAX_PAYLOAD_SIZE){
-				errorID = requestedLengthTooLarge;
+				errorID = REQUESTED_LENGTH_TOO_LARGE;
 				break;
 			}
 
@@ -951,7 +951,7 @@ void decodePacketAndRespond(){
 			// Ensure we don't try to read past the end of the address space
 			if(((unsigned short)address) <= ((0xFFFF - length) + 1)){
 				// TODO Possibly check and limit ranges
-				errorID = requestedAddressDisallowed;
+				errorID = REQUESTED_ADDRESS_DISALLOWED;
 				break;
 			}
 
@@ -959,7 +959,7 @@ void decodePacketAndRespond(){
 			RXBufferCurrentPosition++;
 			// Ensure RAM page is valid. Being too high is not possible.
 			if(RAMPage < RPAGE_MIN){
-				errorID = requestedRAMPageInvalid;
+				errorID = REQUESTED_RAM_PAGE_INVALID;
 				break;
 			}
 
@@ -967,7 +967,7 @@ void decodePacketAndRespond(){
 			RXBufferCurrentPosition++;
 			// Ensure Flash page is valid. Being too high is not possible.
 			if(FlashPage < PPAGE_MIN){
-				errorID = requestedFlashPageInvalid;
+				errorID = REQUESTED_FLASH_PAGE_INVALID;
 				break;
 			}
 
@@ -995,7 +995,7 @@ void decodePacketAndRespond(){
 		case RETRIEVE_LIST_OF_LOCATION_IDS:
 		{
 			if(RXCalculatedPayloadLength != 3){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -1037,7 +1037,7 @@ void decodePacketAndRespond(){
 		case RETRIEVE_LOCATION_ID_DETAILS:
 		{
 			if(RXCalculatedPayloadLength != 2){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -1081,7 +1081,7 @@ void decodePacketAndRespond(){
 
 			// Must at least have test ID
 			if(RXCalculatedPayloadLength < 2){
-				errorID = payloadLengthTypeMismatch;
+				errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 				break;
 			}
 
@@ -1094,7 +1094,7 @@ void decodePacketAndRespond(){
 				{
 					// Must be only the ID
 					if(RXCalculatedPayloadLength != 2){
-						errorID = payloadShorterThanRequiredForTest;
+						errorID = PAYLOAD_SHORTER_THAN_REQUIRED_FOR_TEST;
 						break;
 					}
 
@@ -1107,7 +1107,7 @@ void decodePacketAndRespond(){
 				{
 					// ID + Value + Table
 					if(RXCalculatedPayloadLength != (2 + 2 + sizeof(twoDTableUS))){
-						errorID = payloadShorterThanRequiredForTest;
+						errorID = PAYLOAD_SHORTER_THAN_REQUIRED_FOR_TEST;
 						break;
 					}
 
@@ -1148,7 +1148,7 @@ void decodePacketAndRespond(){
 				// more testable code will appear with time, such as the HAL layer, and most accessory functions.
 				default:
 				{
-					errorID = noSuchUnitTestID;
+					errorID = NO_SUCH_UNIT_TEST_ID;
 				}
 
 			// each case:
@@ -1165,18 +1165,18 @@ void decodePacketAndRespond(){
 			// see TODO on include at top and modify this line appropriately
 			if(!(compare((unsigned char*)&decoderName, (unsigned char*)BENCH_TEST_NAME, sizeof(BENCH_TEST_NAME)))){
 				if(RXCalculatedPayloadLength < 1){
-					errorID = payloadLengthTypeMismatch;
+					errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
 					break;
 				}
 
 				unsigned char localTestMode = *((unsigned char*)RXBufferCurrentPosition); //1; // The only mode, for now.
 				RXBufferCurrentPosition++;
 				if(localTestMode > TEST_MODE_BUMP_UP_CYCLES){
-					errorID = unimplementedTestMode;
+					errorID = UNIMPLEMENTED_TEST_MODE;
 					break;
 				}else if((localTestMode == TEST_MODE_STOP) && (RXCalculatedPayloadLength == 1)){
 					if(!(coreStatusA & BENCH_TEST_ON)){
-						errorID = benchTestNotRunningToStop;
+						errorID = BENCH_TEST_NOT_RUNNING_TO_STOP;
 						break;
 					}
 
@@ -1190,7 +1190,7 @@ void decodePacketAndRespond(){
 					break;
 				}else if((localTestMode == TEST_MODE_BUMP_UP_CYCLES) && (RXCalculatedPayloadLength == 2)){
 					if(!(coreStatusA & BENCH_TEST_ON)){
-						errorID = benchTestNotRunningToBump;
+						errorID = BENCH_TEST_NOT_RUNNING_TO_BUMP;
 						break;
 					}
 
@@ -1199,7 +1199,7 @@ void decodePacketAndRespond(){
 					RXBufferCurrentPosition++;
 
 					if(bumpCycles == 0){
-						errorID = bumpingByZeroMakesNoSense;
+						errorID = BUMPING_BY_ZERO_MAKES_NO_SENSE;
 						break;
 					}
 
@@ -1212,33 +1212,33 @@ void decodePacketAndRespond(){
 					testMode = localTestMode;
 					// do nothing to fall through, or move other code into here
 				}else{
-					errorID = packetSizeWrongForTestMode;
+					errorID = PACKET_SIZE_WRONG_FOR_TEST_MODE;
 					break;
 				}
 
 				if(coreStatusA & BENCH_TEST_ON){
-					errorID = benchTestAlreadyRunning;
+					errorID = BENCH_TEST_ALREADY_RUNNING;
 					break;
 				}
 
 				testEventsPerCycle = *((unsigned char*)RXBufferCurrentPosition); //100;  // @ 10ms  =  1s
 				RXBufferCurrentPosition++;
 				if(testEventsPerCycle == 0){
-					errorID = invalidEventsPerCycle;
+					errorID = INVALID_EVENTS_PER_CYCLE;
 					break;
 				}
 
 				testNumberOfCycles = *((unsigned short*)RXBufferCurrentPosition); //20;   // @ 1s    = 20s
 				RXBufferCurrentPosition += 2;
 				if(testNumberOfCycles == 0){
-					errorID = invalidNumberOfCycles;
+					errorID = INVALID_NUMBER_OF_CYCLES;
 					break;
 				}
 
 				testTicksPerEvent = *((unsigned short*)RXBufferCurrentPosition); //12500; // @ 0.8us = 10ms
 				RXBufferCurrentPosition += 2;
 				if(testTicksPerEvent < decoderMaxCodeTime){
-					errorID = tooShortOfAnEventPeriod;
+					errorID = TOO_SHORT_OF_AN_EVENT_PERIOD;
 					break;
 				}
 
@@ -1262,7 +1262,7 @@ void decodePacketAndRespond(){
 						outputEventInputEventNumbers[channel] = testEventNumbers[channel];
 					}else if(testPulseWidths[channel] > 3){
 						// less than the code time, and not special, error!
-						errorID = tooShortOfAPulseWidthToTest;
+						errorID = TOO_SHORT_OF_A_PULSE_WIDTH_TO_TEST;
 						// Warning, PWs close to this could be slightly longer than requested, that will change in later revisions.
 						break;
 					}else if(testPulseWidths[channel] == 3){
@@ -1286,7 +1286,7 @@ void decodePacketAndRespond(){
 				}
 
 				if(configuredChannels == 0){
-					errorID = noChannelsConfiguredToTest;
+					errorID = NO_CHANNELS_CONFIGURED_TO_TEST;
 					break;
 				}
 
@@ -1298,7 +1298,7 @@ void decodePacketAndRespond(){
 						if(testEventsPerCycle <= 127){
 							testEventsPerCycle *= 2;
 						}else{
-							errorID = tooManyEventsPerCycleMissingTth;
+							errorID = TOO_MANY_EVENTS_PER_CYCLE_MISSING_TTH;
 							break;
 						}
 
@@ -1313,7 +1313,7 @@ void decodePacketAndRespond(){
 						outputEventInputEventNumbers[4] = 0xFF;
 						outputEventInputEventNumbers[5] = 0xFF;
 					}else if(testMode > TEST_MODE_DODGY_MISSING_TOOTH){
-						errorID = unimplementedTestMode;
+						errorID = UNIMPLEMENTED_TEST_MODE;
 						break;
 					}
 
@@ -1386,16 +1386,16 @@ void decodePacketAndRespond(){
 //
 //				sleep(1000);
 			}else{
-				errorID = thisIsNotTheBenchTestDecoder;
+				errorID = THIS_IS_NOT_THE_BENCH_TEST_DECODER;
 			}
 			break;
 		}
 		default:
 		{
 			if((RXHeaderPayloadID % 2) == 1){
-				errorID = invalidPayloadID;
+				errorID = INVALID_PAYLOAD_ID;
 			}else{
-				errorID = unrecognisedPayloadID;
+				errorID = UNRECOGNISED_PAYLOAD_ID;
 			}
 			break;
 		}
