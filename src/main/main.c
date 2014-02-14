@@ -229,7 +229,7 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 						TXBufferCurrentPositionHandler++;
 
 						/* Set the payload ID */
-						*((unsigned short*)TXBufferCurrentPositionHandler) = responseBasicDatalog;
+						*((unsigned short*)TXBufferCurrentPositionHandler) = RESPONSE_BASIC_DATALOG;
 						TXBufferCurrentPositionHandler += 2;
 
 						/* Set the length */
@@ -283,7 +283,7 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 						TXBufferCurrentPositionHandler++;
 
 						/* Set the payload ID */
-						*((unsigned short*)TXBufferCurrentPositionHandler) = responseByteLADatalog;
+						*((unsigned short*)TXBufferCurrentPositionHandler) = RESPONSE_BYTE_LA_DATALOG;
 						TXBufferCurrentPositionHandler += 2;
 
 						/** Store PTIT for now, later make address of byte configurable TODO @todo */

@@ -339,7 +339,7 @@ void decodePacketAndRespond(){
 	 */
 	switch (RXHeaderPayloadID){
 	// FreeEMS Core Comms Interface cases
-		case requestInterfaceVersion:
+		case REQUEST_INTERFACE_VERSION:
 		{
 			if(RXCalculatedPayloadLength != 0){
 				errorID = payloadLengthTypeMismatch;
@@ -355,7 +355,7 @@ void decodePacketAndRespond(){
 			TXBufferCurrentPositionHandler += sizeof(interfaceVersion);
 			break;
 		}
-		case requestFirmwareVersion:
+		case REQUEST_FIRMWARE_VERSION:
 		{
 			if(RXCalculatedPayloadLength != 0){
 				errorID = payloadLengthTypeMismatch;
@@ -370,7 +370,7 @@ void decodePacketAndRespond(){
 			TXBufferCurrentPositionHandler += sizeof(firmwareVersion);
 			break;
 		}
-		case requestMaxPacketSize:
+		case REQUEST_MAX_PACKET_SIZE:
 		{
 			if(RXCalculatedPayloadLength != 0){
 				errorID = payloadLengthTypeMismatch;
@@ -381,7 +381,7 @@ void decodePacketAndRespond(){
 			TXBufferCurrentPositionHandler += 2;
 			break;
 		}
-		case requestEchoPacketReturn:
+		case REQUEST_ECHO_PACKET_RETURN:
 		{
 			/* This type must have a length field, set that up */
 			*((unsigned short*)TXBufferCurrentPositionHandler) = RXPacketLengthReceived;
@@ -394,7 +394,7 @@ void decodePacketAndRespond(){
 			TXBufferCurrentPositionHandler += RXPacketLengthReceived;
 			break;
 		}
-		case requestSoftSystemReset:
+		case REQUEST_SOFT_SYSTEM_RESET:
 		{
 			if(RXCalculatedPayloadLength != 0){
 				errorID = payloadLengthTypeMismatch;
@@ -403,7 +403,7 @@ void decodePacketAndRespond(){
 			}
 			break;
 		}
-		case requestHardSystemReset:
+		case REQUEST_HARD_SYSTEM_RESET:
 		{
 			if(RXCalculatedPayloadLength != 0){
 				errorID = payloadLengthTypeMismatch;
@@ -416,7 +416,7 @@ void decodePacketAndRespond(){
 			}
 			break;
 		}
-		case requestReInitOfSystem:
+		case REQUEST_RE_INIT_OF_SYSTEM:
 		{
 			if(RXCalculatedPayloadLength != 0){
 				errorID = payloadLengthTypeMismatch;
@@ -426,7 +426,7 @@ void decodePacketAndRespond(){
 			break;
 		}
 	// FreeEMS Vanilla Firmware Specific cases
-		case clearCountersAndFlagsToZero:
+		case CLEAR_COUNTERS_AND_FLAGS_TO_ZERO:
 		{
 			if(RXCalculatedPayloadLength != 0){
 				errorID = payloadLengthTypeMismatch;
@@ -457,10 +457,10 @@ void decodePacketAndRespond(){
 			}
 			break;
 		}
-		case requestDecoderName:
-		case requestFirmwareBuildDate:
-		case requestCompilerVersion:
-		case requestOperatingSystem:
+		case REQUEST_DECODER_NAME:
+		case REQUEST_FIRMWARE_BUILD_DATE:
+		case REQUEST_COMPILER_VERSION:
+		case REQUEST_OPERATING_SYSTEM:
 		{
 			if(RXCalculatedPayloadLength != 0){
 				errorID = payloadLengthTypeMismatch;
@@ -469,16 +469,16 @@ void decodePacketAndRespond(){
 
 			unsigned char* stringToSend = 0;
 			switch (RXHeaderPayloadID) {
-				case requestDecoderName:
+				case REQUEST_DECODER_NAME:
 					stringToSend = (unsigned char*)decoderName;
 					break;
-				case requestFirmwareBuildDate:
+				case REQUEST_FIRMWARE_BUILD_DATE:
 					stringToSend = (unsigned char*)buildTimeAndDate;
 					break;
-				case requestCompilerVersion:
+				case REQUEST_COMPILER_VERSION:
 					stringToSend = (unsigned char*)compilerVersion;
 					break;
-				case requestOperatingSystem:
+				case REQUEST_OPERATING_SYSTEM:
 					stringToSend = (unsigned char*)operatingSystem;
 					break;
 			}
@@ -489,7 +489,7 @@ void decodePacketAndRespond(){
 			TXBufferCurrentPositionHandler += 2 + *((unsigned short*)TXBufferCurrentPositionHandler);
 			break;
 		}
-		case updateBlockInRAM:
+		case UPDATE_BLOCK_IN_RAM:
 		{
 			// Subtract six to allow for the locationID, size, offset
 			if(RXCalculatedPayloadLength < 7){
@@ -594,7 +594,7 @@ void decodePacketAndRespond(){
 			}
 			break;
 		}
-		case updateBlockInFlash:
+		case UPDATE_BLOCK_IN_FLASH:
 		{
 			// Subtract six to allow for the locationID, size, offset
 			if(RXCalculatedPayloadLength < 7){
@@ -717,7 +717,7 @@ void decodePacketAndRespond(){
 
 			break;
 		}
-		case retrieveBlockFromRAM:
+		case RETRIEVE_BLOCK_FROM_RAM:
 		{
 			if(RXCalculatedPayloadLength != 6){
 				errorID = payloadLengthTypeMismatch;
@@ -780,7 +780,7 @@ void decodePacketAndRespond(){
 
 			break;
 		}
-		case retrieveBlockFromFlash:
+		case RETRIEVE_BLOCK_FROM_FLASH:
 		{
 			if(RXCalculatedPayloadLength != 6){
 				errorID = payloadLengthTypeMismatch;
@@ -843,7 +843,7 @@ void decodePacketAndRespond(){
 
 			break;
 		}
-		case burnBlockFromRamToFlash:
+		case BURN_BLOCK_FROM_RAM_TO_FLASH:
 		{
 			if(RXCalculatedPayloadLength != 6){
 				errorID = payloadLengthTypeMismatch;
@@ -899,7 +899,7 @@ void decodePacketAndRespond(){
 			errorID = writeBlock(&details, leftOverBuffer);
 			break;
 		}
-		case requestDatalogPacket: // Set type through standard configuration methods
+		case REQUEST_DATALOG_PACKET: // Set type through standard configuration methods
 		{
 			if(RXCalculatedPayloadLength != 0){
 				errorID = payloadLengthTypeMismatch;
@@ -915,7 +915,7 @@ void decodePacketAndRespond(){
 			*localLength = populateBasicDatalog();
 			break;
 		}
-		case setAsyncDatalogType:
+		case SET_ASYNC_DATALOG_TYPE:
 		{
 			if(RXCalculatedPayloadLength != 1){
 				errorID = payloadLengthTypeMismatch;
@@ -931,7 +931,7 @@ void decodePacketAndRespond(){
 			TablesB.SmallTablesB.loggingSettings.datalogStreamType = newDatalogType;
 			break;
 		}
-		case retrieveArbitraryMemory:
+		case RETRIEVE_ARBITRARY_MEMORY:
 		{
 			if(RXCalculatedPayloadLength != 6){
 				errorID = payloadLengthTypeMismatch;
@@ -992,7 +992,7 @@ void decodePacketAndRespond(){
 
 			break;
 		}
-		case retrieveListOfLocationIDs:
+		case RETRIEVE_LIST_OF_LOCATION_IDS:
 		{
 			if(RXCalculatedPayloadLength != 3){
 				errorID = payloadLengthTypeMismatch;
@@ -1034,7 +1034,7 @@ void decodePacketAndRespond(){
 
 			break;
 		}
-		case retrieveLocationIDDetails:
+		case RETRIEVE_LOCATION_ID_DETAILS:
 		{
 			if(RXCalculatedPayloadLength != 2){
 				errorID = payloadLengthTypeMismatch;
@@ -1062,7 +1062,7 @@ void decodePacketAndRespond(){
 
 			break;
 		}
-		case requestUnitTestOverSerial:
+		case REQUEST_UNIT_TEST_OVER_SERIAL:
 		{
 			/*
 			 * The idea here is to call this function with arguments, and data
@@ -1160,7 +1160,7 @@ void decodePacketAndRespond(){
 			}
 			break;
 		}
-		case startBenchTestSequence:
+		case START_BENCH_TEST_SEQUENCE:
 		{
 			// see TODO on include at top and modify this line appropriately
 			if(!(compare((unsigned char*)&decoderName, (unsigned char*)BENCH_TEST_NAME, sizeof(BENCH_TEST_NAME)))){
