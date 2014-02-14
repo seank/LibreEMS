@@ -317,7 +317,7 @@ typedef struct {
 } inputOutputSetting;
 
 
-#define userTextFieldArrayLength1 (FLASHSECTORSIZE - (sizeof(engineSetting) + sizeof(serialSetting) + sizeof(coarseBitBangSetting) + sizeof(schedulingSetting) + sizeof(cutAndLimiterSetting) + sizeof(simpleGPIOSetting)))
+#define USER_TEXT_FIELD_ARRAY_LENGTH1 (FLASHSECTORSIZE - (sizeof(engineSetting) + sizeof(serialSetting) + sizeof(coarseBitBangSetting) + sizeof(schedulingSetting) + sizeof(cutAndLimiterSetting) + sizeof(simpleGPIOSetting)))
 /**
  * One of two structs of fixed configuration data such as physical parameters etc.
  *
@@ -333,11 +333,11 @@ typedef struct {
 	schedulingSetting schedulingSettings;       ///< @see schedulingSetting
 	cutAndLimiterSetting cutAndLimiterSettings; ///< @see cutAndLimiterSetting
 	simpleGPIOSetting simpleGPIOSettings;       ///< @see simpleGPIOSetting
-	unsigned char userTextField[userTextFieldArrayLength1]; ///< For on-board meta-data such as which vehicle the unit is from, put your personal tuning notes here!
+	unsigned char userTextField[USER_TEXT_FIELD_ARRAY_LENGTH1]; ///< For on-board meta-data such as which vehicle the unit is from, put your personal tuning notes here!
 } fixedConfig1;
 
 
-#define userTextFieldArrayLength2 (FLASHSECTORSIZE - (sizeof(sensorSource) + sizeof(sensorPreset) + sizeof(sensorRange) + sizeof(sensorSetting) + sizeof(algorithmSetting) + sizeof(inputOutputSetting) + sizeof(decoderSetting)))
+#define USER_TEXT_FIELD_ARRAY_LENGTH2 (FLASHSECTORSIZE - (sizeof(sensorSource) + sizeof(sensorPreset) + sizeof(sensorRange) + sizeof(sensorSetting) + sizeof(algorithmSetting) + sizeof(inputOutputSetting) + sizeof(decoderSetting)))
 /** @copydoc fixedConfig1 */
 typedef struct {
 	sensorSource sensorSources;                              ///< @see sensorSource
@@ -347,7 +347,7 @@ typedef struct {
 	algorithmSetting algorithmSettings;                      ///< @see algorithmSetting
 	inputOutputSetting inputOutputSettings;                  ///< @see inputOutputSetting
 	decoderSetting decoderSettings;                          ///< @see decoderSetting
-	unsigned char userTextField2[userTextFieldArrayLength2]; ///< For on-board meta-data such as which vehicle the unit is from, put your personal tuning notes here!
+	unsigned char userTextField2[USER_TEXT_FIELD_ARRAY_LENGTH2]; ///< For on-board meta-data such as which vehicle the unit is from, put your personal tuning notes here!
 } fixedConfig2;
 
 

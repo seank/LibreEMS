@@ -629,7 +629,7 @@ unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* detai
 		details->parent = FIXED_CONFIG1_LOCATION_ID;
 		break;
 	case USER_TEXT_FIELD_LOCATION_ID:
-		details->size = userTextFieldArrayLength1;
+		details->size = USER_TEXT_FIELD_ARRAY_LENGTH1;
 		details->FlashPage = PPAGE;
 		details->FlashAddress = (void*)&(fixedConfigs1.userTextField);
 		details->parent = FIXED_CONFIG1_LOCATION_ID;
@@ -679,7 +679,7 @@ unsigned short lookupBlockDetails(unsigned short locationID, blockDetails* detai
 		details->parent = FIXED_CONFIG2_LOCATION_ID;
 		break;
 	case USER_TEXT_FIELD2_LOCATION_ID:
-		details->size = userTextFieldArrayLength2;
+		details->size = USER_TEXT_FIELD_ARRAY_LENGTH2;
 		details->FlashPage = PPAGE;
 		details->FlashAddress = (void*)&(fixedConfigs2.userTextField2);
 		details->parent = FIXED_CONFIG2_LOCATION_ID;
