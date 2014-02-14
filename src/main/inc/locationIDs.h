@@ -38,50 +38,50 @@
 
 /* Big main tables */
 /* Fueling tables */
-#define VETableMainLocationID                          0x0000
-#define VETableMain2LocationID                         0x0001
-#define VETableSecondaryLocationID                     0x0002
-#define VETableSecondary2LocationID                    0x0003
-#define AirflowTableLocationID                         0x0004
-#define AirflowTable2LocationID                        0x0005
-#define LambdaTableLocationID                          0x0006
-#define LambdaTable2LocationID                         0x0007
+#define VE_TABLE_MAIN_LOCATION_ID                          0x0000
+#define VE_TABLE_MAIN2_LOCATION_ID                         0x0001
+#define VE_TABLE_SECONDARY_LOCATION_ID                     0x0002
+#define VE_TABLE_SECONDARY2_LOCATION_ID                    0x0003
+#define AIRFLOW_TABLE_LOCATION_ID                         0x0004
+#define AIRFLOW_TABLE2_LOCATION_ID                        0x0005
+#define LAMBDA_TABLE_LOCATION_ID                          0x0006
+#define LAMBDA_TABLE2_LOCATION_ID                         0x0007
 /* Timing tables */
-#define IgnitionAdvanceTableMainLocationID             0x0008
-#define IgnitionAdvanceTableMain2LocationID            0x0009
-#define IgnitionAdvanceTableSecondaryLocationID        0x000A
-#define IgnitionAdvanceTableSecondary2LocationID       0x000B
-#define InjectionAdvanceTableMainLocationID            0x000C
-#define InjectionAdvanceTableMain2LocationID           0x000D
-#define InjectionAdvanceTableSecondaryLocationID       0x000E
-#define InjectionAdvanceTableSecondary2LocationID      0x000F
+#define IGNITION_ADVANCE_TABLE_MAIN_LOCATION_ID             0x0008
+#define IGNITION_ADVANCE_TABLE_MAIN2_LOCATION_ID            0x0009
+#define IGNITION_ADVANCE_TABLE_SECONDARY_LOCATION_ID        0x000A
+#define IGNITION_ADVANCE_TABLE_SECONDARY2_LOCATION_ID       0x000B
+#define INJECTION_ADVANCE_TABLE_MAIN_LOCATION_ID            0x000C
+#define INJECTION_ADVANCE_TABLE_MAIN2_LOCATION_ID           0x000D
+#define INJECTION_ADVANCE_TABLE_SECONDARY_LOCATION_ID       0x000E
+#define INJECTION_ADVANCE_TABLE_SECONDARY2_LOCATION_ID      0x000F
 
 #ifdef BLOCK_DETAILS_LOOKUP_C // only for here, external stuff should use the flags field for determining what to do/not do.
-#define MainTable_TwoDTableUS_Border                   0x0100
+#define MAIN_TABLE_TWO_D_TABLE_US_BORDER                   0x0100
 #endif
 
 /* twoDTableUS tables (TablesA) */
-#define dwellDesiredVersusVoltageTableLocationID       0x0100
-#define dwellDesiredVersusVoltageTable2LocationID      0x0101
-#define injectorDeadTimeTableLocationID                0x0102
-#define injectorDeadTimeTable2LocationID               0x0103
-#define postStartEnrichmentTableLocationID             0x0104
-#define postStartEnrichmentTable2LocationID            0x0105
-#define engineTempEnrichmentTableFixedLocationID       0x0106
-#define engineTempEnrichmentTableFixed2LocationID      0x0107
-#define primingVolumeTableLocationID                   0x0108
-#define primingVolumeTable2LocationID                  0x0109
-#define engineTempEnrichmentTablePercentLocationID     0x010A
-#define engineTempEnrichmentTablePercent2LocationID    0x010B
-#define dwellVersusRPMTableLocationID                  0x010C
-#define dwellVersusRPMTable2LocationID                 0x010D
-#define blendVersusRPMTableLocationID                  0x010E
-#define blendVersusRPMTable2LocationID                 0x010F
-#define MAFVersusVoltageTableLocationID                0x011F
+#define DWELL_DESIRED_VERSUS_VOLTAGE_TABLE_LOCATION_ID       0x0100
+#define DWELL_DESIRED_VERSUS_VOLTAGE_TABLE2_LOCATION_ID      0x0101
+#define INJECTOR_DEAD_TIME_TABLE_LOCATION_ID                0x0102
+#define INJECTOR_DEAD_TIME_TABLE2_LOCATION_ID               0x0103
+#define POST_START_ENRICHMENT_TABLE_LOCATION_ID             0x0104
+#define POST_START_ENRICHMENT_TABLE2_LOCATION_ID            0x0105
+#define ENGINE_TEMP_ENRICHMENT_TABLE_FIXED_LOCATION_ID       0x0106
+#define ENGINE_TEMP_ENRICHMENT_TABLE_FIXED2_LOCATION_ID      0x0107
+#define PRIMING_VOLUME_TABLE_LOCATION_ID                   0x0108
+#define PRIMING_VOLUME_TABLE2_LOCATION_ID                  0x0109
+#define ENGINE_TEMP_ENRICHMENT_TABLE_PERCENT_LOCATION_ID     0x010A
+#define ENGINE_TEMP_ENRICHMENT_TABLE_PERCENT2_LOCATION_ID    0x010B
+#define DWELL_VERSUS_RPM_TABLE_LOCATION_ID                  0x010C
+#define DWELL_VERSUS_RPM_TABLE2_LOCATION_ID                 0x010D
+#define BLEND_VERSUS_RPM_TABLE_LOCATION_ID                  0x010E
+#define BLEND_VERSUS_RPM_TABLE2_LOCATION_ID                 0x010F
+#define MAF_VERSUS_VOLTAGE_TABLE_LOCATION_ID                0x011F
 
 
 #ifdef BLOCK_DETAILS_LOOKUP_C // only for here, external stuff should use the flags field for determining what to do/not do.
-#define TwoDTableUS_SmallTableFullBlocks_Border        0x3000
+#define TWO_D_TABLE_US_SMALL_TABLE_FULL_BLOCKS_BORDER        0x3000
 #endif
 
 /// TODO @todo Claim some RAM back for XGATE use?
@@ -90,90 +90,90 @@
 /* TablesD */
 
 /* Tunable blocks */
-#define SmallTablesALocationID                         0x3000
-#define SmallTablesA2LocationID                        0x3001
-#define SmallTablesBLocationID                         0x3002
-#define SmallTablesB2LocationID                        0x3003
-#define SmallTablesCLocationID                         0x3004
-#define SmallTablesC2LocationID                        0x3005
-#define SmallTablesDLocationID                         0x3006
-#define SmallTablesD2LocationID                        0x3007
+#define SMALL_TABLES_A_LOCATION_ID                         0x3000
+#define SMALL_TABLES_A2_LOCATION_ID                        0x3001
+#define SMALL_TABLES_B_LOCATION_ID                         0x3002
+#define SMALL_TABLES_B2_LOCATION_ID                        0x3003
+#define SMALL_TABLES_C_LOCATION_ID                         0x3004
+#define SMALL_TABLES_C2_LOCATION_ID                        0x3005
+#define SMALL_TABLES_D_LOCATION_ID                         0x3006
+#define SMALL_TABLES_D2_LOCATION_ID                        0x3007
 
 #ifdef BLOCK_DETAILS_LOOKUP_C // only for here, external stuff should use the flags field for determining what to do/not do.
-#define SmallTableFullBlocks_SmallTableFillers_Border  0x4000
+#define SMALL_TABLE_FULL_BLOCKS_SMALL_TABLE_FILLERS_BORDER  0x4000
 #endif
 
 /* Table block fillers */
-#define fillerALocationID                              0x4000
-#define fillerA2LocationID                             0x4001
-#define fillerBLocationID                              0x4002
-#define fillerB2LocationID                             0x4003
-#define fillerCLocationID                              0x4004
-#define fillerC2LocationID                             0x4005
-#define fillerDLocationID                              0x4006
-#define fillerD2LocationID                             0x4007
+#define FILLER_A_LOCATION_ID                              0x4000
+#define FILLER_A2_LOCATION_ID                             0x4001
+#define FILLER_B_LOCATION_ID                              0x4002
+#define FILLER_B2_LOCATION_ID                             0x4003
+#define FILLER_C_LOCATION_ID                              0x4004
+#define FILLER_C2_LOCATION_ID                             0x4005
+#define FILLER_D_LOCATION_ID                              0x4006
+#define FILLER_D2_LOCATION_ID                             0x4007
 
 #ifdef BLOCK_DETAILS_LOOKUP_C // only for here, external stuff should use the flags field for determining what to do/not do.
-#define SmallTableFillers_FlashLookupTables_Border     0x8000
+#define SMALL_TABLE_FILLERS_FLASH_LOOKUP_TABLES_BORDER     0x8000
 #endif
 
 /* Flash ONLY lookup tables blocks */
-#define IATTransferTableLocationID                     0x8000 /* 2k */
-#define CHTTransferTableLocationID                     0x8001 /* 2k */
-#define MAFTransferTableLocationID                     0x8002 /* 2k */
-#define TestTransferTableLocationID                    0x8003 /* 2k */
+#define IAT_TRANSFER_TABLE_LOCATION_ID                     0x8000 /* 2k */
+#define CHT_TRANSFER_TABLE_LOCATION_ID                     0x8001 /* 2k */
+#define MAF_TRANSFER_TABLE_LOCATION_ID                     0x8002 /* 2k */
+#define TEST_TRANSFER_TABLE_LOCATION_ID                    0x8003 /* 2k */
 
 #ifdef BLOCK_DETAILS_LOOKUP_C // only for here, external stuff should use the flags field for determining what to do/not do.
-#define FlashLookupTables_SmallTableConfigs_Border     0x9000
+#define FLASH_LOOKUP_TABLES_SMALL_TABLE_CONFIGS_BORDER     0x9000
 #endif
 
-#define loggingSettingsLocationID                      0x9000
-#define loggingSettings2LocationID                     0x9001
+#define LOGGING_SETTINGS_LOCATION_ID                      0x9000
+#define LOGGING_SETTINGS2_LOCATION_ID                     0x9001
 
 #ifdef BLOCK_DETAILS_LOOKUP_C // only for here, external stuff should use the flags field for determining what to do/not do.
-#define SmallTableConfigs_FixedConfigBlocks_Border     0xA000
+#define SMALL_TABLE_CONFIGS_FIXED_CONFIG_BLOCKS_BORDER     0xA000
 #endif
 
 /* Fixed configs whole */
-#define FixedConfig1LocationID                         0xA000
-#define FixedConfig2LocationID                         0xA001
+#define FIXED_CONFIG1_LOCATION_ID                         0xA000
+#define FIXED_CONFIG2_LOCATION_ID                         0xA001
 
 #ifdef BLOCK_DETAILS_LOOKUP_C // only for here, external stuff should use the flags field for determining what to do/not do.
-#define FixedConfigBlocks_FixedConfigSubBlocks_Border  0xC000
+#define FIXED_CONFIG_BLOCKS_FIXED_CONFIG_SUB_BLOCKS_BORDER  0xC000
 #endif
 
 /* Fixed config 1 sub sections */
-#define engineSettingsLocationID                       0xC000
-#define serialSettingsLocationID                       0xC001
-#define coarseBBSettingsLocationID                     0xC002
-#define schedulingSettingsLocationID                   0xC003
-#define cutAndLimiterSettingsLocationID                0xC004
-#define simpleGPIOSettingsLocationID                   0xC005
-#define userTextFieldLocationID                        0xC100
+#define ENGINE_SETTINGS_LOCATION_ID                       0xC000
+#define SERIAL_SETTINGS_LOCATION_ID                       0xC001
+#define COARSE_BB_SETTINGS_LOCATION_ID                     0xC002
+#define SCHEDULING_SETTINGS_LOCATION_ID                   0xC003
+#define CUT_AND_LIMITER_SETTINGS_LOCATION_ID                0xC004
+#define SIMPLE_GPIO_SETTINGS_LOCATION_ID                   0xC005
+#define USER_TEXT_FIELD_LOCATION_ID                        0xC100
 
 /* Fixed config 2 sub sections */
-#define sensorSourcesLocationID                        0xC020
-#define sensorPresetsLocationID                        0xC021
-#define sensorRangesLocationID                         0xC022
-#define sensorSettingsLocationID                       0xC023
-#define algorithmSettingsLocationID                    0xC024
-#define inputOutputSettingsLocationID                  0xC025
-#define decoderSettingsLocationID                      0xC026
-#define userTextField2LocationID                       0xC101
+#define SENSOR_SOURCES_LOCATION_ID                        0xC020
+#define SENSOR_PRESETS_LOCATION_ID                        0xC021
+#define SENSOR_RANGES_LOCATION_ID                         0xC022
+#define SENSOR_SETTINGS_LOCATION_ID                       0xC023
+#define ALGORITHM_SETTINGS_LOCATION_ID                    0xC024
+#define INPUT_OUTPUT_SETTINGS_LOCATION_ID                  0xC025
+#define DECODER_SETTINGS_LOCATION_ID                      0xC026
+#define USER_TEXT_FIELD2_LOCATION_ID                       0xC101
 
 #ifdef BLOCK_DETAILS_LOOKUP_C // only for here, external stuff should use the flags field for determining what to do/not do.
-#define FixedConfigSubBlocks_Border_ReadOnlyVarBlocks  0xF000
+#define FIXED_CONFIG_SUB_BLOCKS_BORDER_READ_ONLY_VAR_BLOCKS  0xF000
 #endif
 
 // Internal blocks of variables that are sometimes useful to read out
-#define ADCRegistersLocationID                         0xF000
-#define coreVarsLocationID                             0xF001
-#define DerivedVarsLocationID                          0xF002
-#define KeyUserDebugLocationID                         0xF003
-#define CountersLocationID                             0xF004
-#define ClocksLocationID                               0xF005
-#define FlaggablesLocationID                           0xF006
-#define Flaggables2LocationID                          0xF007
+#define ADC_REGISTERS_LOCATION_ID                         0xF000
+#define CORE_VARS_LOCATION_ID                             0xF001
+#define DERIVED_VARS_LOCATION_ID                          0xF002
+#define KEY_USER_DEBUG_LOCATION_ID                         0xF003
+#define COUNTERS_LOCATION_ID                             0xF004
+#define CLOCKS_LOCATION_ID                               0xF005
+#define FLAGGABLES_LOCATION_ID                           0xF006
+#define FLAGGABLES2_LOCATION_ID                          0xF007
 
 
 #else

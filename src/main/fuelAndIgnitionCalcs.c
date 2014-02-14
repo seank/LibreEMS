@@ -59,13 +59,13 @@ void calculateFuelAndIgnition(){
 	/* Determine the type of air flow data */
 	if(!(fixedConfigs2.algorithmSettings.algorithmType)){
 		/* Look up VE with RPM and MAP */
-		DerivedVars->VEMain = lookupMainTable(CoreVars->RPM, CoreVars->MAP, VETableMainLocationID);
+		DerivedVars->VEMain = lookupMainTable(CoreVars->RPM, CoreVars->MAP, VE_TABLE_MAIN_LOCATION_ID);
 		/* This won't overflow until 512kPa or about 60psi of boost with 128% VE. */
 		DerivedVars->AirFlow = ((unsigned long)CoreVars->MAP * DerivedVars->VEMain) / VE(100);
 		/* Result is 450 - 65535 always. */
 	}else if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_ALPHA_N){
 		/* Look up Airflow with RPM and TPS */
-		DerivedVars->AirFlow = lookupMainTable(CoreVars->RPM, CoreVars->TPS, AirflowTableLocationID); /* Tuned air flow without density information */
+		DerivedVars->AirFlow = lookupMainTable(CoreVars->RPM, CoreVars->TPS, AIRFLOW_TABLE_LOCATION_ID); /* Tuned air flow without density information */
 	}else if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_MAF){
 		//DerivedVars->AirFlow = CoreVars->MAF; /* Just fix temperature at appropriate level to provide correct Lambda */
 		/// @todo TODO figure out what the correct "temperature" is to make MAF work correctly!
@@ -77,12 +77,12 @@ void calculateFuelAndIgnition(){
 		//DerivedVars->VEMain = lookupMainTable(CoreVars->RPM, CoreVars->MAP, VETableMainLocationID);
 	}else if(fixedConfigs2.algorithmSettings.algorithmType == ALGO_SD_AN_BLEND){
 		/* Look up VE with RPM and MAP */
-		DerivedVars->VEMain = lookupMainTable(CoreVars->RPM, CoreVars->MAP, VETableMainLocationID);
+		DerivedVars->VEMain = lookupMainTable(CoreVars->RPM, CoreVars->MAP, VE_TABLE_MAIN_LOCATION_ID);
 		/* This won't overflow until 512kPa or about 60psi of boost with 128% VE. */
 		KeyUserDebugs.speedDensityAirFlow = ((unsigned long)CoreVars->MAP * DerivedVars->VEMain) / VE(100);
 
 		/* Look up Airflow with RPM and TPS */
-		KeyUserDebugs.alphaNAirFlow = lookupMainTable(CoreVars->RPM, CoreVars->TPS, AirflowTableLocationID); /* Tuned air flow without density information */
+		KeyUserDebugs.alphaNAirFlow = lookupMainTable(CoreVars->RPM, CoreVars->TPS, AIRFLOW_TABLE_LOCATION_ID); /* Tuned air flow without density information */
 
 		KeyUserDebugs.blendAlphaNPercent = lookupTwoDTableUS((twoDTableUS*)&TablesA.SmallTablesA.blendVersusRPMTable, CoreVars->RPM);
 

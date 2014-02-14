@@ -84,7 +84,7 @@ void generateDerivedVars(){
 //#if CONFIG == SEANKR1_ID //FIXME temp hack until a real lambda table is built
 //	DerivedVars->Lambda = LR(0.80); //From what I read E85 makes best power in the low .8s
 //#else
-	DerivedVars->Lambda = lookupMainTable(CoreVars->RPM, DerivedVars->LoadMain, LambdaTableLocationID);
+	DerivedVars->Lambda = lookupMainTable(CoreVars->RPM, DerivedVars->LoadMain, LAMBDA_TABLE_LOCATION_ID);
 //#endif
 
 	/* Look up injector dead time with battery voltage */
@@ -100,7 +100,7 @@ void generateDerivedVars(){
 		DerivedVars->Dwell = 0;
 	}
 
-	unsigned long tempAdvance = ANGLE_FACTOR * (unsigned long)lookupMainTable(CoreVars->RPM, DerivedVars->LoadMain, IgnitionAdvanceTableMainLocationID);
+	unsigned long tempAdvance = ANGLE_FACTOR * (unsigned long)lookupMainTable(CoreVars->RPM, DerivedVars->LoadMain, IGNITION_ADVANCE_TABLE_MAIN_LOCATION_ID);
 	DerivedVars->Advance = (unsigned short)(tempAdvance / 1024); // This calculation will change when the timing tables get shrunk to a more reasonable 8 bit size with appropriate scaling
 	// Move this magic number to an appropriate place and/or refactor timing calcs/values/etc
 
