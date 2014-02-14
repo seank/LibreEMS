@@ -80,7 +80,7 @@ signed char cumulativeBastardTeeth = 0;
 // 1 means you can have one extra/missing tooth per window continuously without loss of sync
 // 2 means you can have one extra/missing tooth per 2 windows continuously without loss of sync etc
 // 65535 is max and the most conservative possible with this feature enabled.
-#define windowsPerAllowedCumulativeBastardTooth 8
+#define WINDOWS_PER_ALLOWED_CUMULATIVE_BASTARD_TOOTH 8
 // TODO future enhancement allow fractional stuff by having N extra/missing per M windows
 unsigned short cumulativeBastardTeethEroderCounter = 0;
 
@@ -199,9 +199,9 @@ void PrimaryRPMISR(void){
 //		DEBUG = windowCounts[currentEvent]; // TODO remove DEBUG
 
 		// Cumulative Tolerance Code TODO add counters to monitor aggressiveness of this
-		if(windowsPerAllowedCumulativeBastardTooth){
+		if(WINDOWS_PER_ALLOWED_CUMULATIVE_BASTARD_TOOTH){
 			cumulativeBastardTeethEroderCounter++;
-			if(cumulativeBastardTeethEroderCounter == windowsPerAllowedCumulativeBastardTooth){
+			if(cumulativeBastardTeethEroderCounter == WINDOWS_PER_ALLOWED_CUMULATIVE_BASTARD_TOOTH){
 				cumulativeBastardTeethEroderCounter = 0;
 				if(cumulativeBastardTeeth > 0){
 					cumulativeBastardTeeth--;
