@@ -181,7 +181,7 @@ DATA = $(patsubst %.c,$(DATADIR)/%.c,$(DATARAW))
 # Source code files
 UTILCLASSES = tableLookup.c init.c utils.c globalConstants.c StaticBenchTest.c simpleGPIO.c
 MATHCLASSES = coreVarsGenerator.c derivedVarsGenerator.c fuelAndIgnitionCalcs.c outputScheduler.c decoderInterface.c stagedInjectionCalcs.c
-COMCLASSES = flashWrite.c commsCore.c blockDetailsLookup.c
+COMCLASSES = flashWrite.c commsCore.c blockDetailsLookup.c dataLogDefinitions.c
 ISRCLASSES = interrupts.c injectionISRs.c commsISRs.c realtimeISRs.c miscISRs.c xgateVectors.c
 # Combined source code files
 SOURCE = libreEMS.c staticInit.c main.c $(UTILCLASSES) $(MATHCLASSES) $(COMCLASSES) $(ISRCLASSES)
@@ -349,6 +349,7 @@ COPYOPTS = --output-target=srec \
 		--only-section=.fpageF9 \
 		--only-section=.dpageF9 \
 		--only-section=.ppageFE \
+		--only-section=.ppageE5 \
 		--change-section-lma .fpageFA=0xFA8000 \
 		--change-section-lma .dpageFA=0xFAA000 \
 		--change-section-lma .fpageFB=0xFB8000 \
@@ -362,6 +363,7 @@ COPYOPTS = --output-target=srec \
 		--change-section-lma .dpageFB8=0xFBBC00 \
 		--change-section-lma .fpageFC=0xFC8000 \
 		--change-section-lma .dpageFC=0xFCA000 \
+		--change-section-lma .ppageE5=0xE58000 \
 		--only-section=.dpageFA \
 		--only-section=.fpageFA \
 		--only-section=.dpageFB1 \
@@ -386,7 +388,7 @@ COPYOPTS = --output-target=srec \
 #		--only-section=.ppageE2 \
 #		--only-section=.ppageE3 \
 #		--only-section=.ppageE4 \
-#		--only-section=.ppageE5 \
+#		
 #		--only-section=.ppageE6 \
 #		--only-section=.ppageE7 \
 #		--only-section=.ppageE8 \
@@ -409,7 +411,7 @@ COPYOPTS = --output-target=srec \
 #		--change-section-lma .ppageE2=0xE28000 \
 #		--change-section-lma .ppageE3=0xE38000 \
 #		--change-section-lma .ppageE4=0xE48000 \
-#		--change-section-lma .ppageE5=0xE58000 \
+#		
 #		--change-section-lma .ppageE6=0xE68000 \
 #		--change-section-lma .ppageE7=0xE78000 \
 #		--change-section-lma .ppageE8=0xE88000 \
