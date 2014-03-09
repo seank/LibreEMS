@@ -55,6 +55,7 @@ void generateDerivedVars(){
 	extern const volatile fixedConfig1 fixedConfigs1;                                                                                                
 	extern const volatile fixedConfig2 fixedConfigs2;
 	/* Determine load based on options */
+	/* TODO IMO load should be an algorithm independent representation of load */
 	if(!(fixedConfigs2.algorithmSettings.loadType)){ /* Use MAP as load */
 		DerivedVars->LoadMain = CoreVars->MAP;
 	}else if(fixedConfigs2.algorithmSettings.loadType == LOAD_TPS){ /* Use TPS as load */
