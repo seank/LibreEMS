@@ -154,15 +154,18 @@ const volatile SmallTables2 SmallTablesBFlashV TUNETABLESDV2 = {
 			logChunks: {
 				[0] = {
 					address: &CoreVars0,
-					size: sizeof(CoreVar)
+					size: sizeof(CoreVar),
+					descriptor: &coreVarsDescriptor[0]
 				},
 				[1] = {
 					address: &DerivedVars0,
-					size: sizeof(DerivedVar)
+					size: sizeof(DerivedVar),
+					descriptor: &derrivedVarsDescriptor[0]
 				},
 				[2] = {
 					address: &KeyUserDebugs,
-					size: sizeof(KeyUserDebug)
+					size: sizeof(KeyUserDebug),
+					descriptor: &KeyUserVarsDescriptor[0]
 				}
 			},
 			datalogByteStreamSourceAddress:       (void*)&PTIT,     // Port T state for default
@@ -174,7 +177,6 @@ const volatile SmallTables2 SmallTablesBFlashV TUNETABLESDV2 = {
 			                   32768, 32768, 32768, 32768, 32768, 32768,}, // TODO YAGNI unused, format could change
 		filler: {
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

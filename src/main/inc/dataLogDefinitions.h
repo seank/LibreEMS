@@ -35,21 +35,20 @@
 
 #define PROTOCOL_VERSION	1
 
-typedef struct dataLogField_s {
+
+typedef struct {
 	unsigned short startingPosition; /* Starting byte number in the log stream */
 	unsigned char size;              /* Number of bits comprising the data */
-	char name[10];                   /* Short name */
-	char description[35];            /* Brief description */
+	char *name;                   /* Short name */
+	char *description;            /* Brief description */
 	unsigned char multiplier;        /* Suggested multiplier */
 	unsigned char adder;             /* Suggested adder */
-}dataLogField;
+}dataBlockDescriptor;
 
 
-typedef struct dataLogDefinition_s {
-	unsigned short version;
-	unsigned short sizeOfEntry;
-	dataLogField entries[];
-}dataLogDefinition;
+extern const dataBlockDescriptor coreVarsDescriptor[];
+extern const dataBlockDescriptor derrivedVarsDescriptor[];
+extern const dataBlockDescriptor KeyUserVarsDescriptor[];
 
 #else
 //emit warning

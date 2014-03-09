@@ -47,6 +47,7 @@
 #ifndef FILE_TUNABLE_CONFIGS_H_SEEN
 #define FILE_TUNABLE_CONFIGS_H_SEEN
 
+#include "dataLogDefinitions.h"
 
 /** Holds a datalog chunk configuration pair.
  *
@@ -55,6 +56,7 @@
 typedef struct {
 	void* address;
 	unsigned short size;
+	const dataBlockDescriptor* descriptor;
 } logChunk;
 
 

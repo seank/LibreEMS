@@ -30,19 +30,37 @@
  *
  */
 
+#define DATALOGDEFINITIONS_C
+
 #include <stddef.h>
 
+//#include "inc/typeChecks.h"
 #include "inc/freeEMS.h"
 #include "inc/dataLogDefinitions.h"
 #include "inc/libreDefs.h"
 
+//TODO Fill these tables out
+//TODO Potentially change linker so that they are guaranteed to have a successive LMA(load memory address)
+//TODO Create macro(s) to remove duplicates. Eg .startingPosition and .size take the same parameters
+//TODO once all done enable CASSERT
+//TODO adjust copyright to reflect all authors
 
-const dataLogDefinition dataLogDefinitions PPAGE_E5 = {
-		version:  PROTOCOL_VERSION,
-		sizeOfEntry:  sizeof(dataLogField),
-		entries: {
-				 {.startingPosition = offsetof(CoreVar, IAT), .size = bitSize(CoreVar, IAT), .name = "IAT", .description = "Inlet Air Temperature", 0,0},
-				 {.startingPosition = offsetof(CoreVar, CHT), .size = bitSize(CoreVar, CHT), .name = "CHT", .description = "Coolant or Head Temperature", 0,0},
-		}
+
+const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
+		{.startingPosition = offsetof(CoreVar, IAT), .size = bitSize(CoreVar, IAT), .name = "IAT", .description = "Inlet Air Temperature", 0,0},
+		{.startingPosition = offsetof(CoreVar, CHT), .size = bitSize(CoreVar, CHT), .name = "CHT", .description = "Coolant or Head Temperature", 0,0}
 };
+//CASSERT(sizeof(CoreVar) / sizeof(unsigned short) == sizeof(coreVarsDescriptor), DATALOGDEFINITIONS_C) // At least check for correct number of entries
+
+const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
+		{.startingPosition = offsetof(DerivedVar, LoadMain), .size = bitSize(DerivedVar, LoadMain), .name = "LoadMain", .description = "Algorithm dependent representation of engine load", 0,0},
+		{.startingPosition = offsetof(DerivedVar, VEMain), .size = bitSize(DerivedVar, VEMain), .name = "CHT", .description = "VE value from table", 0,0}
+};
+//CASSERT(sizeof(CoreVar) / sizeof(unsigned short) == sizeof(derrivedVarsDescriptor), DATALOGDEFINITIONS_C) // ditto
+
+const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
+		{.startingPosition = offsetof(KeyUserDebug, tempClock), .size = bitSize(KeyUserDebug, tempClock), .name = "tempClock", .description = "Incremented once per log sent", 0,0},
+		{.startingPosition = offsetof(KeyUserDebug, spareChar), .size = bitSize(KeyUserDebug, spareChar), .name = "spareChar", .description = "Spare char variable", 0,0}
+};
+//CASSERT(sizeof(CoreVar) / sizeof(unsigned short) == sizeof(KeyUserVarsDescriptor), DATALOGDEFINITIONS_C) // like wise
 
