@@ -2,14 +2,14 @@
  *
  * Copyright 2014 Sean Keys
  *
- * This file is part of the FreeEMS project.
+ * This file is part of the LibreEMS project.
  *
- * FreeEMS software is free software: you can redistribute it and/or modify
+ * LibreEMS software is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * FreeEMS software is distributed in the hope that it will be useful,
+ * LibreEMS software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -37,14 +37,14 @@
 
 
 typedef struct {
-	unsigned short startingPosition; /* Starting byte number in the log stream */
-	unsigned char size;              /* Number of bits comprising the data */
-	char *name;                   /* Short name */
-	char *description;            /* Brief description */
-	unsigned char multiplier;        /* Suggested multiplier */
-	unsigned char adder;             /* Suggested adder */
+	unsigned short start;			/* Starting byte number in the log stream */
+	unsigned char size;				/* Number of bits comprising the data */
+	unsigned char is_signed;		/* Signed or unsigned data */
+	char *name;						/* Short name */
+	char *description;				/* Brief description */
+	unsigned char multiplier;		/* Suggested multiplier */
+	unsigned char adder;			/* Suggested adder */
 }dataBlockDescriptor;
-
 
 extern const dataBlockDescriptor coreVarsDescriptor[];
 extern const dataBlockDescriptor derrivedVarsDescriptor[];
