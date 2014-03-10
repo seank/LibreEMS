@@ -1,6 +1,6 @@
 /* LibreEMS - the community driven open source engine management system
  *
- * Copyright 2014 Sean Keys
+ * Copyright 2014 Sean Keys, David J. Andruczyk
  *
  * This file is part of the LibreEMS project.
  *
@@ -39,11 +39,9 @@
 #include "inc/dataLogDefinitions.h"
 #include "inc/libreDefs.h"
 
-//TODO Fill these tables out
 //TODO Potentially change linker so that they are guaranteed to have a successive LMA(load memory address)
 //TODO Create macro(s) to remove duplicates. Eg .start and .size take the same parameters
 //TODO once all done enable CASSERT
-//TODO adjust copyright to reflect all authors
 
 
 const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={

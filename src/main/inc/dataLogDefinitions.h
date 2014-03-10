@@ -1,6 +1,6 @@
 /* LibreEMS - the community driven open source engine management system
  *
- * Copyright 2014 Sean Keys
+ * Copyright 2014 Sean Keys, David J. Andruczyk
  *
  * This file is part of the LibreEMS project.
  *
@@ -37,16 +37,16 @@
 
 
 typedef struct {
-	unsigned short start;           /* Starting byte number in the log stream */
-	unsigned char size;             /* Number of bits comprising the data */
-	unsigned char is_signed;        /* Signed or unsigned data */
-	char *name;                     /* Short name */
-	char *description;              /* Brief description */
-	char *multiplier;               /* Suggested multiplier */
-	char *adder;                    /* Suggested adder */
-	char *transfer_function;        /* Alternative to multiplier/adder */
-	char *flags;                    /* Textual flags to get tuner hints abotu this parameter */
-	char *suffix;                   /* Tuner side suffix for this variable */
+	unsigned short start;     /* Starting byte number in the log stream */
+	unsigned char size;       /* Number of bits comprising the data */
+	unsigned char is_signed;  /* Signed or unsigned data */
+	char *name;               /* Short name */
+	char *description;        /* Brief description */
+	char *multiplier;         /* Suggested multiplier */
+	char *adder;              /* Suggested adder */
+	char *transfer_function;  /* Alternative to multiplier/adder */
+	char *flags;              /* Textual flags to give the tuner hints */
+	char *suffix;             /* Tuner side suffix for this variable */
 }dataBlockDescriptor;
 
 extern const dataBlockDescriptor coreVarsDescriptor[];
