@@ -37,13 +37,16 @@
 
 
 typedef struct {
-	unsigned short start;			/* Starting byte number in the log stream */
-	unsigned char size;				/* Number of bits comprising the data */
-	unsigned char is_signed;		/* Signed or unsigned data */
-	char *name;						/* Short name */
-	char *description;				/* Brief description */
-	unsigned char multiplier;		/* Suggested multiplier */
-	unsigned char adder;			/* Suggested adder */
+	unsigned short start;           /* Starting byte number in the log stream */
+	unsigned char size;             /* Number of bits comprising the data */
+	unsigned char is_signed;        /* Signed or unsigned data */
+	char *name;                     /* Short name */
+	char *description;              /* Brief description */
+	char *multiplier;               /* Suggested multiplier */
+	char *adder;                    /* Suggested adder */
+	char *transfer_function;        /* Alternative to multiplier/adder */
+	char *flags;                    /* Textual flags to get tuner hints abotu this parameter */
+	char *suffix;                   /* Tuner side suffix for this variable */
 }dataBlockDescriptor;
 
 extern const dataBlockDescriptor coreVarsDescriptor[];
