@@ -158,50 +158,50 @@ const unsigned char injectorMainGoLowMasks[ECT_OUTPUT_CHANNELS];
 /*&&&&&&&&&&&&&&&&&&&&&&&&&&& NON Arrays here &&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
 
 /* Main lookup tables */ // TODO volatile here or not?
-const volatile mainTable VETableMainFlash;
-const volatile mainTable VETableSecondaryFlash;
-const volatile mainTable AirflowTableFlash;
-const volatile mainTable LambdaTableFlash;
+//const volatile mainTable VETableMainFlash;
+//const volatile mainTable VETableSecondaryFlash;
+//const volatile mainTable AirflowTableFlash;
+//const volatile mainTable LambdaTableFlash;
 
-const volatile mainTable IgnitionAdvanceTableMainFlash;
-const volatile mainTable IgnitionAdvanceTableSecondaryFlash;
-const volatile mainTable InjectionAdvanceTableMainFlash;
-const volatile mainTable InjectionAdvanceTableSecondaryFlash;
+//const volatile mainTable IgnitionAdvanceTableMainFlash;
+//const volatile mainTable IgnitionAdvanceTableSecondaryFlash;
+//const volatile mainTable InjectionAdvanceTableMainFlash;
+//const volatile mainTable InjectionAdvanceTableSecondaryFlash;
 
-const volatile mainTable VETableMainFlash2;
-const volatile mainTable VETableSecondaryFlash2;
-const volatile mainTable AirflowTableFlash2;
-const volatile mainTable LambdaTableFlash2;
+//const volatile mainTable VETableMainFlash2;
+//const volatile mainTable VETableSecondaryFlash2;
+//const volatile mainTable AirflowTableFlash2;
+//const volatile mainTable LambdaTableFlash2;
 
-const volatile mainTable IgnitionAdvanceTableMainFlash2;
-const volatile mainTable IgnitionAdvanceTableSecondaryFlash2;
-const volatile mainTable InjectionAdvanceTableMainFlash2;
-const volatile mainTable InjectionAdvanceTableSecondaryFlash2;
+//const volatile mainTable IgnitionAdvanceTableMainFlash2;
+//const volatile mainTable IgnitionAdvanceTableSecondaryFlash2;
+//const volatile mainTable InjectionAdvanceTableMainFlash2;
+//const volatile mainTable InjectionAdvanceTableSecondaryFlash2;
 
-const volatile SmallTables1 SmallTablesAFlash;
-const volatile SmallTables2 SmallTablesBFlash;
-const volatile SmallTables3 SmallTablesCFlash;
-const volatile SmallTables4 SmallTablesDFlash;
+//const volatile SmallTables1 SmallTablesAFlash;
+//const volatile SmallTables2 SmallTablesBFlash;
+//const volatile SmallTables3 SmallTablesCFlash;
+//const volatile SmallTables4 SmallTablesDFlash;
 
-const volatile SmallTables1 SmallTablesAFlash2;
-const volatile SmallTables2 SmallTablesBFlash2;
-const volatile SmallTables3 SmallTablesCFlash2;
-const volatile SmallTables4 SmallTablesDFlash2;
+//const volatile SmallTables1 SmallTablesAFlash2;
+//const volatile SmallTables2 SmallTablesBFlash2;
+//const volatile SmallTables3 SmallTablesCFlash2;
+//const volatile SmallTables4 SmallTablesDFlash2;
 
-const volatile fixedConfig1 fixedConfigs1;
-const volatile fixedConfig2 fixedConfigs2;
+//const volatile fixedConfig1 fixedConfigs1;
+//const volatile fixedConfig2 fixedConfigs2;
 
 
 /* Fueling constants */
-const unsigned long masterFuelConstant;
-const unsigned long MAFFuelConstant;
+//const unsigned long masterFuelConstant;
+//const unsigned long MAFFuelConstant;
 
 /// @todo TODO Move these to decoder interface AND rename to be more generic/meaningful/accurate, and make set by each decoder where appropriate
 // These need to be changed if the timer period is changed at all
 /* The number of timer units it takes for the switch on scheduling code to run */
-const unsigned short injectorSwitchOnCodeTime;
+//const unsigned short injectorSwitchOnCodeTime;
 /* The number of timer units it takes for the switch off scheduling code to run */
-const unsigned short injectorSwitchOffCodeTime;
+//const unsigned short injectorSwitchOffCodeTime;
 
 
 
