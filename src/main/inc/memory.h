@@ -96,6 +96,8 @@
 
 
 /* far shortcut for data */
+/* SK - "far" data does not exist in the same sense as far text(trampoline jumps) and can be quite misleading to new guys.
+ * TODO It should probably be removed or at the very least renamed, also see memory.x*/
 #define DFAR(label) __attribute__ ((section (label)))
 /* far shortcut for functions */
 #define FFAR(label) __attribute__ ((far)) __attribute__ ((section (label)))

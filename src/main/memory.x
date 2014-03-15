@@ -62,14 +62,22 @@
 	text		(rx)	: ORIGIN = 0xC000, LENGTH = 0x3710 /*	Unpaged 14K flash block after page window minus serial monitor and vector space */
 	/* TODO split the above text and text1 regions into halves or similar to allow us to know how the linear space is being spent, eg perf/required/isr etc */
 
+	/* --------------------- NOTE ------------------------------------ */
+	/* SK 3-15-14 "correct" is dependant on what you are trying to do. */
+	/* The correct value is how the code will look to the selected CPU */
+	/* when the code is run or called. See notes for sections below.   */
+	/* TODO - Determine if the lower 16-bits of the VMA should always  */
+	/* be at the start of the flash/eeprom page, UNELSS you are running*/
+	/* Xgate code. */
+	
 	/* These are correct as of the 0.0.17 release */
     ppageE0S	(rx)	: ORIGIN = 0x390000, LENGTH = 0x0800
     ppageE0X	(rx)	: ORIGIN = 0x390800, LENGTH = 0x3800 
-    ppageE1		(rx)	: ORIGIN = 0x9000, LENGTH = 0x4000 /* we intend all data in E1 to hold the address it will end up with in RAM 0x9000 would be RAM at RPAGE_2*/
+    ppageE1	(rx)	: ORIGIN =   0x9000, LENGTH = 0x4000 /* we intend all data in E1 to hold the address it will end up with in RAM 0x9000 would be RAM at RPAGE_2*/
     ppageE2	(rx)	: ORIGIN = 0x398000, LENGTH = 0x4000
     ppageE3	(rx)	: ORIGIN = 0x39C000, LENGTH = 0x4000
     ppageE4	(rx)	: ORIGIN = 0x3A0000, LENGTH = 0x4000
-    ppageE5	(rx)	: ORIGIN = 0x3A4000, LENGTH = 0x4000
+    ppageE5	(rx)	: ORIGIN = 0x3A8000, LENGTH = 0x4000 /* When we manually flip to page E5, the VMA needs to be at the start of the page window 0x8000 */
     ppageE6	(rx)	: ORIGIN = 0x3A8000, LENGTH = 0x4000
     ppageE7	(rx)	: ORIGIN = 0x3AC000, LENGTH = 0x4000
     ppageE8	(rx)	: ORIGIN = 0x3B0000, LENGTH = 0x4000
@@ -94,7 +102,7 @@
     fpageFA	(rx)	: ORIGIN = 0x3F8000, LENGTH = 0x2000
     dpageFA	(rx)	: ORIGIN = 0x3FA000, LENGTH = 0x2000
     fpageFB	(rx)	: ORIGIN = 0x3FC000, LENGTH = 0x2000
-    dpageFB1	(rx)	: ORIGIN = 0x3FE000, LENGTH = 0x0400
+    dpageFB1	(rx)	: ORIGIN = 0x3FE000, LENGTH = 0x0400      /* 0x3F E000, VMA is only correct because of a call to memcpy against SmallTablesAFlashV */
     dpageFB2	(rx)	: ORIGIN = 0x3FE400, LENGTH = 0x0400
     dpageFB3	(rx)	: ORIGIN = 0x3FE800, LENGTH = 0x0400
     dpageFB4	(rx)	: ORIGIN = 0x3FEC00, LENGTH = 0x0400

@@ -154,7 +154,7 @@ XGAS = $(XGPREFIX)as
 # Indirect dependencies that can affect everything and cause a full rebuild
 MFILE = Makefile
 ASMH = 9S12XDP512asm.s
-LINKER = memory.x regions.x hc9s12xdp512elfb.x
+LINKER = memory.x  hc9s12xdp512elfb.x
 
 
 # Let's keep this to a bare minimum! If you write ASM code
