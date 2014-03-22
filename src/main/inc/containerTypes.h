@@ -145,6 +145,7 @@ typedef struct {
 
 	// Likewise these too
 	unsigned char serialOverrunErrors;         ///< Incremented when an overrun occurs due to high interrupt load, not a fault, just a fact of life at high RPM
+	                                           ///< It's a dual-core MCU, there are no excuses for this and it should be fixed -sk
 	unsigned char serialHardwareErrors;        ///< Sum of noise, parity, and framing errors
 	unsigned char serialAndCommsCodeErrors;    ///< Sum of checksum, escape mismatches, starts inside, and over/under length
 	unsigned short inputEventTimeTolerance;    ///< Required to tune noise rejection over RPM TODO add to LT1 and MissingTeeth
