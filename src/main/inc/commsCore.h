@@ -119,14 +119,14 @@ unsigned short populateBasicDatalog(void) FPAGE_FE;
 /* Always has flags (obviously)     */
 /* Always has payload ID so no flag */
 /* Always has checksum, so no flag  */
-#define HEADER_HAS_LENGTH   BIT0
-#define HEADER_IS_NACK      BIT1
-#define HEADER_HAS_SEQUENCE BIT2
-#define HEADER_RESERVED_E   BIT3
-#define HEADER_RESERVED_D   BIT4
-#define HEADER_RESERVED_C   BIT5
-#define HEADER_RESERVED_B   BIT6
-#define HEADER_RESERVED_A   BIT7
+#define HEADER_HAS_LENGTH       BIT0
+#define HEADER_IS_NACK          BIT1
+#define HEADER_HAS_SEQUENCE     BIT2
+#define HEADER_PARTIAL_PAYLOAD  BIT3
+#define HEADER_RESERVED_D       BIT4
+#define HEADER_RESERVED_C       BIT5
+#define HEADER_RESERVED_B       BIT6
+#define HEADER_RESERVED_A       BIT7
 
 
 #define ASYNCDATALOGOFF        0x00 ///< Logs by polling only, reduces CPU load a little but gives much lower data rate
@@ -142,6 +142,19 @@ unsigned short populateBasicDatalog(void) FPAGE_FE;
 #define ASYNCDATALOGSTREAMLONG 0x0A ///< Send out a single long as often as possible, ~1kHz with occasional ~3ms gaps from math running instead
 #define ASYNCDATALOGLASTTYPE   ASYNCDATALOGSTREAMLONG
 
+extern Clock Clocks;
+extern KeyUserDebug KeyUserDebugs;
+extern Clock Clocks;
+extern Counter Counters;
+extern KeyUserDebug KeyUserDebugs;
+extern Flaggable Flaggables;
+extern Flaggable2 Flaggables2;
+extern const unsigned char interfaceVersion[INTERFACE_VERSION_LENGTH];
+extern const unsigned char firmwareVersion[FIRMWARE_VERSION_LENGTH];
+extern const unsigned char buildTimeAndDate[FIRMWARE_BUILD_DATE_LENGTH];
+extern const unsigned char compilerVersion[COMPILER_VERSION_LENGTH];
+extern const unsigned char operatingSystem[OPERATING_SYSTEM_LENGTH];
+extern const unsigned short injectorSwitchOnCodeTime;
 
 // Stuff that should only be found in this file.
 #include "packetTypes.h"
