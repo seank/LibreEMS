@@ -206,7 +206,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.size = bitSize(CoreVar, RPM), 
 			.is_signed = 0,
 			.name = "RPM", 
-			.description = "Engine RPM", 
+			.description = "Instant Engine RPM",
 			.multiplier = "0.5",
 			.adder = "0", 
 			.transfer_function = "x/2",
@@ -236,9 +236,9 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/2",
 			.flags = "",
 			.suffix = "RPM/second^2",
-		},
+		}
 };
-//CASSERT(sizeof(CoreVar) / sizeof(unsigned short) == sizeof(coreVarsDescriptor), DATALOGDEFINITIONS_C) // At least check for correct number of entries
+CASSERT((sizeof(CoreVar) / sizeof(unsigned short)) == (sizeof(coreVarsDescriptor) / sizeof(dataBlockDescriptor)), DATALOGDEFINITIONS_C) // At least check for correct number of entries
 
 const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
@@ -264,6 +264,18 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/512",
 			.flags = "",
 			.suffix = "VE %",
+		},
+		{
+			.start = offsetof(DerivedVar, Lambda),
+			.size = bitSize(DerivedVar, Lambda),
+			.is_signed = 0,
+			.name = "Lambda",
+			.description = "FIXME ADDME",
+			.multiplier = "1",
+			.adder = "0",
+			.transfer_function = "x",
+			.flags = "",
+			.suffix = "",
 		},
 		{
 			.start = offsetof(DerivedVar, AirFlow), 
@@ -384,9 +396,9 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/1250",
 			.flags = "",
 			.suffix = "ms",
-		},
+		}
 };
-//CASSERT(sizeof(CoreVar) / sizeof(unsigned short) == sizeof(derrivedVarsDescriptor), DATALOGDEFINITIONS_C) // ditto
+CASSERT((sizeof(DerivedVar) / sizeof(unsigned short)) == (sizeof(derrivedVarsDescriptor) / sizeof(dataBlockDescriptor)), DATALOGDEFINITIONS_C) // At least check for correct number of entries
 
 const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
@@ -538,7 +550,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.size = bitSize(KeyUserDebug, serialOverrunErrors), 
 			.is_signed = 0,
 			.name = "serialOverrunErrors", 
-			.description = "Incremented when an overrun occurs due to high interrupt load, not a fault, just a fact of life at high RPM", 
+			.description = "Incremented when an overrun occurs due to high interrupt load, yes it is a fault FIXME",
 			.multiplier = "1",
 			.adder = "0",
 			.transfer_function = "x",
@@ -724,7 +736,8 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-		},
+		}
 };
-//CASSERT(sizeof(CoreVar) / sizeof(unsigned short) == sizeof(KeyUserVarsDescriptor), DATALOGDEFINITIONS_C) // like wise
+//CASSERT((sizeof(KeyUserDebug) / sizeof(unsigned short)) == (sizeof(KeyUserVarsDescriptor) / sizeof(dataBlockDescriptor)), DATALOGDEFINITIONS_C) // At least check for correct number of entries
+
 
