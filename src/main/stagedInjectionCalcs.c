@@ -1,15 +1,15 @@
 /* LibreEMS - the community driven open source engine management system
  *
- * Copyright 2008-2013 Sean Keys
+ * Copyright 2014 Sean Keys
  *
- * This file is part of the FreeEMS project.
+ * This file is part of the LibreEMS project.
  *
- * FreeEMS software is free software: you can redistribute it and/or modify
+ * LibreEMS software is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * FreeEMS software is distributed in the hope that it will be useful,
+ * LibreEMS software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -49,6 +49,10 @@
  * The accuracy/precision that is achieved via this code is acceptable(~1%), but it could be
  * improved.
  */
+
+//FIXME split fuel before hand to maintain accuracy as best as possible and to allow other split factors
+// Bench test demo is here -> https://www.youtube.com/watch?v=dxt9Yn3NNBM
+
 void splitFuelPulseWidth(unsigned short dutyCycle){
 
 	extern const volatile fixedConfig1 fixedConfigs1;                                                                                                
