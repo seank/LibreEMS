@@ -156,8 +156,9 @@
 #define PPAGE_F5 DFAR(".ppageF5")
 #define PPAGE_F6 DFAR(".ppageF6")
 #define PPAGE_F7 DFAR(".ppageF7")
+/* TODO move F7 to F8 until F8 is full, only here to prove that pages below F8 work fine */
+#define FPAGE_F7 FFAR(".fpageF7")
 
-/* ONLY use the pages below this line for now (Or you won't be able to load them...) */
 
 /* General Purpose Page with PPAGE = 0xF8 */
 #define FPAGE_F8 FFAR(".fpageF8")

@@ -150,7 +150,9 @@
 /* The TX and RX buffers are slightly larger than 2k because the RX buffer */
 /* needs to also receive a header, checksum and attributes for the data    */
 /* involved and the TX buffer needs to handle all of those two fold.       */
-#define TX_BUFFER_SIZE       0x0820 ///< 2k of data plus double maximum header overhead for echo
+#define TX_PAYLOAD_SIZE      0x0800 ///< 2k of data
+#define TX_MAX_OVERHEAD      0x020  ///< 20B of data for max TX overhead x2
+#define TX_BUFFER_SIZE       (TX_PAYLOAD_SIZE + TX_MAX_OVERHEAD)
 #define RX_BUFFER_SIZE       0x0810 ///< 2k of data plus maximum header overhead
 
 // ADC values

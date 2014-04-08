@@ -181,7 +181,7 @@ DATA = $(patsubst %.c,$(DATADIR)/%.c,$(DATARAW))
 # Source code files
 UTILCLASSES = tableLookup.c init.c utils.c globalConstants.c StaticBenchTest.c simpleGPIO.c
 MATHCLASSES = coreVarsGenerator.c derivedVarsGenerator.c fuelAndIgnitionCalcs.c outputScheduler.c decoderInterface.c stagedInjectionCalcs.c
-COMCLASSES = flashWrite.c commsCore.c blockDetailsLookup.c dataLogDefinitions.c
+COMCLASSES = flashWrite.c commsCore.c blockDetailsLookup.c dataLogDefinitions.c commsUtils.c
 ISRCLASSES = interrupts.c injectionISRs.c commsISRs.c realtimeISRs.c miscISRs.c xgateVectors.c
 # Combined source code files
 SOURCE = libreEMS.c staticInit.c main.c $(UTILCLASSES) $(MATHCLASSES) $(COMCLASSES) $(ISRCLASSES)
@@ -341,10 +341,12 @@ COPYOPTS = --output-target=srec \
 		--only-section=.ppageE0X \
 		--only-section=.ppageE1 \
 		--set-section-flags .ppageE1=alloc,load \
+		--change-section-lma .ppageF7=0xF78000 \
 		--change-section-lma .ppageF8=0xF88000 \
 		--change-section-lma .fpageF9=0xF98000 \
 		--change-section-lma .dpageF9=0xF9A000 \
 		--change-section-lma .ppageFE=0xFE8000 \
+		--only-section=.ppageF7 \
 		--only-section=.ppageF8 \
 		--only-section=.fpageF9 \
 		--only-section=.dpageF9 \

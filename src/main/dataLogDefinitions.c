@@ -239,6 +239,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		}
 };
 CASSERT((sizeof(CoreVar) / sizeof(unsigned short)) == (sizeof(coreVarsDescriptor) / sizeof(dataBlockDescriptor)), DATALOGDEFINITIONS_C) // At least check for correct number of entries
+const unsigned char coreVarsDescriptorCnt = (sizeof(coreVarsDescriptor) / sizeof(dataBlockDescriptor));
 
 const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
@@ -399,6 +400,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		}
 };
 CASSERT((sizeof(DerivedVar) / sizeof(unsigned short)) == (sizeof(derrivedVarsDescriptor) / sizeof(dataBlockDescriptor)), DATALOGDEFINITIONS_C) // At least check for correct number of entries
+const unsigned char derrivedVarsDescriptorCnt = (sizeof(derrivedVarsDescriptor) / sizeof(dataBlockDescriptor));
 
 const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
@@ -739,5 +741,6 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		}
 };
 //CASSERT((sizeof(KeyUserDebug) / sizeof(unsigned short)) == (sizeof(KeyUserVarsDescriptor) / sizeof(dataBlockDescriptor)), DATALOGDEFINITIONS_C) // At least check for correct number of entries
+const unsigned char KeyUserVarsDescriptorCnt = (sizeof(KeyUserVarsDescriptor) / sizeof(dataBlockDescriptor));
 
 

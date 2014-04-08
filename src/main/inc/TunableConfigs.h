@@ -57,6 +57,7 @@ typedef struct {
 	void* address;
 	unsigned short size;
 	const dataBlockDescriptor* descriptor;
+	const unsigned char *numDescriptions;
 } logChunk;
 
 

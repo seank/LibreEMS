@@ -170,6 +170,12 @@ SECTIONS
   }  > fpageFC
 
 /* The rest from this 128k flash module for general code */
+  .ppageF7  :
+  {
+    *(.fpageF7)
+    *(.dpageF7)
+  }  > ppageF7
+
   .ppageF8  :
   {
     *(.fpageF8)

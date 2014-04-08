@@ -70,6 +70,13 @@
 	/* be at the start of the flash/eeprom page, UNELSS you are running*/
 	/* Xgate code. */
 	
+/* These are the values defined inside the linker code:
+   #define M68HC12_BANK_VIRT       0x010000
+   #define M68HC12_BANK_MASK     0x00003fff
+   #define M68HC12_BANK_BASE     0x00008000
+   #define M68HC12_BANK_SHIFT            14
+   #define M68HC12_BANK_PAGE_MASK     0x0ff */
+   	
 	/* These are correct as of the 0.0.17 release */
     ppageE0S	(rx)	: ORIGIN = 0x390000, LENGTH = 0x0800
     ppageE0X	(rx)	: ORIGIN = 0x390800, LENGTH = 0x3800 

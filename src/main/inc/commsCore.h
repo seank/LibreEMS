@@ -119,14 +119,14 @@ unsigned short populateBasicDatalog(void) FPAGE_FE;
 /* Always has flags (obviously)     */
 /* Always has payload ID so no flag */
 /* Always has checksum, so no flag  */
-#define HEADER_HAS_LENGTH       BIT0
-#define HEADER_IS_NACK          BIT1
-#define HEADER_HAS_SEQUENCE     BIT2
-#define HEADER_PARTIAL_PAYLOAD  BIT3
-#define HEADER_RESERVED_D       BIT4
-#define HEADER_RESERVED_C       BIT5
-#define HEADER_RESERVED_B       BIT6
-#define HEADER_RESERVED_A       BIT7
+#define HEADER_HAS_LENGTH     BIT0
+#define HEADER_IS_NACK        BIT1
+#define HEADER_HAS_SEQUENCE   BIT2
+#define HEADER_IS_PARTIAL     BIT3
+#define HEADER_IS_COMPLETE    BIT4
+#define HEADER_RESERVED_C     BIT5
+#define HEADER_RESERVED_B     BIT6
+#define HEADER_RESERVED_A     BIT7
 
 
 #define ASYNCDATALOGOFF        0x00 ///< Logs by polling only, reduces CPU load a little but gives much lower data rate

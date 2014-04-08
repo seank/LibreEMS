@@ -44,6 +44,7 @@
 
 #include "../inc/freeEMS.h"
 #include "../inc/commsCore.h"
+#include "../inc/dataLogDefinitions.h"
 
 
 #ifndef TUNETABLESDV1
@@ -155,17 +156,20 @@ const volatile SmallTables2 SmallTablesBFlashV TUNETABLESDV2 = {
 				[0] = {
 					address: &CoreVars0,
 					size: sizeof(CoreVar),
-					descriptor: &coreVarsDescriptor[0]
+					descriptor: &coreVarsDescriptor[0],
+					numDescriptions: &coreVarsDescriptorCnt
 				},
 				[1] = {
 					address: &DerivedVars0,
 					size: sizeof(DerivedVar),
-					descriptor: &derrivedVarsDescriptor[0]
+					descriptor: &derrivedVarsDescriptor[0],
+					numDescriptions: &derrivedVarsDescriptorCnt
 				},
 				[2] = {
 					address: &KeyUserDebugs,
 					size: sizeof(KeyUserDebug),
-					descriptor: &KeyUserVarsDescriptor[0]
+					descriptor: &KeyUserVarsDescriptor[0],
+					numDescriptions: &KeyUserVarsDescriptorCnt
 				}
 			},
 			datalogByteStreamSourceAddress:       (void*)&PTIT,     // Port T state for default
@@ -177,7 +181,6 @@ const volatile SmallTables2 SmallTablesBFlashV TUNETABLESDV2 = {
 			                   32768, 32768, 32768, 32768, 32768, 32768,}, // TODO YAGNI unused, format could change
 		filler: {
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

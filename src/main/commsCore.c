@@ -53,6 +53,10 @@
 #include "inc/init.h"
 #include <string.h> /// @todo TODO this is pulling in the system string.h not the m68hc1x version, and functions other than memcpy do not work because they are not in crt1.o or other included-by-default libs
 #include "decoders/inc/BenchTest.h"
+#include "inc/dataLogDefinitions.h"
+#include "inc/librePacketTypes.h"
+#include "inc/commsUtils.h"
+
 
 /* Global Comms Variables */
 unsigned char  RXBufferContentSourceID;
@@ -68,15 +72,18 @@ unsigned char* TXBufferCurrentPositionHandler;
 unsigned char* TXBufferCurrentPositionSCI0;
 unsigned char  TXBufferInUseFlags;
 
+
+unsigned char currentChunk;
+unsigned char currentDescription;
+unsigned short baseOffset;
+unsigned char packetPayloadEnum;
+
 /** @brief Populate a basic datalog packet
  *
  * Copies various chunks of data to the transmission buffer and truncates to
  * the configured length. If changing this, update the maxBasicDatalogLength.
  */
 unsigned short populateBasicDatalog(){
-	extern Clock Clocks;
-	extern KeyUserDebug KeyUserDebugs;
-
 	/// @todo TODO setup proper sequence and clock with some sort of differential measurement log to log. insert in front of actual data because these are part of the log itself.
 
 //	KeyUserDebugs.zsp10 = Counters.pinScheduledWithTimerExtension;
@@ -225,19 +232,6 @@ void finaliseAndSend(unsigned short errorID){
  * main loop code. The vast majority of communications action happens here.
  */
 void decodePacketAndRespond(){
-	extern Clock Clocks;
-	extern Counter Counters;
-	extern KeyUserDebug KeyUserDebugs;
-	extern Flaggable Flaggables;
-	extern Flaggable2 Flaggables2;
-	extern const unsigned char interfaceVersion[INTERFACE_VERSION_LENGTH];
-	extern const unsigned char firmwareVersion[FIRMWARE_VERSION_LENGTH];
-	extern const unsigned char buildTimeAndDate[FIRMWARE_BUILD_DATE_LENGTH];
-	extern const unsigned char compilerVersion[COMPILER_VERSION_LENGTH];
-	extern const unsigned char operatingSystem[OPERATING_SYSTEM_LENGTH]; 
-	extern const unsigned short injectorSwitchOnCodeTime;                                                                                            
-
-
 	/* Extract and build up the header fields */
 	TXBufferCurrentPositionHandler = (unsigned char*)&TXBuffer;
 
@@ -338,6 +332,106 @@ void decodePacketAndRespond(){
 	 * ensure the negative ack flag is set if the operation failed.
 	 */
 	switch (RXHeaderPayloadID){
+
+	// LibreEMS Core Comms Interface cases
+	   case REQUEST_LIST_OF_DATASTREAM_IDS:
+           //Reply packet RESPONSE_LIST_OF_DATASTREAM_IDS
+		   // Here we return a list of Datalog IDs, 8-bit IDs gives us more then enough possibilities IMO, do you think storage for 5 IDs is enough?
+		   // PACKET PAYLOAD RESPONSE = ...[ID,ID,ID,ID,ID]...
+		   // ID 0 should be reserved for ALL, so valid IDs are 1-255
+		   break;
+	   case REQUEST_DEFINE_DATASTREAM_ID:
+	       //(A)
+		   // Here we get a datalog ID along with what variables we want. Now since the user application is aware of the total available stream
+		   //variables I'm inclined to have the user application send a multi-byte bit-mask. One bit for each variable, 0 = I dont want it,
+		   // 1 = yes give it to me.
+		   //Example Playload:  [STREAMID, MULTIBYTE MASK]
+		   //(B)
+		   //Alternative, since each variable ID is only 1 byte, we can afford to send a list of IDs. If you prefer this just let me know.
+		   //now that I think about it, this is more reasonable IMO. It's not like we are pressed for serial time etc.
+		   //Example Playload:  [STREAMID, vID,vID,vID,vID,vID....]
+	   	   break;
+	   case REQUEST_SET_DATASTREAM_ID:
+           //Easy enough, just set the stream ID. Once this is set the application should send REQUEST_DATALOG_DESCRIPTOR
+		   //On success return the ID request
+		   //On fail send the default id of 0
+		   //We should doc these protocols as a LibreEMS supplemental in addition to the underlying freeems coms
+		   break;
+	   case RETRIEVE_DATALOG_DESCRIPTOR: /* return a data-stream descriptor in the requested format for the current datastreamID */
+	    	if(RXCalculatedPayloadLength != 1){
+	    		errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
+	    		break;
+	    	}
+	    	unsigned char format = *((unsigned char*)RXBufferCurrentPosition);
+	    	RXBufferCurrentPosition += 1;
+	    	unsigned char savedPPage = PPAGE;
+	    	unsigned char* currentTXBufferPosition = TXBufferCurrentPositionHandler + 3;//FIXME create macro for the 2 +1
+	    	unsigned char* lastTXBufferPosition;
+	    	unsigned char numChunks = TablesB.SmallTablesB.loggingSettings.numberOfChunks;
+	    	const dataBlockDescriptor* descriptorPTR;
+	    	unsigned char full = 0;
+
+	    	switch (format) {
+				case DESCRIPTOR_JSON:
+			        PPAGE = 0xE5;
+			        if((currentChunk == 0) && (currentDescription == 0)){
+			        	 /* Add JSON header */
+			        	//currentTXBufferPosition = addJSONHeader(currentTXBufferPosition);
+			        	packetPayloadEnum = 0;
+			        }
+			        lastTXBufferPosition = currentTXBufferPosition;
+			        //TODO fix first log chunk index as it is not guaranteed to be zero
+			        /* Pick up where we left off */
+			        while(currentChunk <  numChunks){
+			        	//TODO if current descriptor = 0 maybe add another sub ID/name
+			        	descriptorPTR = &(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].descriptor[currentDescription]);
+			        	while(currentDescription < *(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].numDescriptions)){
+			        		currentTXBufferPosition = addJSONRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
+			        		if (currentTXBufferPosition) {
+			        			++currentDescription;
+			        			++descriptorPTR;
+			        			lastTXBufferPosition = currentTXBufferPosition;
+			        		} else {
+			        			full = 1;
+			        			break;
+			        		}
+			        	}
+			        	if(full){
+			        	  break;
+			        	} else {
+			              currentDescription = 0;
+			        	}
+			        	baseOffset += TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].size;
+			        	++currentChunk;
+			        }
+			        /* once everything is sent reset our indexes */
+			        if(!full){
+			        	currentChunk = 0;
+			        	currentDescription = 0;
+			        	baseOffset = 0;
+			        	*TXHeaderFlags |= HEADER_IS_COMPLETE;
+			        } else {
+			        	*TXHeaderFlags |= HEADER_IS_PARTIAL;
+			        }
+			        /* write length into packet */
+			        *((unsigned short*)TXBufferCurrentPositionHandler) = lastTXBufferPosition - TXBufferCurrentPositionHandler;
+			        /* write payload number into packet */
+			        *((unsigned short*)TXBufferCurrentPositionHandler + 2) = packetPayloadEnum;
+			        /* fast forward buffer to end */
+			        TXBufferCurrentPositionHandler = lastTXBufferPosition;
+			    	/* This type must have a length field, set that up and load the body into place at the same time */
+					*TXHeaderFlags |= HEADER_HAS_LENGTH;
+					++packetPayloadEnum;
+					break;
+				case DESCRIPTOR_YAML:
+					//parse though the descriptor struct, returning YAML string
+					break;
+				 default:
+					 //invalid format requested
+				    break;
+			}
+	    	PPAGE = savedPPage;
+	    	break;
 	// FreeEMS Core Comms Interface cases
 		case REQUEST_INTERFACE_VERSION:
 		{

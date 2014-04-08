@@ -33,9 +33,6 @@
 #ifndef FILE_DATALOGDEFINITIONS_H_SEEN
 #define FILE_DATALOGDEFINITIONS_H_SEEN
 
-#define PROTOCOL_VERSION	1
-
-
 typedef struct {
 	unsigned short start;     /* Starting byte number in the log stream */
 	unsigned char size;       /* Number of bits comprising the data */
@@ -52,6 +49,10 @@ typedef struct {
 extern const dataBlockDescriptor coreVarsDescriptor[];
 extern const dataBlockDescriptor derrivedVarsDescriptor[];
 extern const dataBlockDescriptor KeyUserVarsDescriptor[];
+
+extern const unsigned char coreVarsDescriptorCnt;
+extern const unsigned char derrivedVarsDescriptorCnt;
+extern const unsigned char KeyUserVarsDescriptorCnt;
 
 #else
 //emit warning
