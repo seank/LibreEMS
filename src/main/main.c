@@ -38,6 +38,7 @@
 
 
 #include "inc/main.h"
+#include "inc/librePacketTypes.h"
 
 
 /** @brief The main function!
@@ -194,8 +195,13 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 			/* Using 0.8 ticks as micros so it will run for a little longer than the math did */
 		}
 
-
 		if(!(TXBufferInUseFlags)){
+		  if(commsCoreStateFlags & PROCESSING_MULTI_PACKET_PAYLOAD){
+			prepForTX();
+			sendDescriptor();
+			finaliseAndSend(0);
+		  } else{
+
 			/* If the flag for com packet processing is set and the TX buffer is available process the data! */
 			if(RXStateFlags & RX_READY_TO_PROCESS){
 				/* Clear the flag */
@@ -306,7 +312,7 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 				lastCalcCount = Counters.calculationsPerformed;
 			}
 		}
-
+	}
 		performSimpleGPIO();
 
 		// PWM experimentation

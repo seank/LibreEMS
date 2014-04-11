@@ -72,11 +72,13 @@ unsigned char* TXBufferCurrentPositionHandler;
 unsigned char* TXBufferCurrentPositionSCI0;
 unsigned char  TXBufferInUseFlags;
 
-
-unsigned char currentChunk;
-unsigned char currentDescription;
+unsigned char  commsCoreStateFlags;
+unsigned char  currentChunk;
+unsigned char  currentDescription;
 unsigned short baseOffset;
-unsigned char packetPayloadEnum;
+unsigned char  packetPayloadEnum;
+unsigned short RXHeaderPayloadIDInProcess;
+unsigned char  format;
 
 /** @brief Populate a basic datalog packet
  *
@@ -232,13 +234,6 @@ void finaliseAndSend(unsigned short errorID){
  * main loop code. The vast majority of communications action happens here.
  */
 void decodePacketAndRespond(){
-	/* Extract and build up the header fields */
-	TXBufferCurrentPositionHandler = (unsigned char*)&TXBuffer;
-
-	/* Initialised here such that override is possible */
-	TXBufferCurrentPositionSCI0 = (unsigned char*)&TXBuffer;
-	TXBufferCurrentPositionCAN0 = (unsigned char*)&TXBuffer;
-
 	// How big was the packet that we got back
 	unsigned short RXPacketLengthReceived = (unsigned short)RXBufferCurrentPosition - (unsigned short)&RXBuffer;
 
@@ -269,14 +264,7 @@ void decodePacketAndRespond(){
 	RXBufferCurrentPosition++;
 	RXCalculatedPayloadLength--;
 
-	/* Flag that we are transmitting! */
-	TXBufferInUseFlags |= COM_SET_SCI0_INTERFACE_ID;
-	// SCI0 only for now...
-
-	/* Load a blank header into the TX buffer ready for masking */
-	TXHeaderFlags = TXBufferCurrentPositionHandler;
-	*TXHeaderFlags = 0;
-	TXBufferCurrentPositionHandler++;
+	prepForTX();
 
 	/* Grab the payload ID for processing and load the return ID */
 	RXHeaderPayloadID = *((unsigned short*)RXBufferCurrentPosition);
@@ -331,6 +319,8 @@ void decodePacketAndRespond(){
 	 * type handler if required or desired. If an ack has been requested,
 	 * ensure the negative ack flag is set if the operation failed.
 	 */
+
+	//tempHack:
 	switch (RXHeaderPayloadID){
 
 	// LibreEMS Core Comms Interface cases
@@ -358,79 +348,16 @@ void decodePacketAndRespond(){
 		   //We should doc these protocols as a LibreEMS supplemental in addition to the underlying freeems coms
 		   break;
 	   case RETRIEVE_DATALOG_DESCRIPTOR: /* return a data-stream descriptor in the requested format for the current datastreamID */
-	    	if(RXCalculatedPayloadLength != 1){
-	    		errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
-	    		break;
-	    	}
-	    	unsigned char format = *((unsigned char*)RXBufferCurrentPosition);
-	    	RXBufferCurrentPosition += 1;
-	    	unsigned char savedPPage = PPAGE;
-	    	unsigned char* currentTXBufferPosition = TXBufferCurrentPositionHandler + 3;//FIXME create macro for the 2 +1
-	    	unsigned char* lastTXBufferPosition;
-	    	unsigned char numChunks = TablesB.SmallTablesB.loggingSettings.numberOfChunks;
-	    	const dataBlockDescriptor* descriptorPTR;
-	    	unsigned char full = 0;
-
-	    	switch (format) {
-				case DESCRIPTOR_JSON:
-			        PPAGE = 0xE5;
-			        if((currentChunk == 0) && (currentDescription == 0)){
-			        	 /* Add JSON header */
-			        	//currentTXBufferPosition = addJSONHeader(currentTXBufferPosition);
-			        	packetPayloadEnum = 0;
-			        }
-			        lastTXBufferPosition = currentTXBufferPosition;
-			        //TODO fix first log chunk index as it is not guaranteed to be zero
-			        /* Pick up where we left off */
-			        while(currentChunk <  numChunks){
-			        	//TODO if current descriptor = 0 maybe add another sub ID/name
-			        	descriptorPTR = &(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].descriptor[currentDescription]);
-			        	while(currentDescription < *(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].numDescriptions)){
-			        		currentTXBufferPosition = addJSONRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
-			        		if (currentTXBufferPosition) {
-			        			++currentDescription;
-			        			++descriptorPTR;
-			        			lastTXBufferPosition = currentTXBufferPosition;
-			        		} else {
-			        			full = 1;
-			        			break;
-			        		}
-			        	}
-			        	if(full){
-			        	  break;
-			        	} else {
-			              currentDescription = 0;
-			        	}
-			        	baseOffset += TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].size;
-			        	++currentChunk;
-			        }
-			        /* once everything is sent reset our indexes */
-			        if(!full){
-			        	currentChunk = 0;
-			        	currentDescription = 0;
-			        	baseOffset = 0;
-			        	*TXHeaderFlags |= HEADER_IS_COMPLETE;
-			        } else {
-			        	*TXHeaderFlags |= HEADER_IS_PARTIAL;
-			        }
-			        /* write length into packet */
-			        *((unsigned short*)TXBufferCurrentPositionHandler) = lastTXBufferPosition - TXBufferCurrentPositionHandler;
-			        /* write payload number into packet */
-			        *((unsigned short*)TXBufferCurrentPositionHandler + 2) = packetPayloadEnum;
-			        /* fast forward buffer to end */
-			        TXBufferCurrentPositionHandler = lastTXBufferPosition;
-			    	/* This type must have a length field, set that up and load the body into place at the same time */
-					*TXHeaderFlags |= HEADER_HAS_LENGTH;
-					++packetPayloadEnum;
-					break;
-				case DESCRIPTOR_YAML:
-					//parse though the descriptor struct, returning YAML string
-					break;
-				 default:
-					 //invalid format requested
-				    break;
-			}
-	    	PPAGE = savedPPage;
+		   /* If format is 0 that means this is a new request */
+		   	if (format == 0) {
+		   		if (RXCalculatedPayloadLength != 1) {
+		   			errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
+		   			break;
+		   		}
+		   		format = *((unsigned char*) RXBufferCurrentPosition);
+		   		RXBufferCurrentPosition += 1;
+		   	}
+		   	sendDescriptor();
 	    	break;
 	// FreeEMS Core Comms Interface cases
 		case REQUEST_INTERFACE_VERSION:
@@ -1502,7 +1429,97 @@ void decodePacketAndRespond(){
 	resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
 }
 
+void sendDescriptor() {
 
+	unsigned char savedPPage = PPAGE;
+	unsigned char* currentTXBufferPosition = TXBufferCurrentPositionHandler + 3; //FIXME create macro for the 2 +1
+	unsigned char* lastTXBufferPosition;
+	unsigned char numChunks = TablesB.SmallTablesB.loggingSettings.numberOfChunks;
+	const dataBlockDescriptor* descriptorPTR;
+	unsigned char full = 0;
+
+	switch (format) {
+	case DESCRIPTOR_JSON:
+		PPAGE = 0xE5;
+		if ((currentChunk == 0) && (currentDescription == 0)) {
+			/* Add JSON header */
+			//currentTXBufferPosition = addJSONHeader(currentTXBufferPosition);
+			packetPayloadEnum = 0;
+		}
+		lastTXBufferPosition = currentTXBufferPosition;
+		//TODO fix first log chunk index as it is not guaranteed to be zero
+		/* Pick up where we left off */
+		while (currentChunk < numChunks) {
+			//TODO if current descriptor = 0 maybe add another sub ID/name
+			descriptorPTR =
+					&(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].descriptor[currentDescription]);
+			while (currentDescription < *(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].numDescriptions)) {
+				currentTXBufferPosition = addJSONRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
+				if (currentTXBufferPosition) {
+					++currentDescription;
+					++descriptorPTR;
+					lastTXBufferPosition = currentTXBufferPosition;
+				} else {
+					full = 1;
+					break;
+				}
+			}
+			if (full) {
+				break;
+			} else {
+				currentDescription = 0;
+			}
+			baseOffset += TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].size;
+			++currentChunk;
+		}
+		/* once everything is sent reset our indexes */
+		if (!full) {
+			currentChunk = 0;
+			currentDescription = 0;
+			baseOffset = 0;
+			commsCoreStateFlags &= ~(PROCESSING_MULTI_PACKET_PAYLOAD);
+			RXHeaderPayloadIDInProcess = 0;
+			*TXHeaderFlags |= HEADER_IS_COMPLETE;
+		} else {
+			*TXHeaderFlags |= HEADER_IS_PARTIAL;
+			commsCoreStateFlags |= PROCESSING_MULTI_PACKET_PAYLOAD;
+			RXHeaderPayloadIDInProcess = RXHeaderPayloadID;
+		}
+		/* write length into packet */
+		*((unsigned short*) TXBufferCurrentPositionHandler) = lastTXBufferPosition - TXBufferCurrentPositionHandler;
+		/* write payload number into packet */
+		*((unsigned short*) TXBufferCurrentPositionHandler + 2) = packetPayloadEnum;
+		/* fast forward buffer to end */
+		TXBufferCurrentPositionHandler = lastTXBufferPosition;
+		/* This type must have a length field, set that up and load the body into place at the same time */
+		*TXHeaderFlags |= HEADER_HAS_LENGTH;
+		++packetPayloadEnum;
+		break;
+	case DESCRIPTOR_YAML:
+		//parse though the descriptor struct, returning YAML string
+		break;
+	default:
+		//invalid format requested
+		break;
+	}
+	PPAGE = savedPPage;
+}
+
+void prepForTX(){
+	/* Rewind all pointers to start of buffer */
+	TXBufferCurrentPositionHandler = (unsigned char*)&TXBuffer;
+	TXBufferCurrentPositionSCI0 = (unsigned char*)&TXBuffer;
+	TXBufferCurrentPositionCAN0 = (unsigned char*)&TXBuffer;
+
+	/* Flag that we are transmitting! */
+	TXBufferInUseFlags |= COM_SET_SCI0_INTERFACE_ID;
+	// SCI0 only for now...
+
+	/* Load a blank header into the TX buffer ready for masking */
+	TXHeaderFlags = TXBufferCurrentPositionHandler;
+	*TXHeaderFlags = 0;
+	TXBufferCurrentPositionHandler++;
+}
 /* This function should be period limited to about 10 seconds internally (or by scheduler) */
 //void checkCountersAndSendErrors(){
 	// compare time stamps  with current time stamps and execute if old enough. (if no scheduler)

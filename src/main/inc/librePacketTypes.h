@@ -44,6 +44,10 @@
 #define DESCRIPTOR_JSON		0x10
 #define DESCRIPTOR_YAML		0x11
 
+#define PROCESSING_MULTI_PACKET_PAYLOAD  0x01
+
+extern unsigned char  commsCoreStateFlags;
+
 
 #else
 	#warning "Header file LIBRE_PACKET_TYPES_H seen before, sort it out!"
