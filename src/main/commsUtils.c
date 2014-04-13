@@ -1,6 +1,6 @@
 /* LibreEMS - the community driven open source engine management system
  *
- * Copyright 2014 Sean Keys
+ * Copyright 2014 Sean Keys, David Andruczyk
  *
  * This file is part of the LibreEMS project.
  *
@@ -66,36 +66,36 @@ void reverse(char *str) {
 
 char *integerToString(unsigned short num, char *str){ //TODO maybe add other radix's
 
-	    char isNegative = FALSE;
-        char *firstChar = str;
+	char isNegative = FALSE;
+	char *firstChar = str;
 
-	    /* Handle 0 */
-	    if (num == 0) {
-	        *(str)++ = '0';
-	        *str = '\0';
-	        return str;
-	    }
+	/* Handle 0 */
+	if (num == 0) {
+		*(str)++ = '0';
+		*str = '\0';
+		return str;
+	}
 
-	    if (num < 0 && BASE == 10) {
-	        isNegative = TRUE;
-	        num = -num;
-	    }
-	    // Process digits
-	    while (num != 0) {
-	        int rem = num % BASE;
-	        *(str)++ = (rem > 9)? (rem-10) + 'a' : rem + '0';
-	        num = num/BASE;
-	    }
-	    if (isNegative) {
-	    	*(str)++ = '-';
-	    }
+	if (num < 0 && BASE == 10) {
+		isNegative = TRUE;
+		num = -num;
+	}
+	// Process digits
+	while (num != 0) {
+		int rem = num % BASE;
+		*(str)++ = (rem > 9)? (rem-10) + 'a' : rem + '0';
+		num = num/BASE;
+	}
+	if (isNegative) {
+		*(str)++ = '-';
+	}
 
-	    *str = '\0'; //terminator
+	*str = '\0'; //terminator
 
-	    // Reverse the string
-	    reverse(firstChar);
+	// Reverse the string
+	reverse(firstChar);
 
-	    return firstChar;
+	return firstChar;
 }
 
 
@@ -113,30 +113,53 @@ char *payloadStrCat(char *dest, char *src) {
 		}
 	}
 	return dest;
-};
+}
+
 
 char *addJSONHeader(char *TXBufferPostion) {
-//    char *JSONHeader = "{\"id\":\"0001\",\"name\":\"JSON DataLog Descriptor\":{\"descriptor\":[";
-//    TXBufferPostion = payloadStrCat(TXBufferPostion, JSONHeader);
+    char *JSONHeader = "{\"id\":\"0001\",\"name\":\"JSON DataLog Descriptor\":{\"descriptor\":[";
+
+    if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, JSONHeader))) return 0;
 
     return TXBufferPostion;
 }
+
 
 char *addJSONFooter(char *TXBufferPostion) {
-//    char *JSONFooter = "{\"id\":\"0001\",\"name\":\"JSON DataLog Descriptor\":{\"descriptor\":[";
-//    TXBufferPostion = payloadStrCat(TXBufferPostion, JSONFooter);
+    char *JSONFooter = "]}";
+
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, JSONFooter))) return 0;
 
     return TXBufferPostion;
 }
+
+
+char *addYAMLHeader(char *TXBufferPostion) {
+    char *YAMLHeader = "---\nloggables:\n";
+
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, YAMLHeader))) return 0;
+
+    return TXBufferPostion;
+}
+
+
+char *addYAMLFooter(char *TXBufferPostion) {
+	char *YAMLFooter = "...";
+
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, YAMLFooter))) return 0;
+
+	return TXBufferPostion;
+}
+
 
 char *addJSONRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptorPTR, unsigned short baseOffset) {
 	char str[NUM_CHARS_IN_INT32] = {0};
 
-	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\"start\":"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "{\"start\":"))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->start + baseOffset, str)))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, ",\"size\":"))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->size, str)))) return 0;
-	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, ",\"signed\":"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, ",\"is_signed\":"))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->is_signed, str)))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, ",\"name\":"))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->name))) return 0;
@@ -152,7 +175,38 @@ char *addJSONRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptor
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->flags))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, ",\"suffix\":"))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->suffix))) return 0;
-	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "}]"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "}"))) return 0;
 
 	return TXBufferPostion;
 }
+
+
+char *addYAMLRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptorPTR, unsigned short baseOffset) {
+	char str[NUM_CHARS_IN_INT32] = {0};
+
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "  - start:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->start + baseOffset, str)))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\n    size:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->size, str)))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\n    signed:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->is_signed, str)))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\n    name:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->name))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\n    description:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->description))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\n    multiplier:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->multiplier))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\n    adder:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->adder))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\n    transfer_function:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->transfer_function))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\n    flags:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->flags))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\n    suffix:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->suffix))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\n"))) return 0;
+
+	return TXBufferPostion;
+}
+
+

@@ -1,6 +1,6 @@
 /* LibreEMS - the community driven open source engine management system
  *
- * Copyright 2014 Sean Keys
+ * Copyright 2014 Sean Keys, David Andruczyk
  *
  * This file is part of the LibreEMS project.
  *
@@ -39,3 +39,6 @@ char *payloadStrCat(char*, char*) PPAGE_E5;
 char *addJSONHeader(char *) PPAGE_E5;
 char *addJSONFooter(char *) PPAGE_E5;
 char *addJSONRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptorPTR, unsigned short baseOffset) PPAGE_E5; //FIXME revise linker etc for use with far attribute or keep as an alternative example...
+char *addYAMLHeader(char *) PPAGE_E5;
+char *addYAMLFooter(char *) PPAGE_E5;
+char *addYAMLRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptorPTR, unsigned short baseOffset) PPAGE_E5; //FIXME revise linker etc for use with far attribute or keep as an alternative example...

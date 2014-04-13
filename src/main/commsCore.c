@@ -1440,10 +1440,14 @@ void sendDescriptor() {
 
 	switch (format) {
 	case DESCRIPTOR_JSON:
+	case DESCRIPTOR_YAML:
 		PPAGE = 0xE5;
 		if ((currentChunk == 0) && (currentDescription == 0)) {
 			/* Add JSON header */
-			//currentTXBufferPosition = addJSONHeader(currentTXBufferPosition);
+			if (format == DESCRIPTOR_JSON)
+				currentTXBufferPosition = addJSONHeader(currentTXBufferPosition);
+			if (format == DESCRIPTOR_YAML)
+				currentTXBufferPosition = addYAMLHeader(currentTXBufferPosition);
 			packetPayloadEnum = 0;
 		}
 		lastTXBufferPosition = currentTXBufferPosition;
@@ -1453,7 +1457,11 @@ void sendDescriptor() {
 			//TODO if current descriptor = 0 maybe add another sub ID/name
 			descriptorPTR =	&(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].descriptor[currentDescription]);
 			while (currentDescription < *(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].numDescriptions)) {
-				currentTXBufferPosition = addJSONRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
+				if (format == DESCRIPTOR_JSON)
+					currentTXBufferPosition = addJSONRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
+				else if (format == DESCRIPTOR_YAML)
+					currentTXBufferPosition = addYAMLRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
+
 				if (currentTXBufferPosition) {
 					++currentDescription;
 					++descriptorPTR;
@@ -1470,6 +1478,18 @@ void sendDescriptor() {
 			}
 			baseOffset += TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].size;
 			++currentChunk;
+		}
+		/* If we aren't full yet, try to append footer, if we can't 
+		 * set full flag so we catch it on the next iteration around
+		 */
+		if (!full)
+		{
+			if (format == DESCRIPTOR_JSON)
+				currentTXBufferPosition = addJSONFooter(currentTXBufferPosition);
+			if (format == DESCRIPTOR_YAML)
+				currentTXBufferPosition = addYAMLFooter(currentTXBufferPosition);
+			if (!currentTXBufferPosition)
+				full = 1;
 		}
 		/* once everything is sent reset our indexes */
 		if (!full) {
@@ -1493,9 +1513,6 @@ void sendDescriptor() {
 		/* This type must have a length field, set that up and load the body into place at the same time */
 		*TXHeaderFlags |= HEADER_HAS_LENGTH;
 		++packetPayloadEnum;
-		break;
-	case DESCRIPTOR_YAML:
-		//parse though the descriptor struct, returning YAML string
 		break;
 	default:
 		//invalid format requested
