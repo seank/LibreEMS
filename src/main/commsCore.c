@@ -79,6 +79,7 @@ unsigned short baseOffset;
 unsigned char  packetPayloadEnum;
 unsigned short RXHeaderPayloadIDInProcess;
 unsigned char  format;
+unsigned short payloadID;
 
 /** @brief Populate a basic datalog packet
  *
@@ -264,13 +265,12 @@ void decodePacketAndRespond(){
 	RXBufferCurrentPosition++;
 	RXCalculatedPayloadLength--;
 
-	prepForTX();
-
 	/* Grab the payload ID for processing and load the return ID */
 	RXHeaderPayloadID = *((unsigned short*)RXBufferCurrentPosition);
-	*((unsigned short*)TXBufferCurrentPositionHandler) = RXHeaderPayloadID + 1;
+
+	prepForTX();
+
 	RXBufferCurrentPosition += 2;
-	TXBufferCurrentPositionHandler += 2;
 	RXCalculatedPayloadLength -= 2;
 
 	/* Check that the length is sufficient for the fields configured. Packets
@@ -1451,8 +1451,7 @@ void sendDescriptor() {
 		/* Pick up where we left off */
 		while (currentChunk < numChunks) {
 			//TODO if current descriptor = 0 maybe add another sub ID/name
-			descriptorPTR =
-					&(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].descriptor[currentDescription]);
+			descriptorPTR =	&(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].descriptor[currentDescription]);
 			while (currentDescription < *(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].numDescriptions)) {
 				currentTXBufferPosition = addJSONRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
 				if (currentTXBufferPosition) {
@@ -1488,7 +1487,7 @@ void sendDescriptor() {
 		/* write length into packet */
 		*((unsigned short*) TXBufferCurrentPositionHandler) = lastTXBufferPosition - TXBufferCurrentPositionHandler;
 		/* write payload number into packet */
-		*((unsigned short*) TXBufferCurrentPositionHandler + 2) = packetPayloadEnum;
+		*(TXBufferCurrentPositionHandler + 2) = packetPayloadEnum;
 		/* fast forward buffer to end */
 		TXBufferCurrentPositionHandler = lastTXBufferPosition;
 		/* This type must have a length field, set that up and load the body into place at the same time */
@@ -1505,6 +1504,10 @@ void sendDescriptor() {
 	PPAGE = savedPPage;
 }
 
+/* Here we prepare for sending a TX packet. This is more or less just temp code before
+ * we can rewrite the whole lot. This does enable us to send multi-packet payloads, but
+ * not in a generic way just yet.  */
+
 void prepForTX(){
 	/* Rewind all pointers to start of buffer */
 	TXBufferCurrentPositionHandler = (unsigned char*)&TXBuffer;
@@ -1519,7 +1522,10 @@ void prepForTX(){
 	TXHeaderFlags = TXBufferCurrentPositionHandler;
 	*TXHeaderFlags = 0;
 	TXBufferCurrentPositionHandler++;
+	*((unsigned short*)TXBufferCurrentPositionHandler) = RXHeaderPayloadID + 1;
+	TXBufferCurrentPositionHandler += 2;
 }
+
 /* This function should be period limited to about 10 seconds internally (or by scheduler) */
 //void checkCountersAndSendErrors(){
 	// compare time stamps  with current time stamps and execute if old enough. (if no scheduler)
