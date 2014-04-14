@@ -35,7 +35,7 @@
 int stringLength(char *str) PPAGE_E5;
 void reverse(char *str) PPAGE_E5;
 char *integerToString(unsigned short num, char *str) PPAGE_E5;
-char *payloadStrCat(char*, char*) PPAGE_E5;
+char *payloadStrCat(char *, const char *) PPAGE_E5;
 char *addJSONHeader(char *) PPAGE_E5;
 char *addJSONFooter(char *) PPAGE_E5;
 char *addJSONRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptorPTR, unsigned short baseOffset) PPAGE_E5; //FIXME revise linker etc for use with far attribute or keep as an alternative example...
