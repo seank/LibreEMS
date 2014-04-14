@@ -43,7 +43,7 @@
 /* Function declarations */
 /* This function accesses paged flash and thus must be in linear space. Set explicitly to text. */
 void decodePacketAndRespond(void) TEXT;
-void sendDescriptor() TEXT;
+void sendDescriptor() TEXT1;
 void prepForTX() TEXT;
 
 void resetReceiveState(unsigned char) FPAGE_FE;
