@@ -100,7 +100,7 @@ char *integerToString(unsigned short num, char *str){ //TODO maybe add other rad
 
 
 // Move as much data as we can to the TXBuffer without over-running it
-char *payloadStrCat(char *dest, char *src) {
+char *payloadStrCat(char *dest, const char *src) {
 	if (dest == 0) {
 		return 0;
 	}
@@ -117,36 +117,28 @@ char *payloadStrCat(char *dest, char *src) {
 
 
 char *addJSONHeader(char *TXBufferPostion) {
-    char *JSONHeader = "{\"id\":\"0001\",\"name\":\"JSON DataLog Descriptor\":{\"descriptor\":[";
-
-    if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, JSONHeader))) return 0;
+    if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "{\"id\":\"0001\",\"name\":\"JSON DataLog Descriptor\":{\"descriptor\":["))) return 0;
 
     return TXBufferPostion;
 }
 
 
 char *addJSONFooter(char *TXBufferPostion) {
-    char *JSONFooter = "]}";
-
-	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, JSONFooter))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "]}"))) return 0;
 
     return TXBufferPostion;
 }
 
 
 char *addYAMLHeader(char *TXBufferPostion) {
-    char *YAMLHeader = "---\nloggables:\n";
-
-	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, YAMLHeader))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "---\nloggables:\n"))) return 0;
 
     return TXBufferPostion;
 }
 
 
 char *addYAMLFooter(char *TXBufferPostion) {
-	char *YAMLFooter = "...";
-
-	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, YAMLFooter))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "...\n"))) return 0;
 
 	return TXBufferPostion;
 }
