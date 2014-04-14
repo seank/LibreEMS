@@ -1444,10 +1444,11 @@ void sendDescriptor() {
 		PPAGE = 0xE5;
 		if ((currentChunk == 0) && (currentDescription == 0)) {
 			/* Add JSON header */
-			if (format == DESCRIPTOR_JSON)
+			if (format == DESCRIPTOR_JSON) {
 				currentTXBufferPosition = addJSONHeader(currentTXBufferPosition);
-			if (format == DESCRIPTOR_YAML)
+			} else if (format == DESCRIPTOR_YAML) {
 				currentTXBufferPosition = addYAMLHeader(currentTXBufferPosition);
+			}
 			packetPayloadEnum = 0;
 		}
 		lastTXBufferPosition = currentTXBufferPosition;
@@ -1457,10 +1458,11 @@ void sendDescriptor() {
 			//TODO if current descriptor = 0 maybe add another sub ID/name
 			descriptorPTR =	&(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].descriptor[currentDescription]);
 			while (currentDescription < *(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].numDescriptions)) {
-				if (format == DESCRIPTOR_JSON)
+				if (format == DESCRIPTOR_JSON) {
 					currentTXBufferPosition = addJSONRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
-				else if (format == DESCRIPTOR_YAML)
+				} else if (format == DESCRIPTOR_YAML) {
 					currentTXBufferPosition = addYAMLRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
+				}
 
 				if (currentTXBufferPosition) {
 					++currentDescription;
@@ -1484,12 +1486,16 @@ void sendDescriptor() {
 		 */
 		if (!full)
 		{
-			if (format == DESCRIPTOR_JSON)
+			if (format == DESCRIPTOR_JSON) {
 				currentTXBufferPosition = addJSONFooter(currentTXBufferPosition);
-			if (format == DESCRIPTOR_YAML)
+			} else if (format == DESCRIPTOR_YAML) {
 				currentTXBufferPosition = addYAMLFooter(currentTXBufferPosition);
-			if (!currentTXBufferPosition)
+			}
+			if (currentTXBufferPosition) {
+				lastTXBufferPosition = currentTXBufferPosition;
+			} else {
 				full = 1;
+			}
 		}
 		/* once everything is sent reset our indexes */
 		if (!full) {
