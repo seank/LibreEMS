@@ -64,7 +64,7 @@ void reverse(char *str) {
 	}
 }
 
-char *integerToString(signed short num, char *str){ //TODO maybe add other radix's
+char *integerToString(signed long num, char *str){ //TODO maybe add other radix's
 
 	char isNegative = FALSE;
 	char *firstChar = str;
@@ -73,7 +73,7 @@ char *integerToString(signed short num, char *str){ //TODO maybe add other radix
 	if (num == 0) {
 		*(str)++ = '0';
 		*str = '\0';
-		return str;
+		return firstChar;
 	}
 
 	if (num < 0 && BASE == 10) {
@@ -82,7 +82,7 @@ char *integerToString(signed short num, char *str){ //TODO maybe add other radix
 	}
 	// Process digits
 	while (num != 0) {
-		int rem = num % BASE;
+		signed char rem = num % BASE;
 		*(str)++ = (rem > 9)? (rem-10) + 'a' : rem + '0';
 		num = num/BASE;
 	}
@@ -160,7 +160,7 @@ char *addJSONRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptor
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, comma_quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "is_signed"))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote_colon))) return 0;
-	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->is_signed, str)))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->isSigned, str)))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, comma_quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "name"))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote_colon))) return 0;
@@ -221,7 +221,7 @@ char *addYAMLRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptor
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->size, str)))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, newline_4spaces))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "is_signed:"))) return 0;
-	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->is_signed, str)))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->isSigned, str)))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, newline_4spaces))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "name:"))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;

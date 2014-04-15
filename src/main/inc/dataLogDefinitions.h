@@ -36,7 +36,7 @@
 typedef struct {
 	unsigned short start;     /* Starting byte number in the log stream */
 	unsigned char size;       /* Number of bits comprising the data */
-	unsigned char is_signed;  /* Signed or unsigned data */
+	unsigned char isSigned;  /* Signed or unsigned data */
 	char *name;               /* Short name */
 	char *description;        /* Brief description */
 	char *multiplier;         /* Suggested multiplier */

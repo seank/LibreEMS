@@ -34,7 +34,7 @@
 
 int stringLength(char *str) PPAGE_E5;
 void reverse(char *str) PPAGE_E5;
-char *integerToString(signed short num, char *str) PPAGE_E5;
+char *integerToString(signed long num, char *str) PPAGE_E5;
 char *payloadStrCat(char *, const char *) PPAGE_E5;
 char *addJSONHeader(char *) PPAGE_E5;
 char *addJSONFooter(char *) PPAGE_E5;

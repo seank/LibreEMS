@@ -48,7 +48,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, IAT), 
 			.size = bitSize(CoreVar, IAT), 
-			.is_signed = 0, 
+			.isSigned = 0,
 			.name = "IAT", 
 			.description = "Inlet Air Temperature (Kelvin)", 
 			.multiplier = "0.01" , 
@@ -60,7 +60,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, CHT), 
 			.size = bitSize(CoreVar, CHT), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "CHT", 
 			.description = "Coolant or Head Temperature (Kelvin)", 
 			.multiplier = "0.01" ,
@@ -72,7 +72,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, TPS), 
 			.size = bitSize(CoreVar, TPS), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "TPS", 
 			.description = "Throttle Position Sensor", 
 			.multiplier = "0.0015625",
@@ -84,7 +84,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, EGO), 
 			.size = bitSize(CoreVar, EGO), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "EGO", 
 			.description = "Exhaust Gas Oxygen (Lambda)", 
 			.multiplier = "0.0000305175781",
@@ -96,7 +96,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, MAP), 
 			.size = bitSize(CoreVar, MAP), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "MAP", 
 			.description = "Manifold Absolute Pressure", 
 			.multiplier = "0.01",
@@ -108,7 +108,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, AAP), 
 			.size = bitSize(CoreVar, AAP), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "AAP", 
 			.description = "Atmosphere Absolute Pressure", 
 			.multiplier = "0.01",
@@ -120,7 +120,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, BRV), 
 			.size = bitSize(CoreVar, BRV), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "BRV", 
 			.description = "Battery Reference Voltage", 
 			.multiplier = "0.001",
@@ -132,7 +132,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, MAT), 
 			.size = bitSize(CoreVar, MAT), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "MAT", 
 			.description = "Manifold Air Temperature", 
 			.multiplier = "0.01",
@@ -144,7 +144,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, EGO2), 
 			.size = bitSize(CoreVar, EGO2), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "EGO2", 
 			.description = "Exhaust Gas Oxygen (sensor2, Lambda)", 
 			.multiplier = "0.0000305175781",
@@ -156,7 +156,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, IAP), 
 			.size = bitSize(CoreVar, IAP), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "IAP", 
 			.description = "Intercooler Absolute Pressure", 
 			.multiplier = "0.01",
@@ -168,7 +168,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, MAF), 
 			.size = bitSize(CoreVar, MAF), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "MAF", 
 			.description = "Mass Air Flow", 
 			.multiplier = "1",
@@ -180,7 +180,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, DMAP), 
 			.size = bitSize(CoreVar, DMAP), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "DMAP", 
 			.description = "MAP rate of change", 
 			.multiplier = "1",
@@ -192,7 +192,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, DTPS), 
 			.size = bitSize(CoreVar, DTPS), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "DMAP", 
 			.description = "TPS rate of change", 
 			.multiplier = "1",
@@ -204,7 +204,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, RPM), 
 			.size = bitSize(CoreVar, RPM), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "RPM", 
 			.description = "Instant Engine RPM",
 			.multiplier = "0.5",
@@ -216,7 +216,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, DRPM), 
 			.size = bitSize(CoreVar, DRPM), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "DRPM", 
 			.description = "Engine RPM rate of change", 
 			.multiplier = "0.5",
@@ -228,7 +228,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(CoreVar, DDRPM), 
 			.size = bitSize(CoreVar, DDRPM), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "DDRPM", 
 			.description = "RPM Acceleration", 
 			.multiplier = "0.5",
@@ -245,7 +245,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, LoadMain), 
 			.size = bitSize(DerivedVar, LoadMain), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "LoadMain", 
 			.description = "Algorithm dependent representation of engine load", 
 			.multiplier = "0.01",
@@ -257,7 +257,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, VEMain), 
 			.size = bitSize(DerivedVar, VEMain), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "VEMain", 
 			.description = "Current Volumetric Efficiency",
 			.multiplier = "0.001953125",
@@ -269,7 +269,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, Lambda),
 			.size = bitSize(DerivedVar, Lambda),
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "Lambda",
 			.description = "FIXME ADDME",
 			.multiplier = "1",
@@ -281,7 +281,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, AirFlow), 
 			.size = bitSize(DerivedVar, AirFlow), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "AirFlow", 
 			.description = "Top half of the equation (to be removed?)", 
 			.multiplier = "1",
@@ -293,7 +293,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, densityAndFuel), 
 			.size = bitSize(DerivedVar, densityAndFuel), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "densityAndFuel", 
 			.description = "Bottom half of the equation (to be removed?)", 
 			.multiplier = "1",
@@ -305,7 +305,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, BasePW), 
 			.size = bitSize(DerivedVar, BasePW), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "BasePW", 
 			.description = "Raw PW before corrections", 
 			.multiplier = "0.0008",
@@ -317,7 +317,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, ETE), 
 			.size = bitSize(DerivedVar, ETE), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "ETE", 
 			.description = "Engine Temperature Enrichment percentage", 
 			.multiplier = "0.00305175",
@@ -329,7 +329,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, TFCTotal), 
 			.size = bitSize(DerivedVar, TFCTotal), 
-			.is_signed = 1,
+			.isSigned = 1,
 			.name = "TFCTotal", 
 			.description = "Transient Fuel correction PW", 
 			.multiplier = "0.0008",
@@ -341,7 +341,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, EffectivePW), 
 			.size = bitSize(DerivedVar, EffectivePW), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "EffectivePW", 
 			.description = "Actual PW for fuel delivery before per channel corrections", 
 			.multiplier = "0.0008",
@@ -353,7 +353,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, IDT), 
 			.size = bitSize(DerivedVar, IDT), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "IDT", 
 			.description = "Injector Dead Time (time before fuel flow begins)", 
 			.multiplier = "0.0008",
@@ -365,7 +365,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, RefPW), 
 			.size = bitSize(DerivedVar, RefPW), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "RefPW", 
 			.description = "Reference PW (i.e. actual PW before traims are applied)", 
 			.multiplier = "0.0008",
@@ -377,7 +377,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, Advance), 
 			.size = bitSize(DerivedVar, Advance), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "Advance", 
 			.description = "Ignition Timing Advance", 
 			.multiplier = "0.02",
@@ -389,7 +389,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(DerivedVar, Dwell), 
 			.size = bitSize(DerivedVar, Dwell), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "Dwell", 
 			.description = "Dwell Period", 
 			.multiplier = "0.0008",
@@ -406,7 +406,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, tempClock), 
 			.size = bitSize(KeyUserDebug, tempClock), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "tempClock", 
 			.description = "The number of datalog's sent", 
 			.multiplier = "1",
@@ -418,7 +418,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, spareChar), 
 			.size = bitSize(KeyUserDebug, spareChar), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "spareChar", 
 			.description = "Unused at this time", 
 			.multiplier = "1",
@@ -430,7 +430,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, coreStatusA), 
 			.size = bitSize(KeyUserDebug, coreStatusA), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "coreStatusA", 
 			.description = "Status Bits Register 'A'", 
 			.multiplier = "1",
@@ -442,7 +442,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, decoderFlags), 
 			.size = bitSize(KeyUserDebug, decoderFlags), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "decoderFlags", 
 			.description = "Decoder status bits, sync levels, and other details", 
 			.multiplier = "1",
@@ -454,7 +454,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, flaggableFlags), 
 			.size = bitSize(KeyUserDebug, flaggableFlags), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "flaggableFlags", 
 			.description = "Counter incremented status bits for various things like comms and decoders etc.", 
 			.multiplier = "1",
@@ -466,7 +466,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, currentEvent), 
 			.size = bitSize(KeyUserDebug, currentEvent), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "Which event was the latest to come in", 
 			.description = "", 
 			.multiplier = "1",
@@ -478,7 +478,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, syncLostWithThisID), 
 			.size = bitSize(KeyUserDebug, syncLostWithThisID), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "syncLostWithThisID", 
 			.description = "A unique identifier for the reason behind a loss of sync", 
 			.multiplier = "1",
@@ -490,7 +490,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, syncLostOnThisEvent), 
 			.size = bitSize(KeyUserDebug, syncLostOnThisEvent), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "syncLostOnThisEvent", 
 			.description = "Where in the input pattern it all went very badly wrong", 
 			.multiplier = "1",
@@ -502,7 +502,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, syncCaughtOnThisEvent), 
 			.size = bitSize(KeyUserDebug, syncCaughtOnThisEvent), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "syncCaughtOnThisEvent", 
 			.description = "Where in the input pattern that things started making sense", 
 			.multiplier = "1",
@@ -514,7 +514,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, syncResetCalls), 
 			.size = bitSize(KeyUserDebug, syncResetCalls), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "syncResetCalls", 
 			.description = "Sum of sync losses and state clears", 
 			.multiplier = "1",
@@ -526,7 +526,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, primaryTeethSeen), 
 			.size = bitSize(KeyUserDebug, primaryTeethSeen), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "primaryTeethSeen", 
 			.description = "Free running counters for number of input events, useful at lower RPM", 
 			.multiplier = "1",
@@ -538,7 +538,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, secondaryTeethSeen), 
 			.size = bitSize(KeyUserDebug, secondaryTeethSeen), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "secondaryTeethSeen", 
 			.description = "Free running counters for number of input events, useful at lower RPM", 
 			.multiplier = "1",
@@ -550,7 +550,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, serialOverrunErrors), 
 			.size = bitSize(KeyUserDebug, serialOverrunErrors), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "serialOverrunErrors", 
 			.description = "Incremented when an overrun occurs due to high interrupt load, yes it is a fault FIXME",
 			.multiplier = "1",
@@ -562,7 +562,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, serialHardwareErrors), 
 			.size = bitSize(KeyUserDebug, serialHardwareErrors), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "serialHardwareErrors", 
 			.description = "Sum of noise, parity, and framing errors", 
 			.multiplier = "1",
@@ -574,7 +574,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, serialAndCommsCodeErrors), 
 			.size = bitSize(KeyUserDebug, serialAndCommsCodeErrors), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "serialAndCommsCodeErrors", 
 			.description = "Sum of checksum, escape mismatches, starts inside, and over/under length", 
 			.multiplier = "1",
@@ -586,7 +586,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, inputEventTimeTolerance), 
 			.size = bitSize(KeyUserDebug, inputEventTimeTolerance), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "inputEventTimeTolerance", 
 			.description = "Required to tune noise rejection over RPM TODO add to LT1 and MissingTeeth", 
 			.multiplier = "1",
@@ -598,7 +598,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, flaggableFlags2), 
 			.size = bitSize(KeyUserDebug, flaggableFlags2), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "flaggableFlags2", 
 			.description = "Counter incremented status bits for various things like comms and decoders etc applicable to flaggables2 struct.", 
 			.multiplier = "1",
@@ -610,7 +610,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, zsp9), 
 			.size = bitSize(KeyUserDebug, zsp9), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "zsp9", 
 			.description = "Spare 9", 
 			.multiplier = "1",
@@ -622,7 +622,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, zsp8), 
 			.size = bitSize(KeyUserDebug, zsp8), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "zsp8", 
 			.description = "Spare 8", 
 			.multiplier = "1",
@@ -634,7 +634,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, zsp7), 
 			.size = bitSize(KeyUserDebug, zsp7), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "zsp7", 
 			.description = "Spare 7", 
 			.multiplier = "1",
@@ -646,7 +646,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, zsp6), 
 			.size = bitSize(KeyUserDebug, zsp6), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "zsp6", 
 			.description = "Spare 6", 
 			.multiplier = "1",
@@ -658,7 +658,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, blendAlphaNPercent), 
 			.size = bitSize(KeyUserDebug, blendAlphaNPercent), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "blendAlphaNPercent", 
 			.description = "Not documented yet", 
 			.multiplier = "1",
@@ -670,7 +670,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, speedDensityAirFlow), 
 			.size = bitSize(KeyUserDebug, speedDensityAirFlow), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "speedDensityAirflow", 
 			.description = "Not documented yet", 
 			.multiplier = "1",
@@ -682,7 +682,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, alphaNAirFlow), 
 			.size = bitSize(KeyUserDebug, alphaNAirFlow), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "alphaNAirFlow", 
 			.description = "Not documented yet", 
 			.multiplier = "1",
@@ -694,7 +694,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, clockInMilliSeconds), 
 			.size = bitSize(KeyUserDebug, clockInMilliSeconds), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "clockInMilliSeconds", 
 			.description = "Internal Clock in milliseconds", 
 			.multiplier = "1",
@@ -706,7 +706,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, clockIn8thsOfAMilli), 
 			.size = bitSize(KeyUserDebug, clockIn8thsOfAMilli), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "clockIn8thsofAMilli", 
 			.description = "Internal Clock in 1/8th millisecond increments", 
 			.multiplier = "0.125",
@@ -718,7 +718,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, ignitionCuts), 
 			.size = bitSize(KeyUserDebug, ignitionCuts), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "ignitionCuts", 
 			.description = "Bitfield of reasons why ignition was cut", 
 			.multiplier = "1",
@@ -730,7 +730,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 		{
 			.start = offsetof(KeyUserDebug, injectionCuts), 
 			.size = bitSize(KeyUserDebug, injectionCuts), 
-			.is_signed = 0,
+			.isSigned = 0,
 			.name = "injectionCuts", 
 			.description = "Bitfield of reasons why injection was cut", 
 			.multiplier = "1",
