@@ -34,15 +34,16 @@
 /*&&&&&&&&&&&&&&&&&&&&&&&&  ECU Payload Type IDs  &&&&&&&&&&&&&&&&&&&&&&&*/
 
 /* Team LibreEMS */
-#define RETRIEVE_DATALOG_DESCRIPTOR    0x0300  /* Request data-log stream descriptor */
-#define REQUEST_SET_DATASTREAM_ID      0x0302  /* Set the desired data-stream id */
-#define REQUEST_DEFINE_DATASTREAM_ID   0x0304  /* Send the ID and list of variables you want to receive */
-#define REQUEST_LIST_OF_DATASTREAM_IDS 0x0306  /* Send valid list of saved data-stream IDs */
+#define RETRIEVE_JSON_DATALOG_DESCRIPTOR    0x0300  /* Request data-log stream descriptor */
+#define RETRIEVE_YAML_DATALOG_DESCRIPTOR    0x0302  /* Request data-log stream descriptor */
+#define REQUEST_SET_DATASTREAM_ID      0x0304  /* Set the desired data-stream id */
+#define REQUEST_DEFINE_DATASTREAM_ID   0x0306  /* Send the ID and list of variables you want to receive */
+#define REQUEST_LIST_OF_DATASTREAM_IDS 0x0308  /* Send valid list of saved data-stream IDs */
 
 
 /*&&&&&&&&&&&&&&&&&&&&&&& Misc Defines &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
-#define DESCRIPTOR_JSON		0x10
-#define DESCRIPTOR_YAML		0x11
+#define DESCRIPTOR_YAML 0x01
+#define DESCRIPTOR_JSON 0x02
 
 #define PROCESSING_MULTI_PACKET_PAYLOAD  0x01
 

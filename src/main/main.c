@@ -63,6 +63,7 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 	extern unsigned char* TXBufferCurrentPositionCAN0;
 	extern unsigned char* TXBufferCurrentPositionSCI0;
 	extern const volatile fixedConfig1 fixedConfigs1;
+	extern unsigned char format;
 	// Set everything up.
 	init();
 
@@ -198,7 +199,7 @@ int  main(){ /// @todo TODO maybe move this to paged flash ?
 		if(!(TXBufferInUseFlags)){
 		  if(commsCoreStateFlags & PROCESSING_MULTI_PACKET_PAYLOAD){
 			prepForTX();
-			sendDescriptor();
+			sendDescriptor(format);
 			finaliseAndSend(0);
 		  } else{
 

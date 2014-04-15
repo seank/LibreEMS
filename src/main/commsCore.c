@@ -78,8 +78,8 @@ unsigned char  currentDescription;
 unsigned short baseOffset;
 unsigned char  packetPayloadEnum;
 unsigned short RXHeaderPayloadIDInProcess;
-unsigned char  format;
 unsigned short payloadID;
+unsigned char format;
 
 /** @brief Populate a basic datalog packet
  *
@@ -347,17 +347,13 @@ void decodePacketAndRespond(){
 		   //On fail send the default id of 0
 		   //We should doc these protocols as a LibreEMS supplemental in addition to the underlying freeems coms
 		   break;
-	   case RETRIEVE_DATALOG_DESCRIPTOR: /* return a data-stream descriptor in the requested format for the current datastreamID */
-		   /* If format is 0 that means this is a new request */
-		   	if (format == 0) {
-		   		if (RXCalculatedPayloadLength != 1) {
-		   			errorID = PAYLOAD_LENGTH_TYPE_MISMATCH;
-		   			break;
-		   		}
-		   		format = *((unsigned char*) RXBufferCurrentPosition);
-		   		RXBufferCurrentPosition += 1;
-		   	}
-		   	sendDescriptor();
+	   case RETRIEVE_JSON_DATALOG_DESCRIPTOR: /* return a data-stream descriptor in the requested format for the current datastreamID */
+		    format = DESCRIPTOR_JSON; /* main() needs this set */
+		   	sendDescriptor(DESCRIPTOR_JSON);
+	    	break;
+	   case RETRIEVE_YAML_DATALOG_DESCRIPTOR: /* return a data-stream descriptor in the requested format for the current datastreamID */
+		    format = DESCRIPTOR_YAML; /* main() needs this set */
+		   	sendDescriptor(DESCRIPTOR_YAML);
 	    	break;
 	// FreeEMS Core Comms Interface cases
 		case REQUEST_INTERFACE_VERSION:
@@ -1429,7 +1425,7 @@ void decodePacketAndRespond(){
 	resetReceiveState(CLEAR_ALL_SOURCE_ID_FLAGS);
 }
 
-void sendDescriptor() {
+void sendDescriptor(unsigned char format) {
 
 	unsigned char savedPPage = PPAGE;
 	unsigned char* currentTXBufferPosition = TXBufferCurrentPositionHandler + 3; //FIXME create macro for the 2 +1
@@ -1438,92 +1434,84 @@ void sendDescriptor() {
 	const dataBlockDescriptor* descriptorPTR;
 	unsigned char full = 0;
 
-	switch (format) {
-	case DESCRIPTOR_JSON:
-	case DESCRIPTOR_YAML:
-		PPAGE = 0xE5;
-		if ((currentChunk == 0) && (currentDescription == 0)) {
-			/* Add JSON header */
-			if (format == DESCRIPTOR_JSON) {
-				currentTXBufferPosition = addJSONHeader(currentTXBufferPosition);
-			} else if (format == DESCRIPTOR_YAML) {
-				currentTXBufferPosition = addYAMLHeader(currentTXBufferPosition);
-			}
-			packetPayloadEnum = 0;
+	PPAGE = 0xE5;
+	if ((currentChunk == 0) && (currentDescription == 0)) {
+		/* Add JSON header */
+		if (format == DESCRIPTOR_JSON) {
+			currentTXBufferPosition = addJSONHeader(currentTXBufferPosition);
+		} else if (format == DESCRIPTOR_YAML) {
+			currentTXBufferPosition = addYAMLHeader(currentTXBufferPosition);
 		}
-		lastTXBufferPosition = currentTXBufferPosition;
-		//TODO fix first log chunk index as it is not guaranteed to be zero
-		/* Pick up where we left off */
-		while (currentChunk < numChunks) {
-			//TODO if current descriptor = 0 maybe add another sub ID/name
-			descriptorPTR =	&(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].descriptor[currentDescription]);
-			while (currentDescription < *(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].numDescriptions)) {
-				if (format == DESCRIPTOR_JSON) {
-					currentTXBufferPosition = addJSONRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
-				} else if (format == DESCRIPTOR_YAML) {
-					currentTXBufferPosition = addYAMLRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
-				}
+		packetPayloadEnum = 0;
+	}
+	lastTXBufferPosition = currentTXBufferPosition;
+	//TODO fix first log chunk index as it is not guaranteed to be zero
+	/* Pick up where we left off */
+	while (currentChunk < numChunks) {
+		//TODO if current descriptor = 0 maybe add another sub ID/name
+		descriptorPTR =	&(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].descriptor[currentDescription]);
+		while (currentDescription < *(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].numDescriptions)) {
+			if (format == DESCRIPTOR_JSON) {
+				currentTXBufferPosition = addJSONRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
+			} else if (format == DESCRIPTOR_YAML) {
+				currentTXBufferPosition = addYAMLRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
+			}
 
-				if (currentTXBufferPosition) {
-					++currentDescription;
-					++descriptorPTR;
-					lastTXBufferPosition = currentTXBufferPosition;
-				} else {
-					full = 1;
-					break;
-				}
-			}
-			if (full) {
-				break;
-			} else {
-				currentDescription = 0;
-			}
-			baseOffset += TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].size;
-			++currentChunk;
-		}
-		/* If we aren't full yet, try to append footer, if we can't 
-		 * set full flag so we catch it on the next iteration around
-		 */
-		if (!full)
-		{
-			if (format == DESCRIPTOR_JSON) {
-				currentTXBufferPosition = addJSONFooter(currentTXBufferPosition);
-			} else if (format == DESCRIPTOR_YAML) {
-				currentTXBufferPosition = addYAMLFooter(currentTXBufferPosition);
-			}
 			if (currentTXBufferPosition) {
+				++currentDescription;
+				++descriptorPTR;
 				lastTXBufferPosition = currentTXBufferPosition;
 			} else {
 				full = 1;
+				break;
 			}
 		}
-		/* once everything is sent reset our indexes */
-		if (!full) {
-			currentChunk = 0;
-			currentDescription = 0;
-			baseOffset = 0;
-			commsCoreStateFlags &= ~(PROCESSING_MULTI_PACKET_PAYLOAD);
-			RXHeaderPayloadIDInProcess = 0;
-			*TXHeaderFlags |= HEADER_IS_COMPLETE;
+		if (full) {
+			break;
 		} else {
-			*TXHeaderFlags |= HEADER_IS_PARTIAL;
-			commsCoreStateFlags |= PROCESSING_MULTI_PACKET_PAYLOAD;
-			RXHeaderPayloadIDInProcess = RXHeaderPayloadID;
+			currentDescription = 0;
 		}
-		/* write length into packet */
-		*((unsigned short*) TXBufferCurrentPositionHandler) = lastTXBufferPosition - TXBufferCurrentPositionHandler;
-		/* write payload number into packet */
-		*(TXBufferCurrentPositionHandler + 2) = packetPayloadEnum;
-		/* fast forward buffer to end */
-		TXBufferCurrentPositionHandler = lastTXBufferPosition;
-		/* This type must have a length field, set that up and load the body into place at the same time */
-		*TXHeaderFlags |= HEADER_HAS_LENGTH;
-		++packetPayloadEnum;
-		break;
-	default:
-		//invalid format requested
-		break;
+		baseOffset += TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].size;
+		++currentChunk;
 	}
+	/* If we aren't full yet, try to append footer, if we can't 
+	 * set full flag so we catch it on the next iteration around
+	 */
+	if (!full)
+	{
+		if (format == DESCRIPTOR_JSON) {
+			currentTXBufferPosition = addJSONFooter(currentTXBufferPosition);
+		} else if (format == DESCRIPTOR_YAML) {
+			currentTXBufferPosition = addYAMLFooter(currentTXBufferPosition);
+		}
+		if (currentTXBufferPosition) {
+			lastTXBufferPosition = currentTXBufferPosition;
+		} else {
+			full = 1;
+		}
+	}
+	/* once everything is sent reset our indexes */
+	if (!full) {
+		currentChunk = 0;
+		currentDescription = 0;
+		baseOffset = 0;
+		commsCoreStateFlags &= ~(PROCESSING_MULTI_PACKET_PAYLOAD);
+		RXHeaderPayloadIDInProcess = 0;
+		*TXHeaderFlags |= HEADER_IS_COMPLETE;
+	} else {
+		*TXHeaderFlags |= HEADER_IS_PARTIAL;
+		commsCoreStateFlags |= PROCESSING_MULTI_PACKET_PAYLOAD;
+		RXHeaderPayloadIDInProcess = RXHeaderPayloadID;
+	}
+	/* write length into packet */
+	*((unsigned short*) TXBufferCurrentPositionHandler) = lastTXBufferPosition - TXBufferCurrentPositionHandler;
+	/* write payload number into packet */
+	*(TXBufferCurrentPositionHandler + 2) = packetPayloadEnum;
+	/* fast forward buffer to end */
+	TXBufferCurrentPositionHandler = lastTXBufferPosition;
+	/* This type must have a length field, set that up and load the body into place at the same time */
+	*TXHeaderFlags |= HEADER_HAS_LENGTH;
+	++packetPayloadEnum;
 	PPAGE = savedPPage;
 }
 
