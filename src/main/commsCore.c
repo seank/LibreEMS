@@ -1453,6 +1453,9 @@ void sendDescriptor(unsigned char format) {
 		while (currentDescription < *(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].numDescriptions)) {
 			if (format == DESCRIPTOR_JSON) {
 				currentTXBufferPosition = addJSONRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
+				if ((currentChunk != (numChunks - 1) || (currentDescription != (*(TablesB.SmallTablesB.loggingSettings.logChunks[currentChunk].numDescriptions) - 1)))) {
+					currentTXBufferPosition = payloadStrCat(currentTXBufferPosition, ",");
+				}
 			} else if (format == DESCRIPTOR_YAML) {
 				currentTXBufferPosition = addYAMLRecord(currentTXBufferPosition, descriptorPTR, baseOffset);
 			}

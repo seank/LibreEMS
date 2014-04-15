@@ -203,7 +203,7 @@ char *addJSONRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptor
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->suffix))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
-	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "},"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "}"))) return 0;
 
 	return TXBufferPostion;
 }
