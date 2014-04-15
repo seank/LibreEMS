@@ -212,6 +212,7 @@ char *addJSONRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptor
 char *addYAMLRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptorPTR, unsigned short baseOffset) {
 	char str[NUM_CHARS_IN_INT32] = {0};
 	const char *newline_4spaces = "\n    ";
+	const char *quote = "\"";
 
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "  - start:"))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->start + baseOffset, str)))) return 0;
@@ -223,25 +224,39 @@ char *addYAMLRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptor
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->is_signed, str)))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, newline_4spaces))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "name:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->name))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, newline_4spaces))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "description:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->description))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, newline_4spaces))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "multiplier:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->multiplier))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, newline_4spaces))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "adder:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->adder))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, newline_4spaces))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "transfer_function:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->transfer_function))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, newline_4spaces))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "flags:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->flags))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, newline_4spaces))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "suffix:"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->suffix))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "\n"))) return 0;
 
 	return TXBufferPostion;
