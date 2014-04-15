@@ -54,7 +54,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.multiplier = "0.01" , 
 			.adder = "0", 
 			.transfer_function = "x/100",
-			.flags = NULL,
+			.flags = "",
 			.suffix = "degrees",
 		},
 		{
@@ -66,7 +66,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.multiplier = "0.01" ,
 			.adder = "0",
 			.transfer_function = "x/100",
-			.flags = NULL,
+			.flags = "",
 			.suffix = "degrees",
 		},
 		{
