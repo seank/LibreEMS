@@ -42,7 +42,7 @@
 
 /* Function declarations */
 /* This function accesses paged flash and thus must be in linear space. Set explicitly to text. */
-void decodePacketAndRespond(void) TEXT;
+void decodePacketAndRespond(void) TEXT1;
 void sendDescriptor(unsigned char) TEXT1;
 void prepForTX(void) TEXT;
 
