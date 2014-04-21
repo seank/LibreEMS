@@ -36,7 +36,7 @@
 typedef struct {
 	unsigned short start;     /* Starting byte number in the log stream */
 	unsigned char size;       /* Number of bits comprising the data */
-	unsigned char isSigned;  /* Signed or unsigned data */
+	unsigned char isSigned;   /* Signed or unsigned data */
 	char *name;               /* Short name */
 	char *description;        /* Brief description */
 	char *multiplier;         /* Suggested multiplier */
@@ -44,6 +44,7 @@ typedef struct {
 	char *transfer_function;  /* Alternative to multiplier/adder */
 	char *flags;              /* Textual flags to give the tuner hints */
 	char *suffix;             /* Tuner side suffix for this variable */
+	char *bitFieldDescriptor; /* Description of each bit in the variable */
 }dataBlockDescriptor;
 
 extern const dataBlockDescriptor coreVarsDescriptor[];
