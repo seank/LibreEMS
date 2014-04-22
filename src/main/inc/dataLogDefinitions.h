@@ -33,6 +33,14 @@
 #ifndef FILE_DATALOGDEFINITIONS_H_SEEN
 #define FILE_DATALOGDEFINITIONS_H_SEEN
 
+
+#define MAX_NUM_BFD      16   /* Maximum number of bit field descriptors(16-bit machine) */
+
+typedef struct {
+	char *fieldName;
+	unsigned char bitPosition;
+}bitFieldDescriptor;
+
 typedef struct {
 	unsigned short start;     /* Starting byte number in the log stream */
 	unsigned char size;       /* Number of bits comprising the data */
@@ -44,8 +52,10 @@ typedef struct {
 	char *transfer_function;  /* Alternative to multiplier/adder */
 	char *flags;              /* Textual flags to give the tuner hints */
 	char *suffix;             /* Tuner side suffix for this variable */
-	char *bitFieldDescriptor; /* Description of each bit in the variable */
+	bitFieldDescriptor bitFieldDescription[MAX_NUM_BFD]; /* Description of each bit in the variable */
 }dataBlockDescriptor;
+
+
 
 extern const dataBlockDescriptor coreVarsDescriptor[];
 extern const dataBlockDescriptor derrivedVarsDescriptor[];

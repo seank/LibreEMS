@@ -56,7 +56,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/100",
 			.flags = "",
 			.suffix = "degrees",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}}
 		},
 		{
 			.start = offsetof(CoreVar, CHT), 
@@ -69,7 +69,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/100",
 			.flags = "",
 			.suffix = "degrees",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, TPS), 
@@ -82,7 +82,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/640",
 			.flags = "temperature",
 			.suffix = "%",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, EGO), 
@@ -95,7 +95,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/32768",
 			.flags = "",
 			.suffix = "lambda",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, MAP), 
@@ -108,7 +108,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/100",
 			.flags = "",
 			.suffix = "kPa",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, AAP), 
@@ -121,7 +121,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/100",
 			.flags = "",
 			.suffix = "kPa",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, BRV), 
@@ -134,7 +134,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/1000",
 			.flags = "",
 			.suffix = "Volts",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, MAT), 
@@ -147,7 +147,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/100",
 			.flags = "temperature",
 			.suffix = "degrees",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, EGO2), 
@@ -160,7 +160,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/32768",
 			.flags = "",
 			.suffix = "lambda",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, IAP), 
@@ -173,7 +173,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/100",
 			.flags = "",
 			.suffix = "kPa",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, MAF), 
@@ -186,7 +186,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "raw",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, DMAP), 
@@ -199,7 +199,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "kPa/second",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, DTPS), 
@@ -212,7 +212,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "%/second",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, RPM), 
@@ -225,7 +225,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/2",
 			.flags = "",
 			.suffix = "RPM",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, DRPM), 
@@ -238,7 +238,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/2",
 			.flags = "",
 			.suffix = "RPM/second",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(CoreVar, DDRPM), 
@@ -251,7 +251,7 @@ const dataBlockDescriptor coreVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/2",
 			.flags = "",
 			.suffix = "RPM/second^2",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		}
 };
 CASSERT((sizeof(CoreVar) / sizeof(unsigned short)) == (sizeof(coreVarsDescriptor) / sizeof(dataBlockDescriptor)), DATALOGDEFINITIONS_C) // At least check for correct number of entries
@@ -269,7 +269,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/100",
 			.flags = "",
 			.suffix = "Load",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, VEMain), 
@@ -282,7 +282,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/512",
 			.flags = "",
 			.suffix = "VE %",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, Lambda),
@@ -295,7 +295,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, AirFlow), 
@@ -308,7 +308,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, densityAndFuel), 
@@ -321,7 +321,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, BasePW), 
@@ -334,7 +334,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/1250",
 			.flags = "",
 			.suffix = "ms",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, ETE), 
@@ -347,7 +347,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/327.68",
 			.flags = "",
 			.suffix = "%",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, TFCTotal), 
@@ -360,7 +360,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/1250",
 			.flags = "",
 			.suffix = "ms",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, EffectivePW), 
@@ -373,7 +373,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/1250",
 			.flags = "",
 			.suffix = "ms",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, IDT), 
@@ -386,7 +386,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/1250",
 			.flags = "",
 			.suffix = "ms",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, RefPW), 
@@ -399,7 +399,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/1250",
 			.flags = "",
 			.suffix = "ms",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, Advance), 
@@ -412,7 +412,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/50",
 			.flags = "",
 			.suffix = "deg",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(DerivedVar, Dwell), 
@@ -425,7 +425,7 @@ const dataBlockDescriptor derrivedVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/1250",
 			.flags = "",
 			.suffix = "ms",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		}
 };
 CASSERT((sizeof(DerivedVar) / sizeof(unsigned short)) == (sizeof(derrivedVarsDescriptor) / sizeof(dataBlockDescriptor)), DATALOGDEFINITIONS_C) // At least check for correct number of entries
@@ -443,7 +443,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, spareChar), 
@@ -456,7 +456,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, coreStatusA), 
@@ -469,7 +469,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, decoderFlags), 
@@ -482,7 +482,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, flaggableFlags), 
@@ -495,7 +495,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, currentEvent), 
@@ -508,7 +508,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, syncLostWithThisID), 
@@ -521,7 +521,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, syncLostOnThisEvent), 
@@ -534,7 +534,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, syncCaughtOnThisEvent), 
@@ -547,7 +547,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, syncResetCalls), 
@@ -560,7 +560,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, primaryTeethSeen), 
@@ -573,7 +573,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, secondaryTeethSeen), 
@@ -586,7 +586,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, serialOverrunErrors), 
@@ -599,7 +599,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, serialHardwareErrors), 
@@ -612,7 +612,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, serialAndCommsCodeErrors), 
@@ -625,7 +625,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, inputEventTimeTolerance), 
@@ -638,7 +638,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, flaggableFlags2), 
@@ -651,7 +651,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, zsp9), 
@@ -664,7 +664,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, zsp8), 
@@ -677,7 +677,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, zsp7), 
@@ -690,7 +690,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, zsp6), 
@@ -703,7 +703,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, blendAlphaNPercent), 
@@ -716,7 +716,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, speedDensityAirFlow), 
@@ -729,7 +729,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, alphaNAirFlow), 
@@ -742,7 +742,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, clockInMilliSeconds), 
@@ -755,7 +755,7 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "ms",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, clockIn8thsOfAMilli), 
@@ -768,33 +768,42 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x/8",
 			.flags = "",
 			.suffix = "ms",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, ignitionCuts), 
 			.size = bitSize(KeyUserDebug, ignitionCuts), 
 			.isSigned = 0,
 			.name = "ignitionCuts", 
-			.description = "Bitfield of reasons why ignition was cut", 
+			.description = "Bit-field of reasons why ignition was cut",
 			.multiplier = "1",
 			.adder = "0",
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {{0}},
 		},
 		{
 			.start = offsetof(KeyUserDebug, injectionCuts), 
 			.size = bitSize(KeyUserDebug, injectionCuts), 
 			.isSigned = 0,
 			.name = "injectionCuts", 
-			.description = "Bitfield of reasons why injection was cut", 
+			.description = "Bit-field of reasons why injection was cut",
 			.multiplier = "1",
 			.adder = "0",
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescriptor = 0,
+			.bitFieldDescription = {
+					{.fieldName = "Spare7", .bitPosition = 7},
+					{.fieldName = "Spare6", .bitPosition = 6},
+					{.fieldName = "Spare5", .bitPosition = 5},
+					{.fieldName = "Spare4", .bitPosition = 4},
+					{.fieldName = "InjSelfClock", .bitPosition = 3},
+					{.fieldName = "InjLostPLL", .bitPosition = 2},
+					{.fieldName = "InjOverBoost", .bitPosition = 1},
+					{.fieldName = "InjectionRPM", .bitPosition = 0}
+			}
 		}
 };
 //CASSERT((sizeof(KeyUserDebug) / sizeof(unsigned short)) == (sizeof(KeyUserVarsDescriptor) / sizeof(dataBlockDescriptor)), DATALOGDEFINITIONS_C) // At least check for correct number of entries
