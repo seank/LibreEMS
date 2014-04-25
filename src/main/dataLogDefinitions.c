@@ -469,7 +469,16 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescription = {{0}},
+			.bitFieldDescription = {
+					{.fieldName = "Unused", .bitPosition = 7},
+					{.fieldName = "Unused", .bitPosition = 6},
+					{.fieldName = "Unused", .bitPosition = 5},
+					{.fieldName = "Unused", .bitPosition = 4},
+					{.fieldName = "Unused", .bitPosition = 3},
+					{.fieldName = "Unused", .bitPosition = 2},
+					{.fieldName = "Unused", .bitPosition = 1},
+					{.fieldName = "FuelPumpPrime", .bitPosition = 0}
+			}
 		},
 		{
 			.start = offsetof(KeyUserDebug, decoderFlags), 
@@ -483,6 +492,16 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.flags = "",
 			.suffix = "",
 			.bitFieldDescription = {{0}},
+			.bitFieldDescription = {
+					{.fieldName = "Unused", .bitPosition = 7},
+					{.fieldName = "Unused", .bitPosition = 6},
+					{.fieldName = "Unused", .bitPosition = 5},
+					{.fieldName = "LastPeriodValid", .bitPosition = 4},
+					{.fieldName = "LastStampValid", .bitPosition = 3},
+					{.fieldName = "CamSync", .bitPosition = 2},
+					{.fieldName = "CrankSync", .bitPosition = 1},
+					{.fieldName = "CombustionSync", .bitPosition = 0}
+			}
 		},
 		{
 			.start = offsetof(KeyUserDebug, flaggableFlags), 
@@ -495,7 +514,22 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescription = {{0}},
+			.bitFieldDescription = {
+					{.fieldName = "SerialPacketsUnderLength", .bitPosition = 13},
+					{.fieldName = "SerialChecksumMismatches", .bitPosition = 12},
+					{.fieldName = "SerialPacketsOverLength", .bitPosition = 11},
+					{.fieldName = "SerialStartsInsideAPacket", .bitPosition = 10},
+					{.fieldName = "SerialEscapePairMismatches", .bitPosition = 9},
+					{.fieldName = "SerialOverrunErrors", .bitPosition = 8},
+					{.fieldName = "SerialParityErrors", .bitPosition = 7},
+					{.fieldName = "SerialFramingErrors", .bitPosition = 6},
+					{.fieldName = "SerialNoiseErrors", .bitPosition = 5},
+					{.fieldName = "DecoderSyncStateClears", .bitPosition = 4},
+					{.fieldName = "DecoderSyncCorrections", .bitPosition = 3},
+					{.fieldName = "DecoderSyncLosses", .bitPosition = 2},
+					{.fieldName = "LowVoltageConditions", .bitPosition = 1},
+					{.fieldName = "CallsToUnimplmentedISRs", .bitPosition = 0}
+			}
 		},
 		{
 			.start = offsetof(KeyUserDebug, currentEvent), 
@@ -781,7 +815,16 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.transfer_function = "x",
 			.flags = "",
 			.suffix = "",
-			.bitFieldDescription = {{0}},
+			.bitFieldDescription = {
+					{.fieldName = "Unused", .bitPosition = 7},
+					{.fieldName = "Unused", .bitPosition = 6},
+					{.fieldName = "Unused", .bitPosition = 5},
+					{.fieldName = "Unused", .bitPosition = 4},
+					{.fieldName = "Unused", .bitPosition = 3},
+					{.fieldName = "Unused", .bitPosition = 2},
+					{.fieldName = "IgnitioncurOverBoost", .bitPosition = 1},
+					{.fieldName = "IgnitionCutOverRPM", .bitPosition = 0}
+			}
 		},
 		{
 			.start = offsetof(KeyUserDebug, injectionCuts), 
@@ -799,10 +842,10 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 					{.fieldName = "Spare6", .bitPosition = 6},
 					{.fieldName = "Spare5", .bitPosition = 5},
 					{.fieldName = "Spare4", .bitPosition = 4},
-					{.fieldName = "InjSelfClock", .bitPosition = 3},
-					{.fieldName = "InjLostPLL", .bitPosition = 2},
-					{.fieldName = "InjOverBoost", .bitPosition = 1},
-					{.fieldName = "InjectionRPM", .bitPosition = 0}
+					{.fieldName = "InjectionLostSelfClock", .bitPosition = 3},
+					{.fieldName = "InjectionLostPLLSync", .bitPosition = 2},
+					{.fieldName = "InjectionCutOverBoost", .bitPosition = 1},
+					{.fieldName = "InjectionCutOverRPM", .bitPosition = 0}
 			}
 		}
 };
