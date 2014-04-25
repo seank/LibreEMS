@@ -470,13 +470,6 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.flags = "",
 			.suffix = "",
 			.bitFieldDescription = {
-					{.fieldName = "Unused", .bitPosition = 7},
-					{.fieldName = "Unused", .bitPosition = 6},
-					{.fieldName = "Unused", .bitPosition = 5},
-					{.fieldName = "Unused", .bitPosition = 4},
-					{.fieldName = "Unused", .bitPosition = 3},
-					{.fieldName = "Unused", .bitPosition = 2},
-					{.fieldName = "Unused", .bitPosition = 1},
 					{.fieldName = "FuelPumpPrime", .bitPosition = 0}
 			}
 		},
@@ -493,9 +486,6 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.suffix = "",
 			.bitFieldDescription = {{0}},
 			.bitFieldDescription = {
-					{.fieldName = "Unused", .bitPosition = 7},
-					{.fieldName = "Unused", .bitPosition = 6},
-					{.fieldName = "Unused", .bitPosition = 5},
 					{.fieldName = "LastPeriodValid", .bitPosition = 4},
 					{.fieldName = "LastStampValid", .bitPosition = 3},
 					{.fieldName = "CamSync", .bitPosition = 2},
@@ -816,12 +806,6 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.flags = "",
 			.suffix = "",
 			.bitFieldDescription = {
-					{.fieldName = "Unused", .bitPosition = 7},
-					{.fieldName = "Unused", .bitPosition = 6},
-					{.fieldName = "Unused", .bitPosition = 5},
-					{.fieldName = "Unused", .bitPosition = 4},
-					{.fieldName = "Unused", .bitPosition = 3},
-					{.fieldName = "Unused", .bitPosition = 2},
 					{.fieldName = "IgnitioncurOverBoost", .bitPosition = 1},
 					{.fieldName = "IgnitionCutOverRPM", .bitPosition = 0}
 			}
@@ -838,10 +822,6 @@ const dataBlockDescriptor KeyUserVarsDescriptor[] PPAGE_E5 ={
 			.flags = "",
 			.suffix = "",
 			.bitFieldDescription = {
-					{.fieldName = "Spare7", .bitPosition = 7},
-					{.fieldName = "Spare6", .bitPosition = 6},
-					{.fieldName = "Spare5", .bitPosition = 5},
-					{.fieldName = "Spare4", .bitPosition = 4},
 					{.fieldName = "InjectionLostSelfClock", .bitPosition = 3},
 					{.fieldName = "InjectionLostPLLSync", .bitPosition = 2},
 					{.fieldName = "InjectionCutOverBoost", .bitPosition = 1},
