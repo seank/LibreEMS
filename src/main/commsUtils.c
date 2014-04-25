@@ -149,6 +149,7 @@ char *addJSONRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptor
 	const char *comma_quote = ",\"";
 	const char *quote_colon = "\":";
 	const char *quote = "\"";
+	const char *brace_quote = "{\"";
 
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "{\"start"))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote_colon))) return 0;
@@ -203,8 +204,43 @@ char *addJSONRecord(char *TXBufferPostion, const dataBlockDescriptor *descriptor
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->suffix))) return 0;
 	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
-	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "}"))) return 0;
 
+	unsigned char addedBitfield = 0;
+	unsigned char i = descriptorPTR->size;
+
+	if(!(i > MAX_NUM_BFD)) { /* make sure we are within range */
+		while (i) {
+			--i;
+			if (descriptorPTR->bitFieldDescription[i].fieldName != (void *)0) {
+				if (!addedBitfield) {
+					addedBitfield = 1;
+					if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, comma_quote))) return 0;
+					if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "bitFieldDescriptor"))) return 0;
+					if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote_colon))) return 0;
+					if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "["))) return 0;
+				}
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, brace_quote))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "bitFieldDescription"))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote_colon))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, descriptorPTR->bitFieldDescription[i].fieldName))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, comma_quote))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "bitFieldPosition"))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote_colon))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, integerToString(descriptorPTR->bitFieldDescription[i].bitPosition, str)))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, quote))) return 0;
+				if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "}"))) return 0;
+				if (i) {
+					if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, ","))) return 0;
+				}
+			}
+		}
+	}
+
+	if(addedBitfield) if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "]"))) return 0;
+	if(!(TXBufferPostion = payloadStrCat(TXBufferPostion, "}"))) return 0;
 	return TXBufferPostion;
 }
 
